@@ -13,10 +13,33 @@ import { OfferModule } from './offer/offer.module';
 import { ServiceModule } from './service/service.module';
 import { NotificationModule } from './notification/notification.module';
 import { ResearchModule } from './research/research.module';
-import { PrivilegeModule } from './privilege/privilege.module';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { Privilege } from './privilege/entities/privilege.entity';
 
 @Module({
-  imports: [PrivilegeModule, UserModule, RoleModule, DiscussionModule, MessageModule, PostModule, LikeModule, ShareModule, OfferModule, ServiceModule, NotificationModule, ResearchModule],
+  imports: [
+    TypeOrmModule.forRoot({
+      type: 'postgres',
+      host: 'localhost',
+      port: 5432,
+      username: 'postgres',
+      password: 'Thomymek',
+      database: 'mhousedb',
+      entities: [Privilege],
+      synchronize: true,
+    }),    
+    PrivilegeModule, 
+    UserModule, 
+    RoleModule, 
+    DiscussionModule, 
+    MessageModule, 
+    PostModule, 
+    LikeModule, 
+    ShareModule, 
+    OfferModule, 
+    ServiceModule, 
+    NotificationModule, 
+    ResearchModule],
   controllers: [AppController],
   providers: [AppService],
 })

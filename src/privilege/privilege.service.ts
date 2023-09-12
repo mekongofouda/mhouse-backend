@@ -4,23 +4,42 @@ import { UpdatePrivilegeDto } from './dto/update-privilege.dto';
 
 @Injectable()
 export class PrivilegeService {
-  addPrivilege(addPrivilegeDto: AddPrivilegeDto) {
-    return 'This action adds a new privilege';
+
+  private privileges = [
+    {
+      "reference": "AYHUSH",
+      "name": "Thomymek",
+      "description": "Bla bla bla !!!",
+      "resource": "privilege",
+      "createdAt": 1694495914096,
+      "updatedAt": 1694495914096
+    },
+    {
+      "reference": "FIKDOK",
+      "name": "Dodomek",
+      "description": "Bla bla bla !!!",
+      "resource": "privilege",
+      "createdAt": 1694495914096,
+      "updatedAt": 1694495914096
+    }
+  ]
+  addPrivilege(addPrivilegeDto) {
+    return this.privileges.push(addPrivilegeDto);
   }
 
   listPrivilege() {
-    return `This action returns all privilege`;
+    return this.privileges;
   }
 
-  showPrivilegeDetail(id: number) {
-    return `This action returns a #${id} privilege`;
+  showPrivilegeDetail(ref: string) {
+    return null;
   }
 
-  updatePrivilege(id: number, updatePrivilegeDto: UpdatePrivilegeDto) {
-    return `This action updates a #${id} privilege`;
+  updatePrivilege(ref: string, updatePrivilegeDto: UpdatePrivilegeDto) {
+    return `This action updates a #${ref} privilege`;
   }
 
-  deletePrivilege(id: number) {
-    return `This action removes a #${id} privilege`;
+  deletePrivilege(ref: string) {
+    return `This action removes a #${ref} privilege`;
   }
 }

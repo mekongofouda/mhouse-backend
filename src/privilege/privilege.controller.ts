@@ -1,34 +1,41 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UsePipes, ValidationPipe, HttpException, HttpStatus } from '@nestjs/common';
 import { PrivilegeService } from './privilege.service';
 import { AddPrivilegeDto } from './dto/add-privilege.dto';
 import { UpdatePrivilegeDto } from './dto/update-privilege.dto';
 
 @Controller('privilege')
 export class PrivilegeController {
+
   constructor(private readonly privilegeService: PrivilegeService) {}
 
   @Post()
-  create(@Body() addPrivilegeDto: AddPrivilegeDto) {
+  addPrivilege(@Body() addPrivilegeDto: AddPrivilegeDto) {
     return this.privilegeService.addPrivilege(addPrivilegeDto);
   }
 
   @Get()
-  findAll() {
+  listPrivilege() {
+    if (!this.privilegeService.listPrivilege()) {
+      throw new HttpException("Privilege not found", HttpStatus.NOT_FOUND)
+    }
     return this.privilegeService.listPrivilege();
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.privilegeService.showPrivilegeDetail(+id);
+  @Get(':ref')
+  showPrivilegeDetail(@Param('ref') ref: string) {
+    if (!this.privilegeService.showPrivilegeDetail(ref)) {
+      throw new HttpException("Privilege not found", HttpStatus.NOT_FOUND)
+    }
+    return this.privilegeService.showPrivilegeDetail(ref);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updatePrivilegeDto: UpdatePrivilegeDto) {
-    return this.privilegeService.updatePrivilege(+id, updatePrivilegeDto);
+  @Patch(':ref')
+  updatePrivilege(@Param('ref') ref: string, @Body() updatePrivilegeDto: UpdatePrivilegeDto) {
+    return this.privilegeService.updatePrivilege(ref, updatePrivilegeDto);
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.privilegeService.deletePrivilege(+id);
+  @Delete(':ref')
+  deletePrivilege(@Param('id') ref: string) {
+    return this.privilegeService.deletePrivilege(ref);
   }
 }
