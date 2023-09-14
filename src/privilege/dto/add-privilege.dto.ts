@@ -1,4 +1,5 @@
-import { IsNotEmpty, IsUUID } from "class-validator";
+import { IsNotEmpty, IsString } from "class-validator";
+import { IsNull } from "typeorm";
 
 export class AddPrivilegeDto {
     @IsNotEmpty()
@@ -11,4 +12,9 @@ export class AddPrivilegeDto {
 
     @IsNotEmpty()
     resource: string;
+
+    createdAt: string;
+
+    updatedAt: string;
+
 }

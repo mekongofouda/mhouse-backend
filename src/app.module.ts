@@ -2,7 +2,6 @@ import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { PrivilegeModule } from './privilege/privilege.module';
-import { UserModule } from './user/user.module';
 import { RoleModule } from './role/role.module';
 import { DiscussionModule } from './discussion/discussion.module';
 import { MessageModule } from './message/message.module';
@@ -14,7 +13,9 @@ import { ServiceModule } from './service/service.module';
 import { NotificationModule } from './notification/notification.module';
 import { ResearchModule } from './research/research.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Privilege } from './privilege/entities/privilege.entity';
+import { join } from 'path';
+import { AuthModule } from './auth/auth.module';
+import { AccountModule } from './account/account.module';
 
 @Module({
   imports: [
@@ -25,11 +26,10 @@ import { Privilege } from './privilege/entities/privilege.entity';
       username: 'postgres',
       password: 'Thomymek',
       database: 'mhousedb',
-      entities: [Privilege],
+      entities: [join(process.cwd(), 'dist/**/*.entity.js')],
       synchronize: true,
-    }),    
+    }),     
     PrivilegeModule, 
-    UserModule, 
     RoleModule, 
     DiscussionModule, 
     MessageModule, 
@@ -39,7 +39,7 @@ import { Privilege } from './privilege/entities/privilege.entity';
     OfferModule, 
     ServiceModule, 
     NotificationModule, 
-    ResearchModule],
+    ResearchModule, AuthModule, AccountModule],
   controllers: [AppController],
   providers: [AppService],
 })

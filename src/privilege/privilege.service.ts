@@ -1,45 +1,43 @@
 import { Injectable } from '@nestjs/common';
-import { AddPrivilegeDto } from './dto/add-privilege.dto';
-import { UpdatePrivilegeDto } from './dto/update-privilege.dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Privilege } from './entities/privilege.entity';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class PrivilegeService {
 
-  private privileges = [
-    {
-      "reference": "AYHUSH",
-      "name": "Thomymek",
-      "description": "Bla bla bla !!!",
-      "resource": "privilege",
-      "createdAt": 1694495914096,
-      "updatedAt": 1694495914096
-    },
-    {
-      "reference": "FIKDOK",
-      "name": "Dodomek",
-      "description": "Bla bla bla !!!",
-      "resource": "privilege",
-      "createdAt": 1694495914096,
-      "updatedAt": 1694495914096
-    }
-  ]
-  addPrivilege(addPrivilegeDto) {
-    return this.privileges.push(addPrivilegeDto);
+  constructor(
+    @InjectRepository(Privilege) 
+    private readonly privilegeRepository: Repository<Privilege>
+  ){}
+
+  async addPrivilege(addPrivilegeDto) {
+
+    addPrivilegeDto.createdAt = Date.now().toString();
+    addPrivilegeDto.updatedAt = Date.now().toString();
+
+    const privilege = this.privilegeRepository.create(addPrivilegeDto);
+    console.log(privilege);
+    
+    return await this.privilegeRepository.save(privilege);
   }
 
-  listPrivilege() {
-    return this.privileges;
+  listPrivilege(): Promise<Privilege[]> {
+    return this.privilegeRepository.find();
   }
 
-  showPrivilegeDetail(ref: string) {
-    return null;
+  showPrivilegeDetail(reference: string): Promise<Privilege | null> {
+    return this.privilegeRepository.findOneBy({reference});
   }
 
-  updatePrivilege(ref: string, updatePrivilegeDto: UpdatePrivilegeDto) {
-    return `This action updates a #${ref} privilege`;
+  async updatePrivilege(reference: string, updatePrivilegeDto): Promise<Privilege> {
+    const privilege = await this.privilegeRepository.findOne({where:{reference}});
+    Object.assign(privilege, updatePrivilegeDto);
+    return await this.privilegeRepository.save(privilege);
   }
 
-  deletePrivilege(ref: string) {
-    return `This action removes a #${ref} privilege`;
+  async deletePrivilege(reference: string): Promise<Privilege> {
+    const privilege = await this.privilegeRepository.findOneBy({reference});
+    return await this.privilegeRepository.remove(privilege);
   }
 }

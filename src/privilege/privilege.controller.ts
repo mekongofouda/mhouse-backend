@@ -35,7 +35,7 @@ export class PrivilegeController {
   }
 
   @Delete(':ref')
-  deletePrivilege(@Param('id') ref: string) {
+  deletePrivilege(@Param('ref') ref: string) {
     return this.privilegeService.deletePrivilege(ref);
   }
 }
