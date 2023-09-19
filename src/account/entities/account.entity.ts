@@ -8,8 +8,44 @@ export class Account {
 
     @Column()
     name: string;
-
+    
     @Column()
-    password: string;
+    surname : string;
+    
+    @Column()
+    dayBirth : Date;
+    
+    @Column()
+    placeBirth : string;
+    
+    @Column()
+    icn : number;
+    
+    @Column()
+    email : string;
+    
+    @Column()
+    phone : number;
+    
+    @Column()
+    avatar : string;
+    
+    @Column()
+    password : string;
+    
+    @Column()
+    salt : string;
+    
+    @Column()
+    token: string;
+    
+    @Column()
+    role : string;
+    
+    @Column()
+    createdAt : Date;
+    
+    @Column()
+    updatedAt : Date;
 
 }

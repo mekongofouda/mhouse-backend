@@ -1,26 +1,41 @@
 import { Injectable } from '@nestjs/common';
-import { CreatePostDto } from './dto/create-post.dto';
+import { PostDto } from './dto/post.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
+import { ToogleActivatePostDto } from './dto/toogle-activate-post.dto';
+import { Post } from './entities/post.entity';
+import { ListPostDto } from './dto/list-post.dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class PostService {
-  create(createPostDto: CreatePostDto) {
+
+  constructor(
+    @InjectRepository(Post) 
+    private readonly postRepository: Repository<Post>
+  ){}
+
+  post(postDto: PostDto) {
     return 'This action adds a new post';
   }
 
-  findAll() {
-    return `This action returns all post`;
+  toogleActivatePost(refPost: string, toogleActivatePostDto: ToogleActivatePostDto) {
+    return `This action updates a #${refPost} post`;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} post`;
+  async listPost(listPostDto: ListPostDto): Promise<Post[]>{
+    return await this.postRepository.find();
   }
 
-  update(id: number, updatePostDto: UpdatePostDto) {
-    return `This action updates a #${id} post`;
+  showPostDetail(refPost: string) {
+    return `This action returns a #${refPost} post`;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} post`;
+  updatePost(refPost: string, updatePostDto: UpdatePostDto) {
+    return `This action updates a #${refPost} post`;
+  }
+
+  deletePost(refPost: string) {
+    return `This action removes a #${refPost} post`;
   }
 }

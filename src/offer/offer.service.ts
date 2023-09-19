@@ -1,26 +1,41 @@
 import { Injectable } from '@nestjs/common';
-import { CreateOfferDto } from './dto/create-offer.dto';
+import { OfferDto } from './dto/offer.dto';
 import { UpdateOfferDto } from './dto/update-offer.dto';
+import { ToogleValidateOfferDto } from './dto/toogle-validate-offer.dto';
+import { Offer } from './entities/offer.entity';
+import { Repository } from 'typeorm';
+import { InjectRepository } from '@nestjs/typeorm';
+import { ListOfferDto } from './dto/list-offer.dto';
 
 @Injectable()
 export class OfferService {
-  create(createOfferDto: CreateOfferDto) {
+
+  constructor(
+    @InjectRepository(Offer) 
+    private readonly offerRepository: Repository<Offer>
+  ){}
+
+  offer(offerDto: OfferDto) {
     return 'This action adds a new offer';
   }
 
-  findAll() {
-    return `This action returns all offer`;
+  toogleValidateOffer(refOffer: string, toogleValidateOfferDto: ToogleValidateOfferDto) {
+    return `This action updates a #${refOffer} offer`;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} offer`;
+  async listOffer(listOfferDto: ListOfferDto): Promise<Offer[]> {
+    return await this.offerRepository.find();
   }
 
-  update(id: number, updateOfferDto: UpdateOfferDto) {
-    return `This action updates a #${id} offer`;
+  showOfferDetail(refOffer: string) {
+    return `This action returns a #${refOffer} offer`;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} offer`;
+  updateOffer(refOffer: string, updateOfferDto: UpdateOfferDto) {
+    return `This action updates a #${refOffer} offer`;
+  }
+
+  deleteOffer(refOffer: string) {
+    return `This action removes a #${refOffer} offer`;
   }
 }

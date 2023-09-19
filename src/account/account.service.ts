@@ -4,6 +4,7 @@ import { UpdateUserAccountDto } from './dto/update-user-account.dto';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Account } from './entities/account.entity';
+import { ListUserAccountDto } from './dto/list-user-account.dto';
 
 
 @Injectable()
@@ -18,7 +19,7 @@ export class AccountService {
     return 'This action adds a new account';
   }
 
-  listUserAccount() {
+  listUserAccount(listUserAccountDto: ListUserAccountDto) {
     return `This action returns all account`;
   }
   

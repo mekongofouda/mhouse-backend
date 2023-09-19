@@ -1,34 +1,66 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, HttpException, HttpStatus, Query } from '@nestjs/common';
 import { PostService } from './post.service';
-import { CreatePostDto } from './dto/create-post.dto';
+import { PostDto } from './dto/post.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
+import { ReferencePipe } from 'src/pipes/reference/reference.pipe';
+import { ListPostDto } from './dto/list-post.dto';
+import { ToogleActivatePostDto } from './dto/toogle-activate-post.dto';
+import { DatePipe } from 'src/pipes/date/date.pipe';
 
 @Controller('post')
 export class PostController {
-  constructor(private readonly postService: PostService) {}
+
+  constructor(
+    private readonly postService: PostService,
+  ) {}
 
   @Post()
-  create(@Body() createPostDto: CreatePostDto) {
-    return this.postService.create(createPostDto);
+  post(
+    @Body(ReferencePipe, DatePipe) postDto: PostDto
+    ) {
+    return this.postService.post(postDto);
+  }
+
+  @Patch(':ref')
+  toogleActivatePost(
+    @Param('ref') ref: string, 
+    @Body() toogleActivatePostDto: ToogleActivatePostDto
+  ) {
+    return this.postService.toogleActivatePost(ref, toogleActivatePostDto);
   }
 
   @Get()
-  findAll() {
-    return this.postService.findAll();
+  listPost(
+    @Query() listPostDto: ListPostDto
+  ) {
+    if (!this.postService.listPost(listPostDto)) {
+      throw new HttpException("Post not found", HttpStatus.NOT_FOUND)
+    }
+    return this.postService.listPost(listPostDto);
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.postService.findOne(+id);
+  @Get(':ref')
+  showPostDetail(
+    @Param('ref') ref: string
+    ) {
+    if (!this.postService.showPostDetail(ref)) {
+      throw new HttpException("Post not found", HttpStatus.NOT_FOUND)
+    }
+    return this.postService.showPostDetail(ref);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updatePostDto: UpdatePostDto) {
-    return this.postService.update(+id, updatePostDto);
+  @Patch(':ref')
+  updatePost(
+    @Param('ref') ref: string, 
+    @Body() updatePostDto: UpdatePostDto
+  ) {
+    return this.postService.updatePost(ref, updatePostDto);
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.postService.remove(+id);
+  @Delete(':ref')
+  deletePost(
+    @Param('ref') ref: string
+    ) {
+    return this.postService.deletePost(ref);
   }
 }

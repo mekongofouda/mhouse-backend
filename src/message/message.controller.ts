@@ -1,34 +1,48 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, HttpStatus, HttpException, Query } from '@nestjs/common';
 import { MessageService } from './message.service';
-import { CreateMessageDto } from './dto/create-message.dto';
-import { UpdateMessageDto } from './dto/update-message.dto';
+import { SendMessageDto } from './dto/send-message.dto';
+import { ListMessageDto } from './dto/list-message.dto';
+import { ReferencePipe } from 'src/pipes/reference/reference.pipe';
+import { DatePipe } from 'src/pipes/date/date.pipe';
 
 @Controller('message')
 export class MessageController {
-  constructor(private readonly messageService: MessageService) {}
+
+  constructor(
+    private readonly messageService: MessageService,
+  ) {}
 
   @Post()
-  create(@Body() createMessageDto: CreateMessageDto) {
-    return this.messageService.create(createMessageDto);
+  sendMessage(
+    @Body(ReferencePipe, DatePipe) sendMessageDto: SendMessageDto
+    ) {
+    return this.messageService.sendMessage(sendMessageDto);
   }
 
   @Get()
-  findAll() {
-    return this.messageService.findAll();
+  listMessage(
+    @Query() listMessageDto: ListMessageDto
+  ) {
+    if (!this.messageService.listMessage(listMessageDto)) {
+      throw new HttpException("Message not found", HttpStatus.NOT_FOUND)
+    }
+    return this.messageService.listMessage(listMessageDto);
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.messageService.findOne(+id);
+  @Get(':ref')
+  showMessageDetail(
+    @Param('ref') ref: string
+    ) {
+    if (!this.messageService.showMessageDetail(ref)) {
+      throw new HttpException("Message not found", HttpStatus.NOT_FOUND)
+    }
+    return this.messageService.showMessageDetail(ref);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateMessageDto: UpdateMessageDto) {
-    return this.messageService.update(+id, updateMessageDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.messageService.remove(+id);
+  @Delete(':ref')
+  deleteMessage(
+    @Param('ref') ref: string
+    ) {
+    return this.messageService.deleteMessage(ref);
   }
 }

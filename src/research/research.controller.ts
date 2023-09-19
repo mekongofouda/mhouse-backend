@@ -1,34 +1,41 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, HttpStatus, HttpException, Query } from '@nestjs/common';
 import { ResearchService } from './research.service';
-import { CreateResearchDto } from './dto/create-research.dto';
-import { UpdateResearchDto } from './dto/update-research.dto';
+import { SearchDto } from './dto/search.dto';
+import { ReferencePipe } from 'src/pipes/reference/reference.pipe';
+import { ShowResearchResultDto } from './dto/show-research-result.dto';
 
 @Controller('research')
 export class ResearchController {
-  constructor(private readonly researchService: ResearchService) {}
+
+  constructor(
+    private readonly researchService: ResearchService,
+  ) {}
 
   @Post()
-  create(@Body() createResearchDto: CreateResearchDto) {
-    return this.researchService.create(createResearchDto);
+  search(
+    @Body(ReferencePipe) searchDto: SearchDto
+    ) {
+    return this.researchService.search(searchDto);
   }
 
   @Get()
-  findAll() {
-    return this.researchService.findAll();
+  showResearchResult(
+    @Query() showResearchResultDto: ShowResearchResultDto
+  ) {
+    if (!this.researchService.showResearchResult()) {
+      throw new HttpException("Research not found", HttpStatus.NOT_FOUND)
+    }
+    return this.researchService.showResearchResult();
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.researchService.findOne(+id);
+  @Get(':ref')
+  showResearchDetail(
+    @Param('ref') ref: string
+    ) {
+    if (!this.researchService.showResearchDetail()) {
+      throw new HttpException("Research not found", HttpStatus.NOT_FOUND)
+    }
+    return this.researchService.showResearchDetail();
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateResearchDto: UpdateResearchDto) {
-    return this.researchService.update(+id, updateResearchDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.researchService.remove(+id);
-  }
 }

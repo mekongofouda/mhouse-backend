@@ -1,34 +1,57 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, HttpException, HttpStatus, Query } from '@nestjs/common';
 import { NotificationService } from './notification.service';
-import { CreateNotificationDto } from './dto/create-notification.dto';
-import { UpdateNotificationDto } from './dto/update-notification.dto';
+import { SendNotificationDto } from './dto/send-notification.dto';
+import { MarkReadedDto } from './dto/markReaded-notification.dto';
+import { ListNotificationDto } from './dto/list-notification.dto';
+import { ReferencePipe } from 'src/pipes/reference/reference.pipe';
+import { DatePipe } from 'src/pipes/date/date.pipe';
 
 @Controller('notification')
 export class NotificationController {
-  constructor(private readonly notificationService: NotificationService) {}
+
+  constructor(
+    private readonly notificationService: NotificationService,
+  ) {}
 
   @Post()
-  create(@Body() createNotificationDto: CreateNotificationDto) {
-    return this.notificationService.create(createNotificationDto);
+  sendNotification(
+    @Body(ReferencePipe, DatePipe) sendNotificationDto: SendNotificationDto
+    ) {
+    return this.notificationService.sendNotification(sendNotificationDto);
   }
 
   @Get()
-  findAll() {
-    return this.notificationService.findAll();
+  listNotification(
+    @Query() listNotificationDto: ListNotificationDto
+  ) {
+    if (!this.notificationService.listNotification(listNotificationDto)) {
+      throw new HttpException("Notification not found", HttpStatus.NOT_FOUND)
+    }
+    return this.notificationService.listNotification(listNotificationDto);
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.notificationService.findOne(+id);
+  @Get(':ref')
+  showNotificationDetail(
+    @Param('ref') ref: string
+    ) {
+    if (!this.notificationService.showNotificationDetail(ref)) {
+      throw new HttpException("Notification not found", HttpStatus.NOT_FOUND)
+    }
+    return this.notificationService.showNotificationDetail(ref);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateNotificationDto: UpdateNotificationDto) {
-    return this.notificationService.update(+id, updateNotificationDto);
+  @Patch(':ref')
+  markReaded(
+    @Param('ref') ref: string, 
+    @Body() markReadedDto: MarkReadedDto
+  ) {
+    return this.notificationService.markReaded(ref, markReadedDto);
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.notificationService.remove(+id);
+  @Delete(':ref')
+  deleteNotification(
+    @Param('ref') ref: string
+    ) {
+    return this.notificationService.deleteNotification(ref);
   }
 }

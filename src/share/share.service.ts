@@ -1,26 +1,28 @@
 import { Injectable } from '@nestjs/common';
-import { CreateShareDto } from './dto/create-share.dto';
-import { UpdateShareDto } from './dto/update-share.dto';
+import { ShareDto } from './dto/share.dto';
+import { ListShareDto } from './dto/list-share.dto';
+import { Share } from './entities/share.entity';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class ShareService {
-  create(createShareDto: CreateShareDto) {
+
+  constructor(
+    @InjectRepository(Share) 
+    private readonly shareRepository: Repository<Share>
+  ){}
+
+
+  share(shareDto: ShareDto) {
     return 'This action adds a new share';
   }
 
-  findAll() {
-    return `This action returns all share`;
+  async listShare(listShareDto: ListShareDto): Promise<Share[]> {
+    return await this.shareRepository.find();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} share`;
-  }
-
-  update(id: number, updateShareDto: UpdateShareDto) {
-    return `This action updates a #${id} share`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} share`;
+  showShareDetail(refShare: string) {
+    return `This action returns a #${refShare} share`;
   }
 }

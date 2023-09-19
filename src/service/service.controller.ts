@@ -1,34 +1,57 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query, HttpException, HttpStatus } from '@nestjs/common';
 import { ServiceService } from './service.service';
-import { CreateServiceDto } from './dto/create-service.dto';
+import { AddServiceDto } from './dto/add-service.dto';
 import { UpdateServiceDto } from './dto/update-service.dto';
+import { ReferencePipe } from 'src/pipes/reference/reference.pipe';
+import { ListServiceDto } from './dto/list-service.dto';
+import { DatePipe } from 'src/pipes/date/date.pipe';
 
 @Controller('service')
 export class ServiceController {
-  constructor(private readonly serviceService: ServiceService) {}
+
+  constructor(
+    private readonly serviceService: ServiceService,
+  ) {}
 
   @Post()
-  create(@Body() createServiceDto: CreateServiceDto) {
-    return this.serviceService.create(createServiceDto);
+  addService(
+    @Body(ReferencePipe, DatePipe) addServiceDto: AddServiceDto
+    ) {
+    return this.serviceService.addService(addServiceDto);
   }
 
   @Get()
-  findAll() {
-    return this.serviceService.findAll();
+  listService(
+    @Query() listServiceDto: ListServiceDto
+  ) {
+    if (!this.serviceService.listService(listServiceDto)) {
+      throw new HttpException("Service not found", HttpStatus.NOT_FOUND)
+    }
+    return this.serviceService.listService(listServiceDto);
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.serviceService.findOne(+id);
+  @Get(':ref')
+  showServiceDetail(
+    @Param('ref') ref: string
+    ) {
+    if (!this.serviceService.showServiceDetail(ref)) {
+      throw new HttpException("Service not found", HttpStatus.NOT_FOUND)
+    }
+    return this.serviceService.showServiceDetail(ref);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateServiceDto: UpdateServiceDto) {
-    return this.serviceService.update(+id, updateServiceDto);
+  @Patch(':ref')
+  updateService(
+    @Param('ref') ref: string, 
+    @Body() updateServiceDto: UpdateServiceDto
+  ) {
+    return this.serviceService.updateService(ref, updateServiceDto);
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.serviceService.remove(+id);
+  @Delete(':ref')
+  deleteService(
+    @Param('ref') ref: string
+    ) {
+    return this.serviceService.deleteService(ref);
   }
 }

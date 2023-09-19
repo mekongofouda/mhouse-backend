@@ -1,34 +1,57 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query, HttpStatus, HttpException } from '@nestjs/common';
 import { RoleService } from './role.service';
-import { CreateRoleDto } from './dto/create-role.dto';
+import { AddRoleDto } from './dto/add-role.dto';
 import { UpdateRoleDto } from './dto/update-role.dto';
+import { ReferencePipe } from 'src/pipes/reference/reference.pipe';
+import { ListRoleDto } from './dto/list-role.dto';
+import { DatePipe } from 'src/pipes/date/date.pipe';
 
 @Controller('role')
 export class RoleController {
-  constructor(private readonly roleService: RoleService) {}
+
+  constructor(
+    private readonly roleService: RoleService,
+  ) {}
 
   @Post()
-  create(@Body() createRoleDto: CreateRoleDto) {
-    return this.roleService.create(createRoleDto);
+  addRole(
+    @Body(ReferencePipe, DatePipe) addRoleDto: AddRoleDto
+    ) {
+    return this.roleService.addRole(addRoleDto);
   }
 
   @Get()
-  findAll() {
-    return this.roleService.findAll();
+  listRole(
+    @Query() listRoleDto: ListRoleDto
+  ) {
+    if (!this.roleService.listRole(listRoleDto)) {
+      throw new HttpException("Role not found", HttpStatus.NOT_FOUND)
+    }
+    return this.roleService.listRole(listRoleDto);
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.roleService.findOne(+id);
+  @Get(':ref')
+  showRoleDetail(
+    @Param('ref') ref: string
+    ) {
+    if (!this.roleService.showRoleDetail(ref)) {
+      throw new HttpException("Role not found", HttpStatus.NOT_FOUND)
+    }
+    return this.roleService.showRoleDetail(ref);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateRoleDto: UpdateRoleDto) {
-    return this.roleService.update(+id, updateRoleDto);
+  @Patch(':ref')
+  updateRole
+  (@Param('ref') ref: string, 
+  @Body() updateRoleDto: UpdateRoleDto
+  ) {
+    return this.roleService.updateRole(ref, updateRoleDto);
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.roleService.remove(+id);
+  @Delete(':ref')
+  deleteRole(
+    @Param('ref') ref: string
+    ) {
+    return this.roleService.deleteRole(ref);
   }
 }

@@ -1,34 +1,57 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, HttpStatus, HttpException, Query } from '@nestjs/common';
 import { DiscussionService } from './discussion.service';
-import { CreateDiscussionDto } from './dto/create-discussion.dto';
+import { AddDiscussionDto } from './dto/add-discussion.dto';
 import { UpdateDiscussionDto } from './dto/update-discussion.dto';
+import { ReferencePipe } from 'src/pipes/reference/reference.pipe';
+import { ListDiscussionDto } from './dto/list-discussion.dto';
+import { DatePipe } from 'src/pipes/date/date.pipe';
 
 @Controller('discussion')
 export class DiscussionController {
-  constructor(private readonly discussionService: DiscussionService) {}
+
+  constructor(
+    private readonly discussionService: DiscussionService,
+  ) {}
 
   @Post()
-  create(@Body() createDiscussionDto: CreateDiscussionDto) {
-    return this.discussionService.create(createDiscussionDto);
+  addDiscussion(
+    @Body(ReferencePipe, DatePipe) addDiscussionDto: AddDiscussionDto
+    ) {
+    return this.discussionService.addDiscussion(addDiscussionDto);
   }
 
   @Get()
-  findAll() {
-    return this.discussionService.findAll();
+  listDiscussion(
+    @Query() listDiscussionDto: ListDiscussionDto
+  ) {
+    if (!this.discussionService.listDiscussion(listDiscussionDto)) {
+      throw new HttpException("Discussion not found", HttpStatus.NOT_FOUND)
+    }
+    return this.discussionService.listDiscussion(listDiscussionDto);
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.discussionService.findOne(+id);
+  @Get(':ref')
+  showDiscussionDetail(
+    @Param('ref') ref: string
+    ) {
+    if (!this.discussionService.showDiscussionDetail(ref)) {
+      throw new HttpException("Discussion not found", HttpStatus.NOT_FOUND)
+    }
+    return this.discussionService.showDiscussionDetail(ref);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateDiscussionDto: UpdateDiscussionDto) {
-    return this.discussionService.update(+id, updateDiscussionDto);
+  @Patch(':ref')
+  updateDiscussion(
+    @Param('ref') ref: string, 
+    @Body() updateDiscussionDto: UpdateDiscussionDto
+  ) {
+    return this.discussionService.updateDiscussion(ref, updateDiscussionDto);
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.discussionService.remove(+id);
+  @Delete(':ref')
+  deleteDiscussion(
+    @Param('ref') ref: string
+    ) {
+    return this.discussionService.deleteDiscussion(ref);
   }
 }

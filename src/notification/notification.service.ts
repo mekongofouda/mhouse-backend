@@ -1,26 +1,36 @@
 import { Injectable } from '@nestjs/common';
-import { CreateNotificationDto } from './dto/create-notification.dto';
-import { UpdateNotificationDto } from './dto/update-notification.dto';
+import { SendNotificationDto } from './dto/send-notification.dto';
+import { MarkReadedDto } from './dto/markReaded-notification.dto';
+import { ListNotificationDto } from './dto/list-notification.dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { Notification } from './entities/notification.entity';
 
 @Injectable()
 export class NotificationService {
-  create(createNotificationDto: CreateNotificationDto) {
+
+  constructor(
+    @InjectRepository(Notification) 
+    private readonly notificationRepository: Repository<Notification>
+  ){}
+
+  sendNotification(sendNotificationDto: SendNotificationDto) {
     return 'This action adds a new notification';
   }
 
-  findAll() {
-    return `This action returns all notification`;
+  async listNotification(listNotificationDto: ListNotificationDto): Promise<Notification[]>{
+    return await this.notificationRepository.find();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} notification`;
+  showNotificationDetail(refNotification: string) {
+    return `This action returns a #${refNotification} notification`;
   }
 
-  update(id: number, updateNotificationDto: UpdateNotificationDto) {
-    return `This action updates a #${id} notification`;
+  markReaded(refNotification: string, markReadedDto: MarkReadedDto) {
+    return `This action updates a #${refNotification} notification`;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} notification`;
+  deleteNotification(refNotification: string) {
+    return `This action removes a #${refNotification} notification`;
   }
 }

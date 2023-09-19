@@ -1,34 +1,42 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, HttpException, HttpStatus, Query } from '@nestjs/common';
 import { LikeService } from './like.service';
-import { CreateLikeDto } from './dto/create-like.dto';
-import { UpdateLikeDto } from './dto/update-like.dto';
+import { ToogleLikeDto } from './dto/toogle-like.dto';
+import { ListLikeDto } from './dto/list-like.dto';
+import { ReferencePipe } from 'src/pipes/reference/reference.pipe';
+import { DatePipe } from 'src/pipes/date/date.pipe';
 
 @Controller('like')
 export class LikeController {
-  constructor(private readonly likeService: LikeService) {}
+
+  constructor(
+    private readonly likeService: LikeService,
+  ) {}
 
   @Post()
-  create(@Body() createLikeDto: CreateLikeDto) {
-    return this.likeService.create(createLikeDto);
+  toogleLike(
+    @Body(ReferencePipe, DatePipe) toogleLikeDto: ToogleLikeDto
+    ) {
+    return this.likeService.toogleLike(toogleLikeDto);
   }
 
   @Get()
-  findAll() {
-    return this.likeService.findAll();
+  listLike(
+    @Query() listLikeDto: ListLikeDto
+  ) {
+    if (!this.likeService.listLike(listLikeDto)) {
+      throw new HttpException("Like not found", HttpStatus.NOT_FOUND)
+    }
+    return this.likeService.listLike(listLikeDto);
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.likeService.findOne(+id);
+  @Get(':ref')
+  showLikeDetail(
+    @Param('ref') ref: string
+    ) {
+    if (!this.likeService.showLikeDetail(ref)) {
+      throw new HttpException("Like not found", HttpStatus.NOT_FOUND)
+    }
+    return this.likeService.showLikeDetail(ref);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateLikeDto: UpdateLikeDto) {
-    return this.likeService.update(+id, updateLikeDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.likeService.remove(+id);
-  }
 }

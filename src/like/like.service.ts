@@ -1,26 +1,27 @@
 import { Injectable } from '@nestjs/common';
-import { CreateLikeDto } from './dto/create-like.dto';
-import { UpdateLikeDto } from './dto/update-like.dto';
+import { ToogleLikeDto } from './dto/toogle-like.dto';
+import { Like } from './entities/like.entity';
+import { ListLikeDto } from './dto/list-like.dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class LikeService {
-  create(createLikeDto: CreateLikeDto) {
+
+  constructor(
+    @InjectRepository(Like) 
+    private readonly likeRepository: Repository<Like>
+  ){}
+
+  toogleLike(toogleLikeDto: ToogleLikeDto) {
     return 'This action adds a new like';
   }
 
-  findAll() {
-    return `This action returns all like`;
+  async listLike(listLikeDto: ListLikeDto): Promise<Like[]> {
+    return await this.likeRepository.find();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} like`;
-  }
-
-  update(id: number, updateLikeDto: UpdateLikeDto) {
-    return `This action updates a #${id} like`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} like`;
+  showLikeDetail(refLike: string) {
+    return `This action returns a #${refLike} like`;
   }
 }

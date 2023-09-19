@@ -1,7 +1,8 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestjs/common';
 import { AccountService } from './account.service';
 import { InviteUserDto } from './dto/invite-user.dto';
 import { UpdateUserAccountDto } from './dto/update-user-account.dto';
+import { ListUserAccountDto } from './dto/list-user-account.dto';
 
 @Controller('account')
 export class AccountController {
@@ -13,8 +14,10 @@ export class AccountController {
   }
 
   @Get()
-  listUserAccount() {
-    return this.accountService.listUserAccount();
+  listUserAccount(
+    @Query() listUserAccountDto: ListUserAccountDto
+  ) {
+    return this.accountService.listUserAccount(listUserAccountDto);
   }
 
   @Get(':reference')

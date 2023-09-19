@@ -1,26 +1,19 @@
 import { Injectable } from '@nestjs/common';
-import { CreateResearchDto } from './dto/create-research.dto';
-import { UpdateResearchDto } from './dto/update-research.dto';
+import { SearchDto } from './dto/search.dto';
 
 @Injectable()
 export class ResearchService {
-  create(createResearchDto: CreateResearchDto) {
+
+  search(searchDto: SearchDto) {
     return 'This action adds a new research';
   }
 
-  findAll() {
+  showResearchResult() {
     return `This action returns all research`;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} research`;
+  showResearchDetail() {
+    return `This action returns a research`;
   }
 
-  update(id: number, updateResearchDto: UpdateResearchDto) {
-    return `This action updates a #${id} research`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} research`;
-  }
 }

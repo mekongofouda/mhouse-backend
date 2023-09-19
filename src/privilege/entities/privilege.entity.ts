@@ -4,7 +4,7 @@ import { Entity, PrimaryColumn, Column } from 'typeorm';
 export class Privilege {
 
     @PrimaryColumn()
-    reference: string;
+    refPrivilege: string;
 
     @Column()
     name: string;
@@ -16,9 +16,9 @@ export class Privilege {
     resource: string;
 
     @Column()
-    createdAt: string;
+    createdAt: Date;
 
     @Column()
-    updatedAt: string;
+    updatedAt: Date;
 
 }

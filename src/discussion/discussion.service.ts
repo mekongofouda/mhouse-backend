@@ -1,26 +1,36 @@
 import { Injectable } from '@nestjs/common';
-import { CreateDiscussionDto } from './dto/create-discussion.dto';
+import { AddDiscussionDto } from './dto/add-discussion.dto';
 import { UpdateDiscussionDto } from './dto/update-discussion.dto';
+import { ListDiscussionDto } from './dto/list-discussion.dto';
+import { Discussion } from './entities/discussion.entity';
+import { Repository } from 'typeorm';
+import { InjectRepository } from '@nestjs/typeorm';
 
 @Injectable()
 export class DiscussionService {
-  create(createDiscussionDto: CreateDiscussionDto) {
+
+  constructor(
+    @InjectRepository(Discussion) 
+    private readonly discussionRepository: Repository<Discussion>
+  ){}
+
+  addDiscussion(addDiscussionDto: AddDiscussionDto) {
     return 'This action adds a new discussion';
   }
 
-  findAll() {
-    return `This action returns all discussion`;
+  async listDiscussion(listDiscussionDto: ListDiscussionDto): Promise<Discussion[]>  {
+    return await this.discussionRepository.find();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} discussion`;
+  showDiscussionDetail(refDiscussion: string) {
+    return `This action returns a #${refDiscussion} discussion`;
   }
 
-  update(id: number, updateDiscussionDto: UpdateDiscussionDto) {
-    return `This action updates a #${id} discussion`;
+  updateDiscussion(refDiscussion: string, updateDiscussionDto: UpdateDiscussionDto) {
+    return `This action updates a #${refDiscussion} discussion`;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} discussion`;
+  deleteDiscussion(refDiscussion: string) {
+    return `This action removes a #${refDiscussion} discussion`;
   }
 }

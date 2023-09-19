@@ -1,34 +1,41 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query, HttpStatus, HttpException } from '@nestjs/common';
 import { ShareService } from './share.service';
-import { CreateShareDto } from './dto/create-share.dto';
-import { UpdateShareDto } from './dto/update-share.dto';
+import { ShareDto } from './dto/share.dto';
+import { ListShareDto } from './dto/list-share.dto';
+import { ReferencePipe } from 'src/pipes/reference/reference.pipe';
+import { DatePipe } from 'src/pipes/date/date.pipe';
 
 @Controller('share')
 export class ShareController {
-  constructor(private readonly shareService: ShareService) {}
+
+  constructor(
+    private readonly shareService: ShareService,
+  ) {}
 
   @Post()
-  create(@Body() createShareDto: CreateShareDto) {
-    return this.shareService.create(createShareDto);
+  share(
+    @Body(ReferencePipe, DatePipe) shareDto: ShareDto
+    ) {
+    return this.shareService.share(shareDto);
   }
 
   @Get()
-  findAll() {
-    return this.shareService.findAll();
+  listShare(
+    @Query() listShareDto: ListShareDto
+  ) {
+    if (!this.shareService.listShare(listShareDto)) {
+      throw new HttpException("Share not found", HttpStatus.NOT_FOUND)
+    }
+    return this.shareService.listShare(listShareDto);
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.shareService.findOne(+id);
-  }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateShareDto: UpdateShareDto) {
-    return this.shareService.update(+id, updateShareDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.shareService.remove(+id);
+  @Get(':ref')
+  showShareDetail(
+    @Param('ref') ref: string
+    ) {
+    if (!this.shareService.showShareDetail(ref)) {
+      throw new HttpException("Share not found", HttpStatus.NOT_FOUND)
+    }
+    return this.shareService.showShareDetail(ref);
   }
 }
