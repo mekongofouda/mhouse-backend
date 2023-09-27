@@ -1,23 +1,49 @@
-import { Column, Entity, PrimaryColumn } from "typeorm";
+import { Account } from "src/account/entities/account.entity";
+import { TimestampEntity } from "src/generics/timestamp.entity";
+import { Privilege } from "src/privilege/entities/privilege.entity";
+import { Column, Entity, ManyToMany, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity()
-export class Role {
+export class Role extends TimestampEntity {
 
-    @PrimaryColumn()
-    reference: string;
+    @PrimaryGeneratedColumn()
+    id: number;
 
-    @Column()
-    name: string;
+    @Column({
+        unique: true,
+        length: 20
+    })
+    refRole: string;
+
+    @Column({
+        length: 32
+    })
+    title: string;
     
-    @Column()
-    surname : string;
+    @Column({
+        length: 32
+    })
+    slug : string;
 
-    @Column()
+    @Column({
+        length: 128,
+        nullable: true
+    })
     description: string;
 
-    @Column()
-    createdAt: Date;
+    @ManyToMany(
+        type => Account,
+        (account) => account.roles
+    )
+    accounts: Account[];
 
-    @Column()
-    updatedAt: Date;
+    @OneToMany(
+        type => Privilege,
+        (privilege) => privilege.role
+    )
+    privileges: Privilege[];
 }
+function ManyToOne(arg0: (type: any) => typeof Role, arg1: (role: any) => any): (target: Role, propertyKey: "role") => void {
+    throw new Error("Function not implemented.");
+}
+

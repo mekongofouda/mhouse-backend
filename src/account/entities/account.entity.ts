@@ -1,51 +1,98 @@
-import { Column, Entity, PrimaryColumn } from "typeorm";
+import { UserRoleEnum } from "src/enums/user-role.enum";
+import { TimestampEntity } from "src/generics/timestamp.entity";
+import { Role } from "src/role/entities/role.entity";
+import { Column, Entity, ManyToMany, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity()
-export class Account {
+export class Account extends TimestampEntity {
     
-    @PrimaryColumn()
-    reference: string;
+    @PrimaryGeneratedColumn()
+    id: number;
 
-    @Column()
+    @Column({
+        length: 20,
+        nullable: true
+    })
+    refAccount: string;
+
+    @Column({
+        length: 32
+    })
     name: string;
     
-    @Column()
+    @Column({
+        length: 32,
+        nullable: true
+    })
     surname : string;
     
-    @Column()
+    @Column({
+        nullable: true
+    })
     dayBirth : Date;
     
-    @Column()
+    @Column({
+        length: 32,
+        nullable: true
+    })
     placeBirth : string;
     
-    @Column()
-    icn : number;
+    @Column({
+        unique: true,
+        length:16,
+        nullable: true
+    })
+    icn : string;
     
-    @Column()
+    @Column({
+        unique: true
+    })
     email : string;
     
-    @Column()
+    @Column({
+        unique: true,
+    })
     phone : number;
     
-    @Column()
+    @Column({
+        nullable: true
+    })
     avatar : string;
     
+    @Column({
+        nullable: true
+    })
+    category : string;
+
+    @Column({
+        length: 20,
+        nullable: true
+    })
+    followers : string;
+
+    @Column({
+        nullable: true
+    })
+    dateStartPromo : Date;
+
     @Column()
     password : string;
     
-    @Column()
+    @Column({
+        nullable: true
+    }) 
     salt : string;
     
-    @Column()
+    @Column({
+        nullable: true
+    })
     token: string;
-    
-    @Column()
-    role : string;
-    
-    @Column()
-    createdAt : Date;
-    
-    @Column()
-    updatedAt : Date;
 
+    @ManyToMany(
+        type => Role,
+        (role) => role.accounts
+    )
+    roles : Role[]; 
+
+    
 }

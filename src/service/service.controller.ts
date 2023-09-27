@@ -1,10 +1,11 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Query, HttpException, HttpStatus } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query, UseGuards } from '@nestjs/common';
 import { ServiceService } from './service.service';
 import { AddServiceDto } from './dto/add-service.dto';
 import { UpdateServiceDto } from './dto/update-service.dto';
 import { ReferencePipe } from 'src/pipes/reference/reference.pipe';
 import { ListServiceDto } from './dto/list-service.dto';
-import { DatePipe } from 'src/pipes/date/date.pipe';
+import { Service } from './entities/service.entity';
+import { JwtAuthGuard } from 'src/auth/auth.guard';
 
 @Controller('service')
 export class ServiceController {
@@ -14,44 +15,39 @@ export class ServiceController {
   ) {}
 
   @Post()
-  addService(
-    @Body(ReferencePipe, DatePipe) addServiceDto: AddServiceDto
-    ) {
-    return this.serviceService.addService(addServiceDto);
+  @UseGuards(JwtAuthGuard)
+  async addService(
+    @Body(ReferencePipe) addServiceDto: AddServiceDto
+    ): Promise<Service> {
+    return await this.serviceService.addService(addServiceDto);
   }
 
   @Get()
-  listService(
+  async listService(
     @Query() listServiceDto: ListServiceDto
-  ) {
-    if (!this.serviceService.listService(listServiceDto)) {
-      throw new HttpException("Service not found", HttpStatus.NOT_FOUND)
-    }
-    return this.serviceService.listService(listServiceDto);
+  ): Promise<Service[]> {
+    return await this.serviceService.listService(listServiceDto);
   }
 
   @Get(':ref')
-  showServiceDetail(
+  async showServiceDetail(
     @Param('ref') ref: string
-    ) {
-    if (!this.serviceService.showServiceDetail(ref)) {
-      throw new HttpException("Service not found", HttpStatus.NOT_FOUND)
-    }
-    return this.serviceService.showServiceDetail(ref);
+    ): Promise<Service> {
+    return await this.serviceService.showServiceDetail(ref);
   }
 
   @Patch(':ref')
-  updateService(
+  async updateService(
     @Param('ref') ref: string, 
     @Body() updateServiceDto: UpdateServiceDto
-  ) {
-    return this.serviceService.updateService(ref, updateServiceDto);
+  ): Promise<Service> {
+    return await this.serviceService.updateService(ref, updateServiceDto);
   }
 
   @Delete(':ref')
-  deleteService(
+  async deleteService(
     @Param('ref') ref: string
-    ) {
-    return this.serviceService.deleteService(ref);
+    ): Promise<Service> {
+    return await this.serviceService.deleteService(ref);
   }
 }

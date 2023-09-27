@@ -1,8 +1,7 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { PostDto } from './dto/post.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
-import { ToogleActivatePostDto } from './dto/toogle-activate-post.dto';
-import { Post } from './entities/post.entity';
+import { PostEntity } from './entities/post.entity';
 import { ListPostDto } from './dto/list-post.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -11,31 +10,73 @@ import { Repository } from 'typeorm';
 export class PostService {
 
   constructor(
-    @InjectRepository(Post) 
-    private readonly postRepository: Repository<Post>
+    @InjectRepository(PostEntity) 
+    private readonly postRepository: Repository<PostEntity>
   ){}
 
-  post(postDto: PostDto) {
-    return 'This action adds a new post';
+  async post(postDto: PostDto): Promise<PostEntity> {
+    return await this.postRepository.save(postDto);
   }
 
-  toogleActivatePost(refPost: string, toogleActivatePostDto: ToogleActivatePostDto) {
-    return `This action updates a #${refPost} post`;
+  async listPost(listPostDto: ListPostDto): Promise<PostEntity[]>{
+    const refUser = listPostDto.refUser;
+    const refService = listPostDto.refService;
+    const createdAt = listPostDto.createdAt;
+    const updatedAt = listPostDto.updatedAt;
+
+    const qb = this.postRepository.createQueryBuilder("post");
+
+    qb.select("post")
+    if (refUser) {
+      qb.where("post.refUser = :refUser")
+      .setParameters({
+        refUser
+      })
+    }
+    if (refService) {
+      qb.andWhere("post.refRole = :refRole")
+      .setParameters({
+        refService
+      })
+    }
+    if (createdAt) {
+      qb.where("post.createdAt = :createdAt")
+      .setParameters({
+        createdAt
+      })
+    }
+    if (updatedAt) {
+      qb.where("post.updatedAt = :updatedAt")
+      .setParameters({
+        updatedAt
+      })
+    }
+    return await qb.getRawMany();
   }
 
-  async listPost(listPostDto: ListPostDto): Promise<Post[]>{
-    return await this.postRepository.find();
+  async showPostDetail(refPost: string) {
+    const post = await this.postRepository.findOne({where:{refPost}});
+    console.log(post);
+    if (post == null) {
+      throw new HttpException("Post not found", HttpStatus.NOT_FOUND)
+    }    
+    return post;
   }
 
-  showPostDetail(refPost: string) {
-    return `This action returns a #${refPost} post`;
+  async updatePost(refPost: string, updatePostDto: UpdatePostDto) {
+    const post = await this.postRepository.findOne({where:{refPost}});
+    if (post == null) {
+      throw new HttpException("Post not found", HttpStatus.NOT_FOUND)
+    }    
+    Object.assign(post, updatePostDto);
+    return await this.postRepository.save(post);
   }
 
-  updatePost(refPost: string, updatePostDto: UpdatePostDto) {
-    return `This action updates a #${refPost} post`;
-  }
-
-  deletePost(refPost: string) {
-    return `This action removes a #${refPost} post`;
+  async deletePost(refPost: string) {
+    const post = await this.postRepository.findOneBy({refPost});
+    if (post == null) {
+      throw new HttpException("Post not found", HttpStatus.NOT_FOUND)
+    }    
+    return await this.postRepository.softRemove(post);
   }
 }

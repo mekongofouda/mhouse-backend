@@ -1,15 +1,19 @@
-import { Column, Entity, PrimaryColumn } from "typeorm";
+import { TimestampEntity } from "src/generics/timestamp.entity";
+import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity()
-export class Like {
+export class Like extends TimestampEntity {
 
-    @PrimaryColumn()
-    reference: string;
+    @PrimaryGeneratedColumn()
+    id: number;
 
+    @Column({
+        unique: true,
+        length: 16
+    })
+    refLike: string;
+    
     @Column()
-    createdAt: Date;
-
-    @Column()
-    updatedAt: Date;
+    isLiked: boolean;
 
 }

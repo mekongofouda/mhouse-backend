@@ -1,12 +1,11 @@
-import { IsAlpha, IsEmpty, IsNotEmpty, IsOptional, IsString, Length, MaxLength } from "class-validator";
+import { IsAlpha, IsNotEmpty, IsOptional, IsString, MaxLength } from "class-validator";
 
 export class AddPrivilegeDto {
 
-    @IsEmpty()
-    refPrivilege: string;
-
-    @IsEmpty()
-    name: string;
+    @IsString()
+    @IsOptional()
+    @MaxLength(32, { message: "La taille maximale du titre est de 32 caractères"})
+    title: string;
     
     @IsString()
     @IsOptional()

@@ -1,35 +1,46 @@
-import { Column, Entity, PrimaryColumn } from "typeorm";
+import { TimestampEntity } from "src/generics/timestamp.entity";
+import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity()
-export class Offer {
+export class Offer extends TimestampEntity {
 
-    @PrimaryColumn()
-    reference: string;
+    @PrimaryGeneratedColumn()
+    id: number;
 
-    @Column()
-    paymentDate: string
+    @Column({
+        unique: true,
+        length: 16
+    })
+    refOffer: string;
 
-    @Column()
+    @Column({
+        nullable: true
+    })
     paymentRate: string
 
-    @Column()
+    @Column({
+        nullable: true
+    })
     nbrPaymentMin: number;
 
-    @Column()
+    @Column({
+        nullable: true
+    })
     amount: number;
 
-    @Column()
+    @Column({
+        length: 128,
+        nullable: true
+    })
     other: string;
 
-    @Column()
-    isValidated: boolean;
+    @Column({
+        default: false
+    })
+    status: boolean;
 
-    @Column()
+    @Column({
+        default: true
+    })
     isSent: boolean;
-
-    @Column()
-    createdAt: Date;
-
-    @Column()
-    updatedAt: Date;
 }

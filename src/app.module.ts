@@ -16,6 +16,9 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { join } from 'path';
 import { AuthModule } from './auth/auth.module';
 import { AccountModule } from './account/account.module';
+import { SponsorModule } from './sponsor/sponsor.module';
+import { PasswordModule } from './password/password.module';
+import { FollowerModule } from './follower/follower.module';
 
 @Module({
   imports: [
@@ -39,7 +42,7 @@ import { AccountModule } from './account/account.module';
     OfferModule, 
     ServiceModule, 
     NotificationModule, 
-    ResearchModule, AuthModule, AccountModule],
+    ResearchModule, AuthModule, AccountModule, SponsorModule, PasswordModule, FollowerModule],
   controllers: [AppController],
   providers: [AppService],
 })

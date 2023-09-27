@@ -1,9 +1,10 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, HttpException, HttpStatus, Query } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Query, UseGuards } from '@nestjs/common';
 import { LikeService } from './like.service';
-import { ToogleLikeDto } from './dto/toogle-like.dto';
 import { ListLikeDto } from './dto/list-like.dto';
 import { ReferencePipe } from 'src/pipes/reference/reference.pipe';
-import { DatePipe } from 'src/pipes/date/date.pipe';
+import { Like } from './entities/like.entity';
+import { JwtAuthGuard } from 'src/auth/auth.guard';
+import { LikeDto } from './dto/like.dto';
 
 @Controller('like')
 export class LikeController {
@@ -13,30 +14,35 @@ export class LikeController {
   ) {}
 
   @Post()
-  toogleLike(
-    @Body(ReferencePipe, DatePipe) toogleLikeDto: ToogleLikeDto
-    ) {
-    return this.likeService.toogleLike(toogleLikeDto);
+  @UseGuards(JwtAuthGuard)
+  async like(
+    @Body(ReferencePipe) likeDto: LikeDto
+    ): Promise<Like> {
+    return await this.likeService.like(likeDto);
+  }
+
+  @Patch('ref')
+  @UseGuards(JwtAuthGuard)
+  async toogleLike(
+    @Param('ref') ref: string
+    ): Promise<Like> {
+    return await this.likeService.toogleLike(ref);
   }
 
   @Get()
-  listLike(
+  @UseGuards(JwtAuthGuard)
+  async listLike(
     @Query() listLikeDto: ListLikeDto
-  ) {
-    if (!this.likeService.listLike(listLikeDto)) {
-      throw new HttpException("Like not found", HttpStatus.NOT_FOUND)
-    }
-    return this.likeService.listLike(listLikeDto);
+  ): Promise<Like[]> {
+    return await this.likeService.listLike(listLikeDto);
   }
 
   @Get(':ref')
-  showLikeDetail(
+  @UseGuards(JwtAuthGuard)
+  async showLikeDetail(
     @Param('ref') ref: string
-    ) {
-    if (!this.likeService.showLikeDetail(ref)) {
-      throw new HttpException("Like not found", HttpStatus.NOT_FOUND)
-    }
-    return this.likeService.showLikeDetail(ref);
+    ): Promise<Like> {
+    return await this.likeService.showLikeDetail(ref);
   }
 
 }

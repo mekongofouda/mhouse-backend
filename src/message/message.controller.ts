@@ -1,9 +1,10 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, HttpStatus, HttpException, Query } from '@nestjs/common';
+import { Controller, Get, Post, Body,Param, Delete, Query, UseGuards } from '@nestjs/common';
 import { MessageService } from './message.service';
 import { SendMessageDto } from './dto/send-message.dto';
 import { ListMessageDto } from './dto/list-message.dto';
 import { ReferencePipe } from 'src/pipes/reference/reference.pipe';
-import { DatePipe } from 'src/pipes/date/date.pipe';
+import { JwtAuthGuard } from 'src/auth/auth.guard';
+import { Message } from './entities/message.entity';
 
 @Controller('message')
 export class MessageController {
@@ -13,36 +14,34 @@ export class MessageController {
   ) {}
 
   @Post()
-  sendMessage(
-    @Body(ReferencePipe, DatePipe) sendMessageDto: SendMessageDto
-    ) {
-    return this.messageService.sendMessage(sendMessageDto);
+  @UseGuards(JwtAuthGuard)
+  async sendMessage(
+    @Body(ReferencePipe) sendMessageDto: SendMessageDto
+    ): Promise<Message> {
+    return await this.messageService.sendMessage(sendMessageDto);
   }
 
   @Get()
-  listMessage(
+  @UseGuards(JwtAuthGuard)
+  async listMessage(
     @Query() listMessageDto: ListMessageDto
-  ) {
-    if (!this.messageService.listMessage(listMessageDto)) {
-      throw new HttpException("Message not found", HttpStatus.NOT_FOUND)
-    }
-    return this.messageService.listMessage(listMessageDto);
+  ): Promise<Message[]> {
+    return await this.messageService.listMessage(listMessageDto);
   }
 
   @Get(':ref')
-  showMessageDetail(
+  @UseGuards(JwtAuthGuard)
+  async showMessageDetail(
     @Param('ref') ref: string
-    ) {
-    if (!this.messageService.showMessageDetail(ref)) {
-      throw new HttpException("Message not found", HttpStatus.NOT_FOUND)
-    }
-    return this.messageService.showMessageDetail(ref);
+    ): Promise<Message> {
+    return await this.messageService.showMessageDetail(ref);
   }
 
   @Delete(':ref')
-  deleteMessage(
+  @UseGuards(JwtAuthGuard)
+  async deleteMessage(
     @Param('ref') ref: string
-    ) {
-    return this.messageService.deleteMessage(ref);
+    ): Promise<Message> {
+    return await this.messageService.deleteMessage(ref);
   }
 }

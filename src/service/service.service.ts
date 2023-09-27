@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { AddServiceDto } from './dto/add-service.dto';
 import { UpdateServiceDto } from './dto/update-service.dto';
 import { Service } from './entities/service.entity';
@@ -14,23 +14,62 @@ export class ServiceService {
     private readonly serviceRepository: Repository<Service>
   ){}
 
-  addService(addServiceDto: AddServiceDto) {
-    return 'This action adds a new service';
+  async addService(addServiceDto: AddServiceDto) {
+    return await this.serviceRepository.save(addServiceDto);
   }
 
   async listService(listServiceto: ListServiceDto): Promise<Service[]> {
-    return await this.serviceRepository.find();
+    const refUser = listServiceto.refUser;
+    const createdAt = listServiceto.createdAt;
+    const updatedAt = listServiceto.updatedAt;
+
+    const qb = this.serviceRepository.createQueryBuilder("service");
+
+    qb.select("service")
+    if (refUser) {
+      qb.where("service.refUser = :refUser")
+      .setParameters({
+        refUser
+      })
+    }
+    if (createdAt) {
+      qb.where("service.createdAt = :createdAt")
+      .setParameters({
+        createdAt
+      })
+    }
+    if (updatedAt) {
+      qb.where("service.updatedAt = :updatedAt")
+      .setParameters({
+        updatedAt
+      })
+    }
+    return await qb.getRawMany();
   }
 
-  showServiceDetail(refService: string) {
-    return `This action returns a #${refService} service`;
+  async showServiceDetail(refService: string) {
+    const service = await this.serviceRepository.findOne({where:{refService}});
+    console.log(service);
+    if (service == null) {
+      throw new HttpException("Service not found", HttpStatus.NOT_FOUND)
+    }    
+    return service;
   }
 
-  updateService(refService: string, updateServiceDto: UpdateServiceDto) {
-    return `This action updates a #${refService} service`;
+  async updateService(refService: string, updateServiceDto: UpdateServiceDto) {
+    const service = await this.serviceRepository.findOne({where:{refService}});
+    if (service == null) {
+      throw new HttpException("Service not found", HttpStatus.NOT_FOUND)
+    }    
+    Object.assign(service, updateServiceDto);
+    return await this.serviceRepository.save(service);
   }
 
-  deleteService(refService: string) {
-    return `This action removes a #${refService} service`;
+  async deleteService(refService: string) {
+    const service = await this.serviceRepository.findOneBy({refService});
+    if (service == null) {
+      throw new HttpException("Service not found", HttpStatus.NOT_FOUND)
+    }    
+    return await this.serviceRepository.softRemove(service);
   }
 }

@@ -1,11 +1,11 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, HttpException, HttpStatus, Query } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, HttpException, HttpStatus, Query, UseGuards } from '@nestjs/common';
 import { PostService } from './post.service';
 import { PostDto } from './dto/post.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
 import { ReferencePipe } from 'src/pipes/reference/reference.pipe';
 import { ListPostDto } from './dto/list-post.dto';
-import { ToogleActivatePostDto } from './dto/toogle-activate-post.dto';
-import { DatePipe } from 'src/pipes/date/date.pipe';
+import { PostEntity } from './entities/post.entity';
+import { JwtAuthGuard } from 'src/auth/auth.guard';
 
 @Controller('post')
 export class PostController {
@@ -15,52 +15,43 @@ export class PostController {
   ) {}
 
   @Post()
-  post(
-    @Body(ReferencePipe, DatePipe) postDto: PostDto
-    ) {
-    return this.postService.post(postDto);
-  }
-
-  @Patch(':ref')
-  toogleActivatePost(
-    @Param('ref') ref: string, 
-    @Body() toogleActivatePostDto: ToogleActivatePostDto
-  ) {
-    return this.postService.toogleActivatePost(ref, toogleActivatePostDto);
+  @UseGuards(JwtAuthGuard)
+  async post(
+    @Body(ReferencePipe) postDto: PostDto
+    ): Promise<PostEntity> {
+    return await this.postService.post(postDto);
   }
 
   @Get()
-  listPost(
+  @UseGuards(JwtAuthGuard)
+  async listPost(
     @Query() listPostDto: ListPostDto
-  ) {
-    if (!this.postService.listPost(listPostDto)) {
-      throw new HttpException("Post not found", HttpStatus.NOT_FOUND)
-    }
-    return this.postService.listPost(listPostDto);
+  ): Promise<PostEntity[]> {
+    return await this.postService.listPost(listPostDto);
   }
 
   @Get(':ref')
-  showPostDetail(
+  @UseGuards(JwtAuthGuard)
+  async showPostDetail(
     @Param('ref') ref: string
-    ) {
-    if (!this.postService.showPostDetail(ref)) {
-      throw new HttpException("Post not found", HttpStatus.NOT_FOUND)
-    }
-    return this.postService.showPostDetail(ref);
+    ): Promise<PostEntity> {
+    return await this.postService.showPostDetail(ref);
   }
 
   @Patch(':ref')
-  updatePost(
+  @UseGuards(JwtAuthGuard)
+  async updatePost(
     @Param('ref') ref: string, 
     @Body() updatePostDto: UpdatePostDto
-  ) {
+    ): Promise<PostEntity> {
     return this.postService.updatePost(ref, updatePostDto);
   }
 
   @Delete(':ref')
-  deletePost(
+  @UseGuards(JwtAuthGuard)
+  async deletePost(
     @Param('ref') ref: string
-    ) {
-    return this.postService.deletePost(ref);
+    ): Promise<PostEntity> {
+    return await this.postService.deletePost(ref);
   }
 }

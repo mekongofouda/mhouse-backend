@@ -1,11 +1,11 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Query, HttpException, HttpStatus, UseInterceptors } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query, HttpException, HttpStatus, UseGuards } from '@nestjs/common';
 import { PrivilegeService } from './privilege.service';
 import { AddPrivilegeDto } from './dto/add-privilege.dto';
 import { UpdatePrivilegeDto } from './dto/update-privilege.dto';
 import { ListPrivilegeDto } from './dto/list-privilege.dto';
 import { ReferencePipe } from 'src/pipes/reference/reference.pipe';
-import { NamePipe } from 'src/pipes/name/name.pipe';
-import { DatePipe } from 'src/pipes/date/date.pipe';
+import { Privilege } from './entities/privilege.entity';
+import { JwtAuthGuard } from 'src/auth/auth.guard';
 
 @Controller('privilege')
 export class PrivilegeController {
@@ -14,45 +14,41 @@ export class PrivilegeController {
     private readonly privilegeService: PrivilegeService,
   ) {}
 
-  @Post()
-  addPrivilege(
-    @Body(ReferencePipe, NamePipe, DatePipe) addPrivilegeDto: AddPrivilegeDto
-    ) {
-    return this.privilegeService.addPrivilege(addPrivilegeDto);
+  @Post() 
+  @UseGuards(JwtAuthGuard)
+  async addPrivilege(
+    @Body(ReferencePipe) addPrivilegeDto: AddPrivilegeDto
+    ): Promise<Privilege> {
+    return await this.privilegeService.addPrivilege(addPrivilegeDto);
   }
 
   @Get()
-  listPrivilege(
+  @UseGuards(JwtAuthGuard)
+  async listPrivilege(
     @Query() listPrivilegeDto: ListPrivilegeDto
-  ) {
-    if (!this.privilegeService.listPrivilege(listPrivilegeDto)) {
-      throw new HttpException("Privilege not found", HttpStatus.NOT_FOUND)
-    }
-    return this.privilegeService.listPrivilege(listPrivilegeDto);
+  ): Promise<Privilege[]> {
+    return await this.privilegeService.listPrivilege(listPrivilegeDto);
   }
 
   @Get(':ref')
-  showPrivilegeDetail(
+  async showPrivilegeDetail(
     @Param('ref') ref: string
-    ) {
-    if (!this.privilegeService.showPrivilegeDetail(ref)) {
-      throw new HttpException("Privilege not found", HttpStatus.NOT_FOUND)
-    }
-    return this.privilegeService.showPrivilegeDetail(ref);
+    ): Promise<Privilege> {
+    return await this.privilegeService.showPrivilegeDetail(ref);
   }
 
   @Patch(':ref')
-  updatePrivilege(
+  async updatePrivilege(
     @Param('ref') ref: string, 
     @Body() updatePrivilegeDto: UpdatePrivilegeDto
-  ) {
-    return this.privilegeService.updatePrivilege(ref, updatePrivilegeDto);
+  ): Promise<Privilege> {
+    return await this.privilegeService.updatePrivilege(ref, updatePrivilegeDto);
   }
 
   @Delete(':ref')
-  deletePrivilege(
+  async deletePrivilege(
     @Param('ref') ref: string
-    ) {
-    return this.privilegeService.deletePrivilege(ref);
+    ): Promise<Privilege> {
+    return await this.privilegeService.deletePrivilege(ref);
   }
 }

@@ -1,29 +1,35 @@
-import { Column, Entity, PrimaryColumn } from "typeorm";
+import { NotificationTypeEnum } from "src/enums/notification-type.enum";
+import { TimestampEntity } from "src/generics/timestamp.entity";
+import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity()
-export class Notification {
+export class Notification extends TimestampEntity {
 
-    @PrimaryColumn()
-    reference: string;
+    @PrimaryGeneratedColumn()
+    id: number;
 
-    @Column()
-    name: string;
-    
-    @Column()
-    surname : string;
+    @Column({
+        unique: true,
+        length: 16
+    })
+    refNotification: string;
 
-    @Column()
+    @Column({
+        length: 32
+    })
     title: string;
 
-    @Column()
+    @Column({
+        length: 128,
+        nullable: true
+    })
     description: string;
 
-    @Column()
+    @Column({
+        type: 'enum',
+        enum: NotificationTypeEnum,
+        default: NotificationTypeEnum.POST
+    })
     type: string;
-
-    @Column()
-    ceatedAt: Date;
-
-    @Column()
-    updatedAt: Date;
+    
 }

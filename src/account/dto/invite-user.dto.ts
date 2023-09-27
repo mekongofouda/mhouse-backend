@@ -1,4 +1,9 @@
+import { IsEmail, IsNotEmpty, IsOptional, IsString, MaxLength } from "class-validator";
+
 export class InviteUserDto {
-    email: string;
-    phone: number;
+
+    @IsEmail()
+    @IsNotEmpty()
+    emailAdress: string;
+    
 }

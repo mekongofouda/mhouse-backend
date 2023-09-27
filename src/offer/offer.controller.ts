@@ -1,11 +1,11 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, HttpStatus, HttpException, Query } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query, UseGuards } from '@nestjs/common';
 import { OfferService } from './offer.service';
 import { OfferDto } from './dto/offer.dto';
 import { UpdateOfferDto } from './dto/update-offer.dto';
 import { ReferencePipe } from 'src/pipes/reference/reference.pipe';
 import { ListOfferDto } from './dto/list-offer.dto';
-import { ToogleValidateOfferDto } from './dto/toogle-validate-offer.dto';
-import { DatePipe } from 'src/pipes/date/date.pipe';
+import { Offer } from './entities/offer.entity';
+import { JwtAuthGuard } from 'src/auth/auth.guard';
 
 @Controller('offer')
 export class OfferController {
@@ -15,52 +15,50 @@ export class OfferController {
   ) {}
 
   @Post()
-  offer(
-    @Body(ReferencePipe, DatePipe) offerDto: OfferDto
-    ) {
-    return this.offerService.offer(offerDto);
+  async offer(
+    @Body(ReferencePipe) offerDto: OfferDto
+    ): Promise<Offer> {
+    return await this.offerService.offer(offerDto);
   }
 
   @Patch(':ref')
+  @UseGuards(JwtAuthGuard)
   toogleValidateOffer(
-    @Param('ref') ref: string, 
-    @Body() toogleValidateOfferDto: ToogleValidateOfferDto
-  ) {
-    return this.offerService.toogleValidateOffer(ref, toogleValidateOfferDto);
+    @Param('ref') ref: string
+  ): Promise<Offer> {
+    return this.offerService.toogleValidateOffer(ref);
   }
 
   @Get()
-  listOffer(
+  @UseGuards(JwtAuthGuard)
+  async listOffer(
     @Query() listOfferDto: ListOfferDto
-  ) {
-    if (!this.offerService.listOffer(listOfferDto)) {
-      throw new HttpException("Offer not found", HttpStatus.NOT_FOUND)
-    }
-    return this.offerService.listOffer(listOfferDto);
+  ): Promise<Offer[]> {
+    return await this.offerService.listOffer(listOfferDto);
   }
 
   @Get(':ref')
-  showOfferDetail(
+  @UseGuards(JwtAuthGuard)
+  async showOfferDetail(
     @Param('ref') ref: string
-    ) {
-    if (!this.offerService.showOfferDetail(ref)) {
-      throw new HttpException("Offer not found", HttpStatus.NOT_FOUND)
-    }
-    return this.offerService.showOfferDetail(ref);
+    ): Promise<Offer> {
+    return await this.offerService.showOfferDetail(ref);
   }
 
   @Patch(':ref')
-  updateOffer(
+  @UseGuards(JwtAuthGuard)
+  async updateOffer(
     @Param('ref') ref: string, 
     @Body() updateOfferDto: UpdateOfferDto
-  ) {
-    return this.offerService.updateOffer(ref, updateOfferDto);
+  ): Promise<Offer> {
+    return await this.offerService.updateOffer(ref, updateOfferDto);
   }
 
   @Delete(':ref')
-  deleteOffer(
+  @UseGuards(JwtAuthGuard)
+  async deleteOffer(
     @Param('ref') ref: string
-    ) {
-    return this.offerService.deleteOffer(ref);
+    ): Promise<Offer> {
+    return await this.offerService.deleteOffer(ref);
   }
 }

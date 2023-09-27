@@ -1,3 +1,9 @@
-import { PartialType } from '@nestjs/mapped-types';
+import { IsBoolean, IsOptional } from "class-validator";
 
-export class MarkReadedDto{}
+export class MarkReadedDto{
+
+    @IsBoolean()
+    @IsOptional()
+    isReaded: boolean;
+
+}

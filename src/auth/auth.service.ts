@@ -1,43 +1,83 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
-import { RegisterDto } from './dto/register-auth.dto';
-import { LoginDto } from './dto/login-auth.dto';
+import { ConflictException, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
+import { RegisterDto } from './dto/register.dto';
+import { LoginCredentialsDto } from './dto/login.credentials.dto';
 import { AccountService } from 'src/account/account.service';
 import { JwtService } from '@nestjs/jwt';
+import { Account } from 'src/account/entities/account.entity';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import * as bcrypt  from 'bcrypt';
 
 @Injectable()
 export class AuthService {
 
-    constructor(
-      private accountService: AccountService,
-      private jwtService: JwtService){}
+  constructor(
+    @InjectRepository(Account) 
+    private readonly accountRepository: Repository<Account>,
+    private readonly jwtService: JwtService
+    ){}
 
-    async login(loginDto: LoginDto) {
+  async login(credentials: LoginCredentialsDto) {
 
-    const account = await this.accountService.getUserDetail(loginDto.name);
+    const {email, password} = credentials;
 
-    if (account?.password !== loginDto.password) {
-      throw new UnauthorizedException();
+    const account = await this.accountRepository.createQueryBuilder('account')
+    .where("account.email = :email", {email})
+    .getOne();
+
+    if(!account){
+      throw new NotFoundException('Email ou password éroné! ')
     }
-    const payload = { sub: account.reference, username: account.name };    // TODO: Generate a JWT and return it here
-    // instead of the user object
-    return {
-      access_token: await this.jwtService.signAsync(payload),
-    };
+    const hashedPassword = await bcrypt.hash(password, account.salt);
+    if (hashedPassword == account.password) {
+      const payload = {
+        name: account.name,
+        email: account.email,
+        password: account.password
+      }
+
+      const jwt = await this.jwtService.sign(payload);
+      account.token = jwt;
+      
+      await this.accountRepository.save(account);
+
+      return {
+        'access_token': jwt,
+        'payloads': payload
+      }
+    } else {
+      throw new NotFoundException('Email ou password éroné! ')
+    }
+    return 
   }
 
-  logout() {
-    return `This action returns a auth`;
+  async logout() {
+    return await `This action returns a auth`;
   }
 
-  register(registerDto: RegisterDto) {  
-    return `This action updates a auth`;
+  async register(registerDto: RegisterDto): Promise<Account> {
+
+    //Get account to register  
+    const account = this.accountRepository.create({
+        ...registerDto
+    });
+
+    //Crypt datas
+    account.salt = await bcrypt.genSalt();
+    account.password = await bcrypt.hash(account.password, account.salt);
+    
+    //Persist account
+    try {
+      await this.accountRepository.save(account);
+    } catch (error) {
+      throw new ConflictException('L email et le numéro de téléphone doivent être uniques');
+    }
+    
+    return account;
   }
 
-  showLegalMention() {
-    return `This action removes a  auth`;
-  }
-
-  firstPage() {
-    return `This action removes a  auth`;
+  async firstPage() {
+    //Vérifier si le compte est loggé dans le navigateur ou pas avec des cookies ou ... Si oui retouner "true"
+    return await true ;
   }
 }

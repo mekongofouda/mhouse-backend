@@ -1,41 +1,57 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Request, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, UseGuards } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { RegisterDto } from './dto/register-auth.dto';
-import { LoginDto } from './dto/login-auth.dto';
-import { AuthGuard } from './auth.guard';
+import { RegisterDto } from './dto/register.dto';
+import { LoginCredentialsDto } from './dto/login.credentials.dto';
+import { JwtAuthGuard } from './auth.guard';
+import { ReferencePipe } from 'src/pipes/reference/reference.pipe';
+import { Account } from 'src/account/entities/account.entity';
 
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   @Post()
-  login(@Body() loginDto:LoginDto) {
-    return this.authService.login(loginDto);
+  async login (
+    @Body() credentials:LoginCredentialsDto 
+    ) {
+    return await this.authService.login(credentials);
   }
 
-  @UseGuards(AuthGuard)
-  @Get('profile')
-  getProfile(@Request() req) {
-    return req.user;
-  }
+  // @Post()
+  // async loginSocialAccount (
+  //   @Body() credentials:LoginCredentialsDto 
+  //   ) {
+  //   return await this.authService.login(credentials);
+  // }
 
-  @Get()
-  logout() {
-    return this.authService.logout();
-  }
+  // @Get()
+  // @UseGuards(JwtAuthGuard)
+  // async logout() {
+  //   return await this.authService.logout();
+  // }
 
-  @Post()
-  register(@Body() registerDto: RegisterDto) {
+  // @Get()
+  // showLegalMention() {
+  //   return this.authService.showLegalMention();
+  // }
+
+  // @Get()
+  // firstPage() {
+  //   return this.authService.firstPage();
+  // }
+
+  @Post('register')
+  async register(
+    @Body(ReferencePipe) registerDto: RegisterDto
+    ) : Promise<Account> {
     return this.authService.register(registerDto);
   }
 
-  @Get()
-  showLegalMention() {
-    return this.authService.showLegalMention();
-  }
+  // @Post('register/account')
+  // async registerSocialAccount(
+  //   @Body(ReferencePipe) registerDto: RegisterDto
+  //   ) : Promise<Account> {
+  //   return this.authService.register(registerDto);
+  // }
 
-  @Get()
-  firstPage() {
-    return this.authService.firstPage();
-  }
 }

@@ -1,19 +1,20 @@
 import { Injectable } from '@nestjs/common';
 import { SearchDto } from './dto/search.dto';
+import { ShowResearchResultDto } from './dto/show-research-result.dto';
 
 @Injectable()
 export class ResearchService {
 
-  search(searchDto: SearchDto) {
-    return 'This action adds a new research';
+  async search(searchDto: SearchDto) {
+    return await 'This action adds a new research';
   }
 
-  showResearchResult() {
-    return `This action returns all research`;
+  async showResearchResult(showResearchResultDto: ShowResearchResultDto) {
+    return await `This action returns all research`;
   }
 
-  showResearchDetail() {
-    return `This action returns a research`;
+  async showResearchDetail() {
+    return await `This action returns a research`;
   }
 
 }

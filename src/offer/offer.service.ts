@@ -1,7 +1,6 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { OfferDto } from './dto/offer.dto';
 import { UpdateOfferDto } from './dto/update-offer.dto';
-import { ToogleValidateOfferDto } from './dto/toogle-validate-offer.dto';
 import { Offer } from './entities/offer.entity';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -15,27 +14,82 @@ export class OfferService {
     private readonly offerRepository: Repository<Offer>
   ){}
 
-  offer(offerDto: OfferDto) {
-    return 'This action adds a new offer';
+  async offer(offerDto: OfferDto) : Promise<Offer>  {
+    return await this.offerRepository.save(offerDto);
   }
 
-  toogleValidateOffer(refOffer: string, toogleValidateOfferDto: ToogleValidateOfferDto) {
-    return `This action updates a #${refOffer} offer`;
+  async toogleValidateOffer(refOffer: string): Promise<Offer> {
+    const offer = await this.offerRepository.findOne({where:{refOffer}});
+    if (offer == null) {
+      throw new HttpException("Offer not found", HttpStatus.NOT_FOUND)
+    }    
+    return await this.offerRepository.save(offer);
+
   }
 
   async listOffer(listOfferDto: ListOfferDto): Promise<Offer[]> {
-    return await this.offerRepository.find();
+    const refUser = listOfferDto.refUser;
+    const refPost = listOfferDto.refPost;
+    const createdAt = listOfferDto.createdAt;
+    const updatedAt = listOfferDto.updatedAt;
+
+    const qb = this.offerRepository.createQueryBuilder("offer");
+
+    qb.select("offer")
+    if (refUser) {
+      qb.where("offer.refUser = :refUser")
+      .setParameters({
+        refUser
+      })
+    }
+    
+    if (refPost) {
+      qb.andWhere("offer.refRole = :refRole")
+      .setParameters({
+        refPost
+      })
+    }
+
+    if (createdAt) {
+      qb.where("offer.resource = :resource")
+      .setParameters({
+        createdAt
+      })
+    } 
+
+    if (updatedAt) {
+      qb.where("offer.createdAt = :createdAt")
+      .setParameters({
+        updatedAt
+      })
+    }
+    
+    return await qb.getRawMany();
   }
 
-  showOfferDetail(refOffer: string) {
-    return `This action returns a #${refOffer} offer`;
+  async showOfferDetail(refOffer: string) {
+    const offer = await this.offerRepository.findOne({where:{refOffer}});
+    console.log(offer);
+    if (offer == null) {
+      throw new HttpException("Offer not found", HttpStatus.NOT_FOUND)
+    }    
+    return offer;
   }
 
-  updateOffer(refOffer: string, updateOfferDto: UpdateOfferDto) {
-    return `This action updates a #${refOffer} offer`;
+  async updateOffer(refOffer: string, updateOfferDto: UpdateOfferDto) {
+    const offer = await this.offerRepository.findOne({where:{refOffer}});
+    if (offer == null) {
+      throw new HttpException("Offer not found", HttpStatus.NOT_FOUND)
+    }    
+    Object.assign(offer, updateOfferDto);
+    return await this.offerRepository.save(offer);
   }
 
-  deleteOffer(refOffer: string) {
-    return `This action removes a #${refOffer} offer`;
+  async deleteOffer(refOffer: string) {
+    const offer = await this.offerRepository.findOneBy({refOffer});
+    if (offer == null) {
+      throw new HttpException("Offer not found", HttpStatus.NOT_FOUND)
+    }    
+    return await this.offerRepository.softRemove(offer);
   }
 }

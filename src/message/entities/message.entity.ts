@@ -1,26 +1,28 @@
-import { Column, Entity, PrimaryColumn } from "typeorm";
+import { TimestampEntity } from "src/generics/timestamp.entity";
+import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity()
-export class Message {
+export class Message extends TimestampEntity {
 
-    @PrimaryColumn()
-    reference: string;
+    @PrimaryGeneratedColumn()
+    id: number;
 
-    @Column()
-    title: string;
+    @Column({
+        unique: true
+    })
+    refMessage: string;
 
-    @Column()
+    @Column({
+        length: 128,
+        nullable: true
+    })
     description: string;
 
     @Column()
     cc: string;
 
-    @Column()
+    @Column({
+        nullable: true
+    })
     pj: string;
-
-    @Column()
-    createdAt: Date;
-
-    @Column()
-    updatedAt: Date;
 }

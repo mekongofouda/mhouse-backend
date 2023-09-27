@@ -1,24 +1,39 @@
-import { Entity, PrimaryColumn, Column } from 'typeorm';
+import { TimestampEntity } from 'src/generics/timestamp.entity';
+import { Role } from 'src/role/entities/role.entity';
+import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
 
 @Entity()
-export class Privilege {
+export class Privilege extends TimestampEntity {
 
-    @PrimaryColumn()
+    @PrimaryGeneratedColumn()
+    id: number;
+
+    @Column({
+        length: 20,
+        unique: true
+    })
     refPrivilege: string;
 
-    @Column()
-    name: string;
+    @Column({
+        length: 32,
+    })
+    title: string;
 
-    @Column()
+    @Column({
+        length: 128,
+        nullable: true
+    })
     description: string;
 
-    @Column() 
-    resource: string;
+    @Column({
+        length: 128
+    }) 
+    resource: string; 
+    
+    @ManyToOne(
+        type => Role,
+        (role) => role.privileges
+    )
+    role: Role;
 
-    @Column()
-    createdAt: Date;
-
-    @Column()
-    updatedAt: Date;
-
-}
+} 

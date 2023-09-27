@@ -1,10 +1,10 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, HttpException, HttpStatus, Query } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query, UseGuards } from '@nestjs/common';
 import { NotificationService } from './notification.service';
 import { SendNotificationDto } from './dto/send-notification.dto';
 import { MarkReadedDto } from './dto/markReaded-notification.dto';
 import { ListNotificationDto } from './dto/list-notification.dto';
 import { ReferencePipe } from 'src/pipes/reference/reference.pipe';
-import { DatePipe } from 'src/pipes/date/date.pipe';
+import { JwtAuthGuard } from 'src/auth/auth.guard';
 
 @Controller('notification')
 export class NotificationController {
@@ -14,44 +14,43 @@ export class NotificationController {
   ) {}
 
   @Post()
-  sendNotification(
-    @Body(ReferencePipe, DatePipe) sendNotificationDto: SendNotificationDto
+  @UseGuards(JwtAuthGuard)
+  async sendNotification(
+    @Body(ReferencePipe) sendNotificationDto: SendNotificationDto
     ) {
-    return this.notificationService.sendNotification(sendNotificationDto);
+    return await this.notificationService.sendNotification(sendNotificationDto);
   }
 
   @Get()
-  listNotification(
+  @UseGuards(JwtAuthGuard)
+  async listNotification(
     @Query() listNotificationDto: ListNotificationDto
   ) {
-    if (!this.notificationService.listNotification(listNotificationDto)) {
-      throw new HttpException("Notification not found", HttpStatus.NOT_FOUND)
-    }
-    return this.notificationService.listNotification(listNotificationDto);
+    return await this.notificationService.listNotification(listNotificationDto);
   }
 
   @Get(':ref')
-  showNotificationDetail(
+  @UseGuards(JwtAuthGuard)
+  async showNotificationDetail(
     @Param('ref') ref: string
     ) {
-    if (!this.notificationService.showNotificationDetail(ref)) {
-      throw new HttpException("Notification not found", HttpStatus.NOT_FOUND)
-    }
-    return this.notificationService.showNotificationDetail(ref);
+    return await this.notificationService.showNotificationDetail(ref);
   }
 
   @Patch(':ref')
-  markReaded(
+  @UseGuards(JwtAuthGuard)
+  async markReaded(
     @Param('ref') ref: string, 
     @Body() markReadedDto: MarkReadedDto
   ) {
-    return this.notificationService.markReaded(ref, markReadedDto);
+    return await this.notificationService.markReaded(ref, markReadedDto);
   }
 
   @Delete(':ref')
-  deleteNotification(
+  @UseGuards(JwtAuthGuard)
+  async deleteNotification(
     @Param('ref') ref: string
     ) {
-    return this.notificationService.deleteNotification(ref);
+    return await this.notificationService.deleteNotification(ref);
   }
 }

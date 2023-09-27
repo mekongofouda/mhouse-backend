@@ -1,10 +1,11 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, HttpStatus, HttpException, Query } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query, UseGuards } from '@nestjs/common';
 import { DiscussionService } from './discussion.service';
 import { AddDiscussionDto } from './dto/add-discussion.dto';
 import { UpdateDiscussionDto } from './dto/update-discussion.dto';
 import { ReferencePipe } from 'src/pipes/reference/reference.pipe';
 import { ListDiscussionDto } from './dto/list-discussion.dto';
-import { DatePipe } from 'src/pipes/date/date.pipe';
+import { Discussion } from './entities/discussion.entity';
+import { JwtAuthGuard } from 'src/auth/auth.guard';
 
 @Controller('discussion')
 export class DiscussionController {
@@ -14,44 +15,43 @@ export class DiscussionController {
   ) {}
 
   @Post()
-  addDiscussion(
-    @Body(ReferencePipe, DatePipe) addDiscussionDto: AddDiscussionDto
-    ) {
+  @UseGuards(JwtAuthGuard)
+  async addDiscussion(
+    @Body(ReferencePipe) addDiscussionDto: AddDiscussionDto
+    ): Promise<Discussion> {
     return this.discussionService.addDiscussion(addDiscussionDto);
   }
 
   @Get()
-  listDiscussion(
+  @UseGuards(JwtAuthGuard)
+  async listDiscussion(
     @Query() listDiscussionDto: ListDiscussionDto
-  ) {
-    if (!this.discussionService.listDiscussion(listDiscussionDto)) {
-      throw new HttpException("Discussion not found", HttpStatus.NOT_FOUND)
-    }
-    return this.discussionService.listDiscussion(listDiscussionDto);
+  ): Promise<Discussion[]> {
+    return await this.discussionService.listDiscussion(listDiscussionDto);
   }
 
   @Get(':ref')
-  showDiscussionDetail(
+  @UseGuards(JwtAuthGuard)
+  async showDiscussionDetail(
     @Param('ref') ref: string
-    ) {
-    if (!this.discussionService.showDiscussionDetail(ref)) {
-      throw new HttpException("Discussion not found", HttpStatus.NOT_FOUND)
-    }
-    return this.discussionService.showDiscussionDetail(ref);
+    ): Promise<Discussion> {
+    return await this.discussionService.showDiscussionDetail(ref);
   }
 
   @Patch(':ref')
-  updateDiscussion(
+  @UseGuards(JwtAuthGuard)
+  async updateDiscussion(
     @Param('ref') ref: string, 
     @Body() updateDiscussionDto: UpdateDiscussionDto
-  ) {
-    return this.discussionService.updateDiscussion(ref, updateDiscussionDto);
+  ): Promise<Discussion> {
+    return await this.discussionService.updateDiscussion(ref, updateDiscussionDto);
   }
 
   @Delete(':ref')
-  deleteDiscussion(
+  @UseGuards(JwtAuthGuard)
+  async deleteDiscussion(
     @Param('ref') ref: string
-    ) {
-    return this.discussionService.deleteDiscussion(ref);
+    ): Promise<Discussion> {
+    return await this.discussionService.deleteDiscussion(ref);
   }
 }

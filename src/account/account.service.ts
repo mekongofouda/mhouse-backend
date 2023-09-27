@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InviteUserDto } from './dto/invite-user.dto';
 import { UpdateUserAccountDto } from './dto/update-user-account.dto';
 import { Repository } from 'typeorm';
@@ -15,27 +15,64 @@ export class AccountService {
     private readonly accountRepository: Repository<Account>
   ){}
 
-  invite(inviteUserDto: InviteUserDto) {
+  async invite(inviteUserDto: InviteUserDto) {
     return 'This action adds a new account';
   }
 
-  listUserAccount(listUserAccountDto: ListUserAccountDto) {
-    return `This action returns all account`;
+  async listUserAccount(listUserAccountDto: ListUserAccountDto) {
+
+    const refRole = listUserAccountDto.refRole;
+    const createdAt = listUserAccountDto.createdAt;
+    const updatedAt = listUserAccountDto.updatedAt;
+
+    const qb = this.accountRepository.createQueryBuilder("account");
+
+    if (refRole) {
+      qb.andWhere("account.refRole = :refRole")
+      .setParameters({
+        refRole
+      })
+    }
+
+    if (createdAt) {
+      qb.where("account.createdAt = :createdAt")
+      .setParameters({
+        createdAt
+      })
+    }
+    
+    if (updatedAt) {
+      qb.where("account.updatedAt = :updatedAt")
+      .setParameters({
+        updatedAt
+      })
+    }
+    return await qb.getMany();
+
   }
   
-  getUserDetail(name: string) {
-    return this.accountRepository.findOneBy({name});
+  async getUserDetail(refAccount: string) {
+    return await this.accountRepository.findOneBy({refAccount});
   }
 
-  showUserProfile(reference: string) {
-    return `This action returns a account`;
+  async showUserProfile(refAccount: string) {
+    return await this.accountRepository.findOne({where:{refAccount}});
   }
 
-  update(reference: string, updateUserAccountDto: UpdateUserAccountDto) {
-    return `This action updates a account`;
+  async updateUserAccount(refAccount: string, updateUserAccountDto: UpdateUserAccountDto) {
+    const account = await this.accountRepository.findOne({where:{refAccount}});
+    if (account == null) {
+      throw new HttpException("Account not found", HttpStatus.NOT_FOUND)
+    }    
+    Object.assign(account, updateUserAccountDto);
+    return await this.accountRepository.save(account);
   }
 
-  remove(reference: string) {
-    return `This action removes a account`;
+  async deleteUserAcoount(refAccount: string) {
+    const account = await this.accountRepository.findOneBy({refAccount});
+    if (account == null) {
+      throw new HttpException("Account not found", HttpStatus.NOT_FOUND)
+    }    
+    return await this.accountRepository.softRemove(account);
   }
 }
