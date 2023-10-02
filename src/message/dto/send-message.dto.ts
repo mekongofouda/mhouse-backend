@@ -1,11 +1,11 @@
-import { IsEmpty, IsNotEmpty, IsOptional, IsString, MaxLength } from "class-validator";
+import { IsNotEmpty, IsOptional, IsString, MaxLength } from "class-validator";
 
 export class SendMessageDto {
 
     @IsString()
     @IsOptional()
     @MaxLength(64, { message: "La taille maximale de la description est de 64 caractères"})
-    refUser: string;
+    refDiscussion: string;
     
     @IsString()
     @IsOptional()

@@ -8,7 +8,9 @@ import { JwtAuthGuard } from 'src/auth/auth.guard';
 
 @Controller('sponsor')
 export class SponsorController {
-  constructor(private readonly sponsorService: SponsorService) {}
+  constructor(
+    private readonly sponsorService: SponsorService
+    ) {}
 
   @Post()
   @UseGuards(JwtAuthGuard)
@@ -18,20 +20,20 @@ export class SponsorController {
     return await this.sponsorService.sponsor(sponsorDto);
   }
 
-  @Get()
-  @UseGuards(JwtAuthGuard)
-  async listSponsor(
-    @Query() listSponsorDto: ListSponsorDto
-    ): Promise<Sponsor[]> {
-    return await this.sponsorService.listSponsor(listSponsorDto);
-  }
+  // @Get()
+  // @UseGuards(JwtAuthGuard)
+  // async listSponsor(
+  //   @Query() listSponsorDto: ListSponsorDto
+  //   ): Promise<Sponsor[]> {
+  //   return await this.sponsorService.listSponsor(listSponsorDto);
+  // }
 
-  @Get(':ref')
-  @UseGuards(JwtAuthGuard)
-  async showSponsorDetail(
-    @Param('ref') ref: string
-    ): Promise<Sponsor> {
-    return await this.sponsorService.showSponsorDetail(ref);
-  }
+  // @Get(':ref')
+  // @UseGuards(JwtAuthGuard)
+  // async showSponsorDetail(
+  //   @Param('ref') ref: string
+  //   ): Promise<Sponsor> {
+  //   return await this.sponsorService.showSponsorDetail(ref);
+  // }
 
 }

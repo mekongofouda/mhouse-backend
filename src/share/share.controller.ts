@@ -21,19 +21,19 @@ export class ShareController {
     return await this.shareService.share(shareDto);
   }
 
-  @Get()
-  @UseGuards(JwtAuthGuard)
-  async listShare(
-    @Query() listShareDto: ListShareDto
-  ): Promise<Share[]> {
-    return await this.shareService.listShare(listShareDto);
-  }
+  // @Get()
+  // @UseGuards(JwtAuthGuard)
+  // async listShare(
+  //   @Query() listShareDto: ListShareDto
+  // ): Promise<Share[]> {
+  //   return await this.shareService.listShare(listShareDto);
+  // }
 
-  @Get(':ref')
-  @UseGuards(JwtAuthGuard)
-  async showShareDetail(
-    @Param('ref') ref: string
-    ) {
-    return await this.shareService.showShareDetail(ref);
-  }
+  // @Get(':ref')
+  // @UseGuards(JwtAuthGuard)
+  // async showShareDetail(
+  //   @Param('ref') ref: string
+  //   ) {
+  //   return await this.shareService.showShareDetail(ref);
+  // }
 }

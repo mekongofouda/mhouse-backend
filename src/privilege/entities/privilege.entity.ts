@@ -1,6 +1,6 @@
 import { TimestampEntity } from 'src/generics/timestamp.entity';
 import { Role } from 'src/role/entities/role.entity';
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, ManyToMany, JoinTable } from 'typeorm';
 
 @Entity()
 export class Privilege extends TimestampEntity {
@@ -30,10 +30,11 @@ export class Privilege extends TimestampEntity {
     }) 
     resource: string; 
     
-    @ManyToOne(
+    @ManyToMany(
         type => Role,
         (role) => role.privileges
     )
-    role: Role;
+    @JoinTable()
+    roles: Role[];
 
 } 

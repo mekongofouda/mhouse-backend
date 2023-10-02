@@ -3,7 +3,7 @@ import { InviteUserDto } from './dto/invite-user.dto';
 import { UpdateUserAccountDto } from './dto/update-user-account.dto';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Account } from './entities/account.entity';
+import { AccountEntity } from './entities/account.entity';
 import { ListUserAccountDto } from './dto/list-user-account.dto';
 
 
@@ -11,11 +11,12 @@ import { ListUserAccountDto } from './dto/list-user-account.dto';
 export class AccountService {
 
   constructor(
-    @InjectRepository(Account) 
-    private readonly accountRepository: Repository<Account>
+    @InjectRepository(AccountEntity) 
+    private readonly accountRepository: Repository<AccountEntity>
   ){}
 
   async invite(inviteUserDto: InviteUserDto) {
+    
     return 'This action adds a new account';
   }
 

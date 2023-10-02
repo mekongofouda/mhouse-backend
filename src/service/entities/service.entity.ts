@@ -1,7 +1,9 @@
-import { ServiceTypeEnum } from "src/enums/service-type.enum";
+import { AccountEntity } from "src/account/entities/account.entity";
+import { TypeServiceEnum } from "src/enums/type.service.enum";
 import { TimestampEntity } from "src/generics/timestamp.entity";
-import { Column, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 
+@Entity()
 export class Service extends TimestampEntity {
 
     @PrimaryGeneratedColumn()
@@ -9,7 +11,7 @@ export class Service extends TimestampEntity {
 
     @Column({
         unique: true,
-        length: 16
+        length: 20
     })
     refService: string;
 
@@ -26,8 +28,8 @@ export class Service extends TimestampEntity {
 
     @Column({
         type: 'enum',
-        enum: ServiceTypeEnum,
-        default: ServiceTypeEnum.REAL_ESTATE
+        enum: TypeServiceEnum,
+        default: TypeServiceEnum.REAL_ESTATE
     })
     type: string;
 
@@ -41,5 +43,12 @@ export class Service extends TimestampEntity {
 
     @Column()
     amount: number;
+
+    @ManyToOne(
+        type => AccountEntity,
+        (account) => account.services
+    )
+    account : AccountEntity; 
+
 
 }

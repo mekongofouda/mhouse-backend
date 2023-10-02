@@ -5,34 +5,31 @@ import { ListRoleDto } from './dto/list-role.dto';
 import { Role } from './entities/role.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { AccountEntity } from 'src/account/entities/account.entity';
 
 @Injectable()
 export class RoleService {
 
   constructor(
+    @InjectRepository(AccountEntity) 
+    private readonly accountRepository: Repository<AccountEntity>,
+
     @InjectRepository(Role) 
     private readonly roleRepository: Repository<Role>
   ){}
 
-  async addRole(addRoleDto: AddRoleDto) {
+  async addRole(addRoleDto: AddRoleDto) {   
+    const role = this.roleRepository.create(addRoleDto);
     return await this.roleRepository.save(addRoleDto);
   }
 
   async listRole(listRoleDto: ListRoleDto): Promise<Role[]> {
 
-    const refUser = listRoleDto.refUser;
     const createdAt = listRoleDto.createdAt;
     const updatedAt = listRoleDto.updatedAt;
 
     const qb = this.roleRepository.createQueryBuilder("role");
 
-    qb.select("role")
-    if (refUser) {
-      qb.where("role.refUser = :refUser")
-      .setParameters({
-        refUser
-      })
-    } 
     if (createdAt) {
       qb.where("role.createdAt = :createdAt")
       .setParameters({

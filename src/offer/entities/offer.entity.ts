@@ -1,5 +1,7 @@
+import { PayementRateOfferEnum } from "src/enums/payement-rate-offer.enum";
 import { TimestampEntity } from "src/generics/timestamp.entity";
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { PostEntity } from "src/post/entities/post.entity";
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity()
 export class Offer extends TimestampEntity {
@@ -9,11 +11,14 @@ export class Offer extends TimestampEntity {
 
     @Column({
         unique: true,
-        length: 16
+        length: 20
     })
     refOffer: string;
 
     @Column({
+        type: 'enum',
+        enum: PayementRateOfferEnum,
+        default: PayementRateOfferEnum.JOUR,
         nullable: true
     })
     paymentRate: string
@@ -39,8 +44,10 @@ export class Offer extends TimestampEntity {
     })
     status: boolean;
 
-    @Column({
-        default: true
-    })
-    isSent: boolean;
+    @ManyToOne(
+        type => PostEntity,
+        (post) => post.offers
+    )
+    post : PostEntity; 
+
 }

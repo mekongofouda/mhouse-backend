@@ -7,6 +7,7 @@ import { ListRoleDto } from './dto/list-role.dto';
 import { Role } from './entities/role.entity';
 import { SlugPipe } from 'src/pipes/slug/slug.pipe';
 import { JwtAuthGuard } from 'src/auth/auth.guard';
+import { Account } from 'src/decorators/account.decorator';
 
 @Controller('role')
 export class RoleController {
@@ -18,7 +19,8 @@ export class RoleController {
   @Post()
   @UseGuards(JwtAuthGuard)
   async addRole(
-    @Body(ReferencePipe, SlugPipe) addRoleDto: AddRoleDto
+    @Body(ReferencePipe, SlugPipe) addRoleDto: AddRoleDto,
+    @Account() user
     ): Promise<Role> {
     return await this.roleService.addRole(addRoleDto);
   }
@@ -26,7 +28,8 @@ export class RoleController {
   @Get()
   @UseGuards(JwtAuthGuard)
   async listRole(
-    @Query() listRoleDto: ListRoleDto
+    @Query() listRoleDto: ListRoleDto,
+    @Account() user
   ): Promise<Role[]> {
     return await this.roleService.listRole(listRoleDto);
   }

@@ -1,5 +1,6 @@
+import { Discussion } from "src/discussion/entities/discussion.entity";
 import { TimestampEntity } from "src/generics/timestamp.entity";
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity()
 export class Message extends TimestampEntity {
@@ -8,7 +9,8 @@ export class Message extends TimestampEntity {
     id: number;
 
     @Column({
-        unique: true
+        unique: true,
+        length: 20
     })
     refMessage: string;
 
@@ -25,4 +27,11 @@ export class Message extends TimestampEntity {
         nullable: true
     })
     pj: string;
+
+    @ManyToOne(
+        type => Discussion,
+        (discussion) => discussion.messages
+    )
+    discussion : Discussion; 
+
 }

@@ -5,20 +5,27 @@ import { ListDiscussionDto } from './dto/list-discussion.dto';
 import { Discussion } from './entities/discussion.entity';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
+import { AccountEntity } from 'src/account/entities/account.entity';
 
 @Injectable()
 export class DiscussionService {
 
   constructor(
+    @InjectRepository(AccountEntity) 
+    private readonly accountRepository: Repository<AccountEntity>,
+
     @InjectRepository(Discussion) 
-    private readonly discussionRepository: Repository<Discussion>
+    private readonly discussionRepository: Repository<Discussion>,
+
   ){}
 
-  async addDiscussion(addDiscussionDto: AddDiscussionDto) {
-    return await this.discussionRepository.save(addDiscussionDto);
+  async addDiscussion(addDiscussionDto: AddDiscussionDto, account: any) {
+    const discussion = await this.discussionRepository.create(addDiscussionDto);
+    discussion.accounts = [account];
+    return await this.discussionRepository.save(discussion);
   }
 
-  async listDiscussion(listDiscussionDto: ListDiscussionDto): Promise<Discussion[]>  {
+  async listDiscussion(listDiscussionDto: ListDiscussionDto, account: any): Promise<Discussion[]>  {
     const refUser = listDiscussionDto.refUser;
     const createdAt = listDiscussionDto.createdAt;
     const updatedAt = listDiscussionDto.updatedAt;

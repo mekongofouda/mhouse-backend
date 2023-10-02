@@ -1,5 +1,6 @@
 import { TimestampEntity } from "src/generics/timestamp.entity";
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { PostEntity } from "src/post/entities/post.entity";
+import { Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity()
 export class Like extends TimestampEntity {
@@ -9,11 +10,17 @@ export class Like extends TimestampEntity {
 
     @Column({
         unique: true,
-        length: 16
+        length: 20
     })
     refLike: string;
     
     @Column()
     isLiked: boolean;
+
+    @ManyToOne(
+        type => PostEntity,
+        (post) => post.likes
+    )
+    post : PostEntity; 
 
 }

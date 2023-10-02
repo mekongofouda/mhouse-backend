@@ -21,28 +21,28 @@ export class LikeController {
     return await this.likeService.like(likeDto);
   }
 
-  @Patch('ref')
-  @UseGuards(JwtAuthGuard)
-  async toogleLike(
-    @Param('ref') ref: string
-    ): Promise<Like> {
-    return await this.likeService.toogleLike(ref);
-  }
+  // @Patch('ref')
+  // @UseGuards(JwtAuthGuard)
+  // async toogleLike(
+  //   @Param('ref') ref: string
+  //   ): Promise<Like> {
+  //   return await this.likeService.toogleLike(ref);
+  // }
 
-  @Get()
-  @UseGuards(JwtAuthGuard)
-  async listLike(
-    @Query() listLikeDto: ListLikeDto
-  ): Promise<Like[]> {
-    return await this.likeService.listLike(listLikeDto);
-  }
+  // @Get()
+  // @UseGuards(JwtAuthGuard)
+  // async listLike(
+  //   @Query() listLikeDto: ListLikeDto
+  // ): Promise<Like[]> {
+  //   return await this.likeService.listLike(listLikeDto);
+  // }
 
-  @Get(':ref')
-  @UseGuards(JwtAuthGuard)
-  async showLikeDetail(
-    @Param('ref') ref: string
-    ): Promise<Like> {
-    return await this.likeService.showLikeDetail(ref);
-  }
+  // @Get(':ref')
+  // @UseGuards(JwtAuthGuard)
+  // async showLikeDetail(
+  //   @Param('ref') ref: string
+  //   ): Promise<Like> {
+  //   return await this.likeService.showLikeDetail(ref);
+  // }
 
 }

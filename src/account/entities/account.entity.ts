@@ -1,10 +1,12 @@
-import { UserRoleEnum } from "src/enums/user-role.enum";
+import { Discussion } from "src/discussion/entities/discussion.entity";
 import { TimestampEntity } from "src/generics/timestamp.entity";
+import { PostEntity } from "src/post/entities/post.entity";
 import { Role } from "src/role/entities/role.entity";
-import { Column, Entity, ManyToMany, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Service } from "src/service/entities/service.entity";
+import { Column, Entity, JoinTable, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 
-@Entity()
-export class Account extends TimestampEntity {
+@Entity('account')
+export class AccountEntity extends TimestampEntity {
     
     @PrimaryGeneratedColumn()
     id: number;
@@ -65,15 +67,15 @@ export class Account extends TimestampEntity {
     category : string;
 
     @Column({
+        nullable: true
+    })
+    resetCode : number;
+
+    @Column({
         length: 20,
         nullable: true
     })
     followers : string;
-
-    @Column({
-        nullable: true
-    })
-    dateStartPromo : Date;
 
     @Column()
     password : string;
@@ -88,11 +90,29 @@ export class Account extends TimestampEntity {
     })
     token: string;
 
-    @ManyToMany(
+    @ManyToOne(
         type => Role,
-        (role) => role.accounts
+        (role) => role.accounts,    
     )
-    roles : Role[]; 
+    role : Role; 
 
-    
+    @OneToMany(
+        type => PostEntity,
+        (post) => post.account
+    )
+    posts : PostEntity[]; 
+
+    @OneToMany(
+        type => Service,
+        (service) => service.account
+    )
+    services : Service[]; 
+
+    @ManyToMany(
+        type => Discussion,
+        (discussion) => discussion.accounts
+    )
+    @JoinTable()
+    discussions : Discussion[]; 
 }
+ 

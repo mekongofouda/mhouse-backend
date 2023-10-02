@@ -1,5 +1,7 @@
+import { TypeSponsorEnum } from "src/enums/type.sponsor.enum";
 import { TimestampEntity } from "src/generics/timestamp.entity";
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { PostEntity } from "src/post/entities/post.entity";
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity()
 export class Sponsor extends TimestampEntity {
@@ -9,27 +11,48 @@ export class Sponsor extends TimestampEntity {
 
     @Column({
         unique: true,
-        length: 16
+        length: 20
     })
     refSponsor: string;
 
     @Column({
-        length: 16
+        length: 64,
+        nullable: true
     })
     town: string;
 
-    @Column()
+    @Column({
+        nullable: true
+    })
     nbrCustomers: number;
 
-    @Column()
+    @Column({
+        nullable: true
+    })
     nbrDays: number;
 
-    @Column()
+    @Column({
+        type: 'enum',
+        enum: TypeSponsorEnum,
+        default: TypeSponsorEnum.HOME_CARE,
+        nullable: true
+    })
+    type: string;
+
+    @Column({
+
+    })
     cost: number;
 
     @Column({
         length: 16
     })
     devise: string;
+
+    @ManyToOne(
+        type => PostEntity,
+        (post) => post.sponsors
+    )
+    post : PostEntity; 
 
 }

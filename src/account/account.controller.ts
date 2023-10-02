@@ -4,9 +4,7 @@ import { InviteUserDto } from './dto/invite-user.dto';
 import { UpdateUserAccountDto } from './dto/update-user-account.dto';
 import { ListUserAccountDto } from './dto/list-user-account.dto';
 import { JwtAuthGuard } from 'src/auth/auth.guard';
-import { Account } from './entities/account.entity';
-import { Roles } from 'src/decorators/roles.decorator';
-import { UserRoleEnum } from 'src/enums/user-role.enum';
+import { AccountEntity } from './entities/account.entity';
 
 @Controller('account')
 export class AccountController {
@@ -25,10 +23,9 @@ export class AccountController {
 
   @Get()
   @UseGuards(JwtAuthGuard)
-  @Roles(UserRoleEnum.CUSTOMER)
   async listUserAccount(
     @Query() listUserAccountDto: ListUserAccountDto
-  ): Promise<Account[]> {
+  ): Promise<AccountEntity[]> {
     return await this.accountService.listUserAccount(listUserAccountDto);
   }
 
@@ -36,7 +33,7 @@ export class AccountController {
   @UseGuards(JwtAuthGuard)
   async showUserProfile(
     @Param('ref') ref: string
-    ): Promise<Account> {
+    ): Promise<AccountEntity> {
     return await this.accountService.showUserProfile(ref);
   }
 
@@ -45,7 +42,7 @@ export class AccountController {
   async updateUserAccount(
     @Param('ref') ref: string, 
   @Body() updateUserAccountDto: UpdateUserAccountDto
-  ): Promise<Account> {
+  ): Promise<AccountEntity> {
     return await this.accountService.updateUserAccount(ref, updateUserAccountDto);
   }
 
@@ -53,7 +50,7 @@ export class AccountController {
   @UseGuards(JwtAuthGuard)
   async deleteUserAccount(
     @Param('ref') ref: string
-    ): Promise<Account> {
+    ): Promise<AccountEntity> {
     return await this.accountService.deleteUserAcoount(ref);
   }
 }

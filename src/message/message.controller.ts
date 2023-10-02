@@ -21,27 +21,27 @@ export class MessageController {
     return await this.messageService.sendMessage(sendMessageDto);
   }
 
-  @Get()
-  @UseGuards(JwtAuthGuard)
-  async listMessage(
-    @Query() listMessageDto: ListMessageDto
-  ): Promise<Message[]> {
-    return await this.messageService.listMessage(listMessageDto);
-  }
+  // @Get()
+  // @UseGuards(JwtAuthGuard)
+  // async listMessage(
+  //   @Query() listMessageDto: ListMessageDto
+  // ): Promise<Message[]> {
+  //   return await this.messageService.listMessage(listMessageDto);
+  // }
 
-  @Get(':ref')
-  @UseGuards(JwtAuthGuard)
-  async showMessageDetail(
-    @Param('ref') ref: string
-    ): Promise<Message> {
-    return await this.messageService.showMessageDetail(ref);
-  }
+  // @Get(':ref')
+  // @UseGuards(JwtAuthGuard)
+  // async showMessageDetail(
+  //   @Param('ref') ref: string
+  //   ): Promise<Message> {
+  //   return await this.messageService.showMessageDetail(ref);
+  // }
 
-  @Delete(':ref')
-  @UseGuards(JwtAuthGuard)
-  async deleteMessage(
-    @Param('ref') ref: string
-    ): Promise<Message> {
-    return await this.messageService.deleteMessage(ref);
-  }
+  // @Delete(':ref')
+  // @UseGuards(JwtAuthGuard)
+  // async deleteMessage(
+  //   @Param('ref') ref: string
+  //   ): Promise<Message> {
+  //   return await this.messageService.deleteMessage(ref);
+  // }
 }

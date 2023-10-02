@@ -15,50 +15,51 @@ export class OfferController {
   ) {}
 
   @Post()
+  @UseGuards(JwtAuthGuard)
   async offer(
     @Body(ReferencePipe) offerDto: OfferDto
     ): Promise<Offer> {
     return await this.offerService.offer(offerDto);
   }
 
-  @Patch(':ref')
-  @UseGuards(JwtAuthGuard)
-  toogleValidateOffer(
-    @Param('ref') ref: string
-  ): Promise<Offer> {
-    return this.offerService.toogleValidateOffer(ref);
-  }
+  // @Patch(':ref')
+  // @UseGuards(JwtAuthGuard)
+  // toogleValidateOffer(
+  //   @Param('ref') ref: string
+  // ): Promise<Offer> {
+  //   return this.offerService.toogleValidateOffer(ref);
+  // }
 
-  @Get()
-  @UseGuards(JwtAuthGuard)
-  async listOffer(
-    @Query() listOfferDto: ListOfferDto
-  ): Promise<Offer[]> {
-    return await this.offerService.listOffer(listOfferDto);
-  }
+  // @Get()
+  // @UseGuards(JwtAuthGuard)
+  // async listOffer(
+  //   @Query() listOfferDto: ListOfferDto
+  // ): Promise<Offer[]> {
+  //   return await this.offerService.listOffer(listOfferDto);
+  // }
 
-  @Get(':ref')
-  @UseGuards(JwtAuthGuard)
-  async showOfferDetail(
-    @Param('ref') ref: string
-    ): Promise<Offer> {
-    return await this.offerService.showOfferDetail(ref);
-  }
+  // @Get(':ref')
+  // @UseGuards(JwtAuthGuard)
+  // async showOfferDetail(
+  //   @Param('ref') ref: string
+  //   ): Promise<Offer> {
+  //   return await this.offerService.showOfferDetail(ref);
+  // }
 
-  @Patch(':ref')
-  @UseGuards(JwtAuthGuard)
-  async updateOffer(
-    @Param('ref') ref: string, 
-    @Body() updateOfferDto: UpdateOfferDto
-  ): Promise<Offer> {
-    return await this.offerService.updateOffer(ref, updateOfferDto);
-  }
+  // @Patch(':ref')
+  // @UseGuards(JwtAuthGuard)
+  // async updateOffer(
+  //   @Param('ref') ref: string, 
+  //   @Body() updateOfferDto: UpdateOfferDto
+  // ): Promise<Offer> {
+  //   return await this.offerService.updateOffer(ref, updateOfferDto);
+  // }
 
-  @Delete(':ref')
-  @UseGuards(JwtAuthGuard)
-  async deleteOffer(
-    @Param('ref') ref: string
-    ): Promise<Offer> {
-    return await this.offerService.deleteOffer(ref);
-  }
+  // @Delete(':ref')
+  // @UseGuards(JwtAuthGuard)
+  // async deleteOffer(
+  //   @Param('ref') ref: string
+  //   ): Promise<Offer> {
+  //   return await this.offerService.deleteOffer(ref);
+  // }
 }

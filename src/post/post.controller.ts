@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, HttpException, HttpStatus, Query, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query, UseGuards, Req } from '@nestjs/common';
 import { PostService } from './post.service';
 import { PostDto } from './dto/post.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
@@ -6,6 +6,8 @@ import { ReferencePipe } from 'src/pipes/reference/reference.pipe';
 import { ListPostDto } from './dto/list-post.dto';
 import { PostEntity } from './entities/post.entity';
 import { JwtAuthGuard } from 'src/auth/auth.guard';
+import { Request } from 'express';
+import { Account } from 'src/decorators/account.decorator';
 
 @Controller('post')
 export class PostController {
@@ -17,17 +19,19 @@ export class PostController {
   @Post()
   @UseGuards(JwtAuthGuard)
   async post(
+    @Account() user,
     @Body(ReferencePipe) postDto: PostDto
     ): Promise<PostEntity> {
-    return await this.postService.post(postDto);
+      return await this.postService.post(postDto, user);
   }
 
   @Get()
   @UseGuards(JwtAuthGuard)
   async listPost(
-    @Query() listPostDto: ListPostDto
+    @Query() listPostDto: ListPostDto,
+    @Account() user
   ): Promise<PostEntity[]> {
-    return await this.postService.listPost(listPostDto);
+    return await this.postService.listPost(listPostDto, user);
   }
 
   @Get(':ref')

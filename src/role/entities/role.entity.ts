@@ -1,4 +1,4 @@
-import { Account } from "src/account/entities/account.entity";
+import { AccountEntity } from "src/account/entities/account.entity";
 import { TimestampEntity } from "src/generics/timestamp.entity";
 import { Privilege } from "src/privilege/entities/privilege.entity";
 import { Column, Entity, ManyToMany, OneToMany, PrimaryGeneratedColumn } from "typeorm";
@@ -31,19 +31,16 @@ export class Role extends TimestampEntity {
     })
     description: string;
 
-    @ManyToMany(
-        type => Account,
-        (account) => account.roles
-    )
-    accounts: Account[];
-
     @OneToMany(
+        type => AccountEntity,
+        (account) => account.role
+    )
+    accounts: AccountEntity[];
+
+    @ManyToMany(
         type => Privilege,
-        (privilege) => privilege.role
+        (privilege) => privilege.roles
     )
     privileges: Privilege[];
-}
-function ManyToOne(arg0: (type: any) => typeof Role, arg1: (role: any) => any): (target: Role, propertyKey: "role") => void {
-    throw new Error("Function not implemented.");
 }
 

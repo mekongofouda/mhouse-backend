@@ -6,6 +6,7 @@ import { ReferencePipe } from 'src/pipes/reference/reference.pipe';
 import { ListDiscussionDto } from './dto/list-discussion.dto';
 import { Discussion } from './entities/discussion.entity';
 import { JwtAuthGuard } from 'src/auth/auth.guard';
+import { Account } from 'src/decorators/account.decorator';
 
 @Controller('discussion')
 export class DiscussionController {
@@ -17,17 +18,19 @@ export class DiscussionController {
   @Post()
   @UseGuards(JwtAuthGuard)
   async addDiscussion(
-    @Body(ReferencePipe) addDiscussionDto: AddDiscussionDto
+    @Body(ReferencePipe) addDiscussionDto: AddDiscussionDto,
+    @Account() user
     ): Promise<Discussion> {
-    return this.discussionService.addDiscussion(addDiscussionDto);
+    return this.discussionService.addDiscussion(addDiscussionDto, user);
   }
 
   @Get()
   @UseGuards(JwtAuthGuard)
   async listDiscussion(
-    @Query() listDiscussionDto: ListDiscussionDto
+    @Query() listDiscussionDto: ListDiscussionDto,
+    @Account() user
   ): Promise<Discussion[]> {
-    return await this.discussionService.listDiscussion(listDiscussionDto);
+    return await this.discussionService.listDiscussion(listDiscussionDto, user);
   }
 
   @Get(':ref')
@@ -50,7 +53,8 @@ export class DiscussionController {
   @Delete(':ref')
   @UseGuards(JwtAuthGuard)
   async deleteDiscussion(
-    @Param('ref') ref: string
+    @Param('ref') ref: string,
+    @Account() user
     ): Promise<Discussion> {
     return await this.discussionService.deleteDiscussion(ref);
   }

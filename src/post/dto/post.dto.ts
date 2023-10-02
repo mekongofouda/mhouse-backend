@@ -1,4 +1,4 @@
-import { IsBoolean, IsNotEmpty, IsOptional, IsString, MaxLength } from "class-validator";
+import { IsNotEmpty, IsOptional, IsString, MaxLength } from "class-validator";
 
 export class PostDto {
 
@@ -12,8 +12,5 @@ export class PostDto {
     @MaxLength(128, { message: "La taille maximale de la description est de 64 caractères"})
     description: string;
 
-    @IsBoolean()
-    @IsNotEmpty()
-    isPublished: boolean;
 
 }

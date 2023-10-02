@@ -1,41 +1,31 @@
 import { Type } from "class-transformer";
-import { IsBoolean, IsEmpty, IsNotEmpty, IsOptional, IsString, MaxLength } from "class-validator";
+import { IsBoolean, IsNotEmpty, IsNumber, IsOptional, IsString, MaxLength } from "class-validator";
 
 export class OfferDto {
-
-    @IsEmpty()
-    refOffer: string;
-
-    @IsString()
-    @IsOptional()
-    @Type(()=> Date)
-    paymentDate: Date;
     
     @IsString()
-    @IsOptional()
-    @MaxLength(32, { message: "La taille maximale de la description est de 64 caractères"})
-    paymentRate: string;
+    @IsNotEmpty()
+    @MaxLength(20, { message: "La taille maximale de la référence est de 20 caractères"})
+    refPost: string;
 
     @IsString()
+    @IsNotEmpty()
+    @MaxLength(32, { message: "La taille maximale du paymentrate est de 64 caractères"})
+    paymentRate: string;
+
+    @IsNumber()
     @IsOptional()
     @Type(()=> Number)
     nbrPaymentMin: number;
 
-    @IsString()
+    @IsNumber()
     @IsNotEmpty()
     @Type(()=> Number)
     amount: number;
 
     @IsString()
     @IsOptional()
-    @MaxLength(16, { message: "La taille maximale de la resource est de 16 caractères"})
+    @MaxLength(128, { message: "La taille maximale de la resource 'other' est de 16 caractères"})
     other: string;
 
-    @IsBoolean()
-    @IsNotEmpty()
-    isValidated: boolean;
-
-    @IsBoolean()
-    @IsNotEmpty()
-    isSent: boolean;
 }

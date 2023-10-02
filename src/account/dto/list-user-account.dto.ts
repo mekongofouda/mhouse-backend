@@ -1,5 +1,5 @@
 import { Type } from "class-transformer";
-import { IsDate, IsDateString, IsOptional, IsString, MaxLength } from "class-validator";
+import { IsDateString, IsOptional, IsString, MaxLength } from "class-validator";
 
 export class ListUserAccountDto {
 

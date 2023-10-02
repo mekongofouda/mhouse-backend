@@ -1,9 +1,7 @@
-import { IsEmpty, IsNotEmpty, IsOptional, IsString, MaxLength } from "class-validator";
+import { Type } from "class-transformer";
+import { IsNotEmpty, IsNumber, IsOptional, IsString, MaxLength } from "class-validator";
 
 export class AddServiceDto {
-
-    @IsEmpty()
-    refService: string;
 
     @IsString()
     @IsOptional()
@@ -17,24 +15,21 @@ export class AddServiceDto {
 
     @IsString()
     @IsNotEmpty()
-    @MaxLength(16, { message: "La taille maximale de la resource est de 16 caractères"})
+    @MaxLength(16, { message: "La taille maximale du type est de 16 caractères"})
     type: string;
 
     @IsString()
-    @IsOptional()
-    @MaxLength(64, { message: "La taille maximale de la description est de 64 caractères"})
-    views: number;
-
-    @IsString()
     @IsNotEmpty()
-    @MaxLength(16, { message: "La taille maximale de la resource est de 16 caractères"})
+    @MaxLength(16, { message: "La taille maximale de la tranche de paiement est de 16 caractères"})
     paymentRate: string;
 
-    @IsString()
+    @IsNumber()
     @IsOptional()
+    @Type(()=> Number)
     nbrPaymentMin: number;
 
-    @IsString()
-    @IsNotEmpty()
+    @IsNumber()
+    @IsOptional()
+    @Type(()=> Number)
     amount: number;
 }

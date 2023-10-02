@@ -5,6 +5,7 @@ import { PostEntity } from './entities/post.entity';
 import { ListPostDto } from './dto/list-post.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { AccountEntity } from 'src/account/entities/account.entity';
 
 @Injectable()
 export class PostService {
@@ -14,12 +15,15 @@ export class PostService {
     private readonly postRepository: Repository<PostEntity>
   ){}
 
-  async post(postDto: PostDto): Promise<PostEntity> {
-    return await this.postRepository.save(postDto);
+  async post(postDto: PostDto, account: any): Promise<PostEntity> {
+    const post = this.postRepository.create(postDto);
+    post.account = account;
+    return await this.postRepository.save(post);
   }
 
-  async listPost(listPostDto: ListPostDto): Promise<PostEntity[]>{
-    const refUser = listPostDto.refUser;
+  async listPost(listPostDto: ListPostDto, account: any): Promise<PostEntity[]>{
+    
+    const refAccount = account.refAccount;
     const refService = listPostDto.refService;
     const createdAt = listPostDto.createdAt;
     const updatedAt = listPostDto.updatedAt;
@@ -27,10 +31,10 @@ export class PostService {
     const qb = this.postRepository.createQueryBuilder("post");
 
     qb.select("post")
-    if (refUser) {
-      qb.where("post.refUser = :refUser")
+    if (refAccount) {
+      qb.where("post.refAccount = :refAccount")
       .setParameters({
-        refUser
+        refAccount
       })
     }
     if (refService) {

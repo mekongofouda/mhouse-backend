@@ -6,7 +6,7 @@ export class ListSponsorDto {
     @IsString()
     @IsOptional()
     @MaxLength(16, { message: "La taille maximale du titre est de 32 caractères"})
-    refUser: string;
+    refAccount: string;
     
     @IsString()
     @IsOptional()

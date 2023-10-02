@@ -1,7 +1,12 @@
+import { AccountEntity } from "src/account/entities/account.entity";
 import { TimestampEntity } from "src/generics/timestamp.entity";
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Like } from "src/like/entities/like.entity";
+import { Offer } from "src/offer/entities/offer.entity";
+import { Share } from "src/share/entities/share.entity";
+import { Sponsor } from "src/sponsor/entities/sponsor.entity";
+import { Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 
-@Entity()
+@Entity('post')
 export class PostEntity extends TimestampEntity {
 
     @PrimaryGeneratedColumn()
@@ -9,7 +14,7 @@ export class PostEntity extends TimestampEntity {
 
     @Column({
         unique: true,
-        length: 16
+        length: 20
     })
     refPost: string;
    
@@ -28,4 +33,34 @@ export class PostEntity extends TimestampEntity {
         default: true
     })
     isPublished: boolean;
+
+    @OneToMany(
+        type => Share,
+        (share) => share.post
+    )
+    shares : Share[]; 
+
+    @OneToMany(
+        type => Like,
+        (like) => like.post
+    )
+    likes : Like[]; 
+
+    @OneToMany(
+        type => Offer,
+        (offer) => offer.post
+    )
+    offers : Offer[]; 
+
+    @OneToMany(
+        type => Sponsor,
+        (sponsor) => sponsor.post
+    )
+    sponsors : Sponsor[]; 
+
+    @ManyToOne(
+        type => AccountEntity,
+        (account) => account.posts
+    )
+    account : AccountEntity; 
 }

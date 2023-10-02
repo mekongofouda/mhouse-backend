@@ -17,4 +17,9 @@ export class AddPrivilegeDto {
     @IsAlpha()
     @MaxLength(16, { message: "La taille maximale de la resource est de 16 caractères"})
     resource: string;
+
+    @IsString()
+    @IsOptional()
+    refRole: string;
+
 }

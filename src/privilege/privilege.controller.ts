@@ -22,33 +22,33 @@ export class PrivilegeController {
     return await this.privilegeService.addPrivilege(addPrivilegeDto);
   }
 
-  @Get()
-  @UseGuards(JwtAuthGuard)
-  async listPrivilege(
-    @Query() listPrivilegeDto: ListPrivilegeDto
-  ): Promise<Privilege[]> {
-    return await this.privilegeService.listPrivilege(listPrivilegeDto);
-  }
+  // @Get()
+  // @UseGuards(JwtAuthGuard)
+  // async listPrivilege(
+  //   @Query() listPrivilegeDto: ListPrivilegeDto
+  // ): Promise<Privilege[]> {
+  //   return await this.privilegeService.listPrivilege(listPrivilegeDto);
+  // }
 
-  @Get(':ref')
-  async showPrivilegeDetail(
-    @Param('ref') ref: string
-    ): Promise<Privilege> {
-    return await this.privilegeService.showPrivilegeDetail(ref);
-  }
+  // @Get(':ref')
+  // async showPrivilegeDetail(
+  //   @Param('ref') ref: string
+  //   ): Promise<Privilege> {
+  //   return await this.privilegeService.showPrivilegeDetail(ref);
+  // }
 
-  @Patch(':ref')
-  async updatePrivilege(
-    @Param('ref') ref: string, 
-    @Body() updatePrivilegeDto: UpdatePrivilegeDto
-  ): Promise<Privilege> {
-    return await this.privilegeService.updatePrivilege(ref, updatePrivilegeDto);
-  }
+  // @Patch(':ref')
+  // async updatePrivilege(
+  //   @Param('ref') ref: string, 
+  //   @Body() updatePrivilegeDto: UpdatePrivilegeDto
+  // ): Promise<Privilege> {
+  //   return await this.privilegeService.updatePrivilege(ref, updatePrivilegeDto);
+  // }
 
-  @Delete(':ref')
-  async deletePrivilege(
-    @Param('ref') ref: string
-    ): Promise<Privilege> {
-    return await this.privilegeService.deletePrivilege(ref);
-  }
+  // @Delete(':ref')
+  // async deletePrivilege(
+  //   @Param('ref') ref: string
+  //   ): Promise<Privilege> {
+  //   return await this.privilegeService.deletePrivilege(ref);
+  //}
 }

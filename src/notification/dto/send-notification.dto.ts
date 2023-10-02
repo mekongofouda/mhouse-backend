@@ -2,9 +2,6 @@ import { IsBoolean, IsEmpty, IsOptional, IsString, MaxLength } from "class-valid
 
 export class SendNotificationDto {
 
-    @IsEmpty()
-    refNotification: string;
-
     @IsString()
     @IsOptional()
     @MaxLength(32, { message: "La taille maximale du titre est de 32 caractères"})
@@ -22,5 +19,5 @@ export class SendNotificationDto {
 
     @IsBoolean()
     @IsOptional()
-    isReaded: string;
+    isReaded: boolean;
 }

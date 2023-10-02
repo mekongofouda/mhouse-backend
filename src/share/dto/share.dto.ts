@@ -1,9 +1,11 @@
-import { IsEmpty, IsOptional, IsString, MaxLength } from "class-validator";
+import { IsEmpty, IsNotEmpty, IsOptional, IsString, MaxLength } from "class-validator";
 
 export class ShareDto {
 
-    @IsEmpty()
-    refShare: string;
+    @IsString()
+    @IsNotEmpty()
+    @MaxLength(20, { message: "La taille maximale de la référence est de 20 caractères"})
+    refPost: string;
 
     @IsString()
     @IsOptional()

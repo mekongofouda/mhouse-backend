@@ -1,7 +1,7 @@
 import { Type } from "class-transformer";
 import { IsBase64, IsDate, IsEmail, IsNotEmpty, IsNumber, IsOptional, IsString, IsStrongPassword, MaxLength, MinLength } from "class-validator";
 
-export class RegisterDto {
+export class RegisterAdminDto {
 
     @IsString()
     @IsNotEmpty()
@@ -59,5 +59,9 @@ export class RegisterDto {
         { message: "La taille minimale du mot de passe est de 10 caractères"
     })
     password: string;
+
+    @IsString()
+    @IsOptional()
+    refRole: string;
 
 }
