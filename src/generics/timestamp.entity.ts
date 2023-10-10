@@ -3,7 +3,8 @@ import { CreateDateColumn, UpdateDateColumn, DeleteDateColumn } from 'typeorm';
 export class TimestampEntity {
 
     @CreateDateColumn({
-        update: false
+        update: false,
+        nullable: false
     })
     createdAt: Date;
 
