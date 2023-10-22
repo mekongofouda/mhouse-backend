@@ -1,9 +1,14 @@
 import { AccountEntity } from "src/resources/account/entities/account.entity";
 import { TypeServiceEnum } from "src/enums/type.service.enum";
 import { TimestampEntity } from "src/generics/timestamp.entity";
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import { PostEntity } from "src/resources/post/entities/post.entity";
+import { RealEstate } from "../real-estate/entities/real-estate.entity";
+import { HomeCare } from "../home-care/entities/home-care.entity";
+import { HomeStanding } from "../home-standing/entities/home-standing.entity";
+import { HotelBooking } from "../hotel-booking/entities/hotel-booking.entity";
 
-@Entity()
+@Entity('service')
 export class Service extends TimestampEntity {
 
     @PrimaryGeneratedColumn()
@@ -38,11 +43,35 @@ export class Service extends TimestampEntity {
     })
     paymentRate: string;
     
-    @Column()
+    @Column({
+        nullable: true
+    })
     nbrPaymentMin: number;
 
     @Column()
     amount: number;
+
+    @Column({
+        length: 128,
+        nullable: true
+    })
+    country: string;
+
+    @Column({
+        length: 128,
+        nullable: true
+    })
+    region: string;
+
+    @Column({
+        nullable: true
+    })
+    longitude: number;
+
+    @Column({
+        nullable: true
+    })
+    latitude: number;
 
     @ManyToOne(
         type => AccountEntity,
@@ -50,5 +79,34 @@ export class Service extends TimestampEntity {
     )
     account : AccountEntity; 
 
+    @OneToMany(
+        type => PostEntity,
+        (post) => post.service
+    )
+    posts: PostEntity[];
+
+    @OneToOne(
+        type => RealEstate,
+        (realEstate) => realEstate.service
+    )
+    realEstate: RealEstate;
+
+    @OneToOne(
+        type => HomeCare,
+        (homeCare) => homeCare.service
+    )
+    homeCare: HomeCare;
+
+    @OneToOne(
+        type => HomeStanding,
+        (homeStanding) => homeStanding.service
+    )
+    homeStanding: HomeStanding;
+
+    @OneToOne(
+        type => HotelBooking,
+        (hotelBooking) => hotelBooking.service
+    )
+    hotelBooking: HotelBooking;
 
 }

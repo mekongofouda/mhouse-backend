@@ -4,7 +4,7 @@ import { PostEntity } from "src/resources/post/entities/post.entity";
 import { Role } from "src/resources/role/entities/role.entity";
 import { Service } from "src/resources/service/entities/service.entity";
 import { Column, Entity, JoinTable, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
-import { type } from "os";
+import { Like } from "src/resources/post/like/entities/like.entity";
 
 @Entity('account')
 export class AccountEntity extends TimestampEntity {
@@ -65,11 +65,6 @@ export class AccountEntity extends TimestampEntity {
     @Column({
         nullable: true
     })
-    category : string;
-
-    @Column({
-        nullable: true
-    })
     resetCode : number;
 
     @Column()
@@ -88,9 +83,10 @@ export class AccountEntity extends TimestampEntity {
     @Column(
         {
             type: "simple-array",
-            nullable: true
+            nullable: true, 
+            default: []
         })
-    followers : string[] ;
+    followed : string[] ;
 
     @ManyToOne(
         type => Role,
@@ -125,5 +121,12 @@ export class AccountEntity extends TimestampEntity {
     )
     @JoinTable()
     discussions : Discussion[]; 
+
+    @ManyToOne(
+        type => Like,
+        (like) => like.account
+    )
+    likes : Like[];
+
 }
  

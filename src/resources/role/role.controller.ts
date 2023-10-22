@@ -5,7 +5,7 @@ import { UpdateRoleDto } from './dto/update-role.dto';
 import { ReferencePipe } from 'src/pipes/reference/reference.pipe';
 import { ListRoleDto } from './dto/list-role.dto';
 import { SlugPipe } from 'src/pipes/slug/slug.pipe';
-import { JwtAuthGuard } from 'src/resources/auth/auth.guard';
+import { JwtAuthGuard } from 'src/resources/account/auth/auth.guard';
 import { Account } from 'src/decorators/account.decorator';
 import { MhouseResponseInterface } from 'src/interfaces/mhouse-response.interface';
 
@@ -17,16 +17,15 @@ export class RoleController {
   ) {}
 
   @Post()
-  // @UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard)
   async addRole(
     @Body(ReferencePipe, SlugPipe) addRoleDto: AddRoleDto,
-    @Account() user
     ): Promise<MhouseResponseInterface> {
     const data = await this.roleService.addRole(addRoleDto);
     return {
       data: data,
       message: "Rôle créé avec succès",
-      code:"200"
+      code: HttpStatus.OK
     }
   }
 
@@ -40,7 +39,7 @@ export class RoleController {
     return {
       data: data,
       message: "Partage effectué avec succès",
-      code:"200"
+      code: HttpStatus.OK
     }
   }
 
@@ -52,22 +51,32 @@ export class RoleController {
     return {
       data: data,
       message: "Partage effectué avec succès",
-      code:"200"
+      code: HttpStatus.OK
     };
   }
 
-  // @Patch(':ref')
-  // async updateRole(
-  //   @Param('ref') ref: string, 
-  //   @Body() updateRoleDto: UpdateRoleDto
-  // ): Promise<MhouseResponseInterface> {
-  //   return await this.roleService.updateRole(ref, updateRoleDto);
-  // }
+  @Patch(':ref')
+  async updateRole(
+    @Param('ref') ref: string, 
+    @Body(SlugPipe) updateRoleDto: UpdateRoleDto
+  ): Promise<MhouseResponseInterface> {
+    const data = await this.roleService.updateRole(ref, updateRoleDto);
+    return {
+      data: data,
+      message: "Partage effectué avec succès",
+      code: HttpStatus.OK
+    };
+  }
 
-  // @Delete(':ref')
-  // async deleteRole(
-  //   @Param('ref') ref: string
-  //   ): Promise<MhouseResponseInterface> {
-  //   return await this.roleService.deleteRole(ref);
-  // }
+  @Delete(':ref')
+  async deleteRole(
+    @Param('ref') ref: string
+    ): Promise<MhouseResponseInterface> {
+    const data = await this.roleService.deleteRole(ref);
+    return {
+      data: data,
+      message: "Partage effectué avec succès",
+      code: HttpStatus.OK
+    };
+  }
 }

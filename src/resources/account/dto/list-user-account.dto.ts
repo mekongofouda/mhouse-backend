@@ -1,5 +1,5 @@
 import { Type } from "class-transformer";
-import { IsDate, IsDateString, IsOptional, IsString, MaxLength } from "class-validator";
+import { IsDate, IsOptional, IsString, MaxLength } from "class-validator";
 
 export class ListUserAccountDto {
 
@@ -15,9 +15,8 @@ export class ListUserAccountDto {
     @Type(()=> Date)
     createdAt: Date;
 
-    @IsDateString()
+    @IsDate()
     @IsOptional()
     @Type(()=> Date)
     updatedAt: Date;
-
 }

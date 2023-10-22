@@ -1,11 +1,11 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Query, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query, UseGuards, HttpStatus } from '@nestjs/common';
 import { ServiceService } from './service.service';
 import { AddServiceDto } from './dto/add-service.dto';
 import { UpdateServiceDto } from './dto/update-service.dto';
 import { ReferencePipe } from 'src/pipes/reference/reference.pipe';
 import { ListServiceDto } from './dto/list-service.dto';
 import { Service } from './entities/service.entity';
-import { JwtAuthGuard } from 'src/resources/auth/auth.guard';
+import { JwtAuthGuard } from 'src/resources/account/auth/auth.guard';
 import { Account } from 'src/decorators/account.decorator';
 import { MhouseResponseInterface } from 'src/interfaces/mhouse-response.interface';
 
@@ -26,7 +26,7 @@ export class ServiceController {
     return {
       data: data,
       message: "Partage effectué avec succès",
-      code:"200"
+      code: HttpStatus.OK
     }
     
   }
@@ -49,23 +49,33 @@ export class ServiceController {
     return {
       data: data,
       message: "Partage effectué avec succès",
-      code:"200"
+      code: HttpStatus.OK
     };
   }
 
-  // @Patch(':ref')
-  // @UseGuards(JwtAuthGuard)
-  // async updateService(
-  //   @Param('ref') ref: string, 
-  //   @Body() updateServiceDto: UpdateServiceDto
-  // ): Promise<Service> {
-  //   return await this.serviceService.updateService(ref, updateServiceDto);
-  // }
+  @Patch(':ref')
+  @UseGuards(JwtAuthGuard)
+  async updateService(
+    @Param('ref') ref: string, 
+    @Body() updateServiceDto: UpdateServiceDto
+  ): Promise<MhouseResponseInterface> {
+    const data = await this.serviceService.updateService(ref, updateServiceDto);
+    return {
+      data: data,
+      message: "Partage effectué avec succès",
+      code: HttpStatus.OK
+    };
+  }
 
-  // @Delete(':ref')
-  // async deleteService(
-  //   @Param('ref') ref: string
-  //   ): Promise<Service> {
-  //   return await this.serviceService.deleteService(ref);
-  // }
+  @Delete(':ref')
+  async deleteService(
+    @Param('ref') ref: string
+    ): Promise<MhouseResponseInterface> {
+    const data = await this.serviceService.deleteService(ref);
+    return {
+      data: data,
+      message: "Service supprimé avec succès",
+      code: HttpStatus.OK
+    };
+  }
 }

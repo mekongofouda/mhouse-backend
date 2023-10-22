@@ -1,14 +1,23 @@
 import { Type } from "class-transformer";
-import { IsDateString, IsOptional, IsString, MaxLength } from "class-validator";
+import { IsDate, IsInt, IsOptional, IsString } from "class-validator";
 
 export class ListServiceDto {
 
-    @IsDateString()
+    @IsInt()
+    @IsOptional()
+    @Type(()=> Number)
+    all: number;
+
+    @IsString()
+    @IsOptional()
+    refAccount: string;
+
+    @IsDate()
     @IsOptional()
     @Type(()=> Date)
     createdAt: Date;
 
-    @IsDateString()
+    @IsDate()
     @IsOptional()
     @Type(()=> Date)
     updatedAt: Date;

@@ -1,9 +1,9 @@
-import { Controller, Get, Post, Body, Param, Query, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Query, UseGuards, HttpStatus } from '@nestjs/common';
 import { ResearchService } from './research.service';
 import { SearchDto } from './dto/search.dto';
 import { ReferencePipe } from 'src/pipes/reference/reference.pipe';
 import { ShowResearchResultDto } from './dto/show-research-result.dto';
-import { JwtAuthGuard } from 'src/resources/auth/auth.guard';
+import { JwtAuthGuard } from 'src/resources/account/auth/auth.guard';
 import { MhouseResponseInterface } from 'src/interfaces/mhouse-response.interface';
 
 @Controller('research')
@@ -22,7 +22,7 @@ export class ResearchController {
     return {
       data: data,
       message: "Recherche effectuée avec succès",
-      code:"200"
+      code: HttpStatus.OK
     }
   }
 
@@ -35,7 +35,7 @@ export class ResearchController {
     return {
       data: data,
       message: "Résultats de recherche obtenus avec succès",
-      code:"200"
+      code: HttpStatus.OK
     }
   }
 
@@ -48,7 +48,7 @@ export class ResearchController {
     return {
       data: data,
       message: "Liste des offres obtenue avec succès",
-      code:"200"
+      code: HttpStatus.OK
     };
   }
 

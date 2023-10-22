@@ -1,14 +1,23 @@
 import { Type } from "class-transformer";
-import { IsDateString, IsOptional, IsString, Length } from "class-validator";
+import { IsBoolean, IsDate, IsInt, IsNumber, IsOptional, IsString } from "class-validator";
 
 export class ListDiscussionDto {
     
-    @IsDateString()
+    @IsInt()
+    @IsOptional()
+    @Type(()=> Number)
+    all: number;
+
+    @IsString()
+    @IsOptional()
+    refAccount: string;
+
+    @IsDate()
     @IsOptional()
     @Type(()=> Date)
     createdAt: Date;
 
-    @IsDateString()
+    @IsDate()
     @IsOptional()
     @Type(()=> Date)
     updatedAt: Date;

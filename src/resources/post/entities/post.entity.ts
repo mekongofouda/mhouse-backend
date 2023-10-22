@@ -1,10 +1,11 @@
 import { AccountEntity } from "src/resources/account/entities/account.entity";
 import { TimestampEntity } from "src/generics/timestamp.entity";
-import { Like } from "src/resources/like/entities/like.entity";
-import { Offer } from "src/resources/offer/entities/offer.entity";
-import { Share } from "src/resources/share/entities/share.entity";
-import { Sponsor } from "src/resources/sponsor/entities/sponsor.entity";
-import { Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { Like } from "src/resources/post/like/entities/like.entity";
+import { Offer } from "src/resources/post/offer/entities/offer.entity";
+import { Share } from "src/resources/post/share/entities/share.entity";
+import { Sponsor } from "src/resources/post/sponsor/entities/sponsor.entity";
+import { Column, Entity, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Service } from "src/resources/service/entities/service.entity";
 
 @Entity('post')
 export class PostEntity extends TimestampEntity {
@@ -72,4 +73,11 @@ export class PostEntity extends TimestampEntity {
         (account) => account.posts
     )
     account : AccountEntity; 
+    
+    @ManyToOne(
+        type => Service,
+        (service) => service.posts
+    )
+    service: Service;
+
 }

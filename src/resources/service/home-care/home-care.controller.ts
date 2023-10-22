@@ -1,34 +1,52 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, HttpStatus, UseGuards } from '@nestjs/common';
 import { HomeCareService } from './home-care.service';
-import { CreateHomeCareDto } from './dto/create-home-care.dto';
+import { AddHomeCareDto } from './dto/add-home-care.dto';
 import { UpdateHomeCareDto } from './dto/update-home-care.dto';
+import { MhouseResponseInterface } from 'src/interfaces/mhouse-response.interface';
+import { JwtAuthGuard } from 'src/resources/account/auth/auth.guard';
 
 @Controller('home-care')
 export class HomeCareController {
   constructor(private readonly homeCareService: HomeCareService) {}
 
   @Post()
-  create(@Body() createHomeCareDto: CreateHomeCareDto) {
-    return this.homeCareService.create(createHomeCareDto);
+  @UseGuards(JwtAuthGuard)
+  async addHomeCare(
+    @Body() createHomeCareDto: AddHomeCareDto
+    ): Promise<MhouseResponseInterface> {
+    const data = await this.homeCareService.addHomeCare(createHomeCareDto);
+    return {
+      data: data,
+      message: "Partage effectué avec succès",
+      code: HttpStatus.OK
+    }
   }
 
-  @Get()
-  findAll() {
-    return this.homeCareService.findAll();
+  @Get(':ref')
+  @UseGuards(JwtAuthGuard)
+  async showHomCareDetail(
+    @Param('ref') ref: string
+    ): Promise<MhouseResponseInterface> {
+    const data = await this.homeCareService.showHomCareDetail(ref);
+    return {
+      data: data,
+      message: "Partage effectué avec succès",
+      code: HttpStatus.OK
+    }
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.homeCareService.findOne(+id);
+  @Patch(':ref')
+  @UseGuards(JwtAuthGuard)
+  async updateHomCare(
+    @Param('ref') ref: string, 
+    @Body() updateHomeCareDto: UpdateHomeCareDto
+    ): Promise<MhouseResponseInterface> {
+    const data = await this.homeCareService.updateHomCare(ref, updateHomeCareDto);
+    return {
+      data: data,
+      message: "Partage effectué avec succès",
+      code: HttpStatus.OK
+    }
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateHomeCareDto: UpdateHomeCareDto) {
-    return this.homeCareService.update(+id, updateHomeCareDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.homeCareService.remove(+id);
-  }
 }

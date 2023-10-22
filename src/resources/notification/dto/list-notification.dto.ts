@@ -1,5 +1,5 @@
 import { Type } from "class-transformer";
-import { IsDateString, IsOptional, IsString, MaxLength } from "class-validator";
+import { IsDate, IsOptional, IsString, MaxLength } from "class-validator";
 
 export class ListNotificationDto {
 
@@ -23,12 +23,12 @@ export class ListNotificationDto {
     @MaxLength(16, { message: "La taille maximale de la resource est de 16 caractères"})
     refPost: string;
 
-    @IsDateString()
+    @IsDate()
     @IsOptional()
     @Type(()=> Date)
     createdAt: Date;
 
-    @IsDateString()
+    @IsDate()
     @IsOptional()
     @Type(()=> Date)
     updatedAt: Date;

@@ -32,4 +32,23 @@ export class AddServiceDto {
     @IsOptional()
     @Type(()=> Number)
     amount: number;
+
+    @IsString()
+    @IsOptional()
+    country: string;
+
+    @IsString()
+    @IsOptional()
+    region: string;
+
+    @IsNumber()
+    @IsOptional()
+    @Type(()=> Number)
+    longitude: number;
+
+    @IsNumber()
+    @IsOptional()
+    @Type(()=> Number)
+    latitude: number;
+
 }

@@ -1,8 +1,13 @@
 import { Type } from "class-transformer";
-import { IsAlphanumeric, IsDate, IsOptional, IsString, Length } from "class-validator";
+import { IsDate, IsInt, IsOptional } from "class-validator";
 
 export class ListRoleDto {    
         
+    @IsInt()
+    @IsOptional()
+    @Type(()=> Number)
+    all: number;
+
     @IsDate()
     @IsOptional()
     @Type(()=> Date)

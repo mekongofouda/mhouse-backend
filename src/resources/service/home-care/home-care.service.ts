@@ -1,26 +1,54 @@
-import { Injectable } from '@nestjs/common';
-import { CreateHomeCareDto } from './dto/create-home-care.dto';
+import { BadRequestException, ConflictException, HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { AddHomeCareDto } from './dto/add-home-care.dto';
 import { UpdateHomeCareDto } from './dto/update-home-care.dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { HomeCare } from './entities/home-care.entity';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class HomeCareService {
-  create(createHomeCareDto: CreateHomeCareDto) {
-    return 'This action adds a new homeCare';
+
+  constructor(  
+    @InjectRepository(HomeCare) 
+    private readonly homeCareRepository: Repository<HomeCare>
+  ){}
+
+  async addHomeCare(addHomeCareDto: AddHomeCareDto) {
+
+    //Create the service object with Dto to save it 
+    const service = await this.homeCareRepository.create(addHomeCareDto); 
+    if (service == null) {
+      throw new BadRequestException("Hare not found");
+    }
+
+    try {
+      await this.homeCareRepository.save(service);
+    } catch (error) {
+      throw new ConflictException(error.driverError.detail);
+    }
+    return service;
   }
 
-  findAll() {
-    return `This action returns all homeCare`;
+  async showHomCareDetail(refHomeCare: string) {
+    const service = await this.homeCareRepository.findOneBy({refHomeCare});
+    if (!service) {
+      throw new HttpException("Service not found", HttpStatus.NOT_FOUND)
+    }    
+    return service;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} homeCare`;
+  async updateHomCare(refHomeCare: string, updateHomeCareDto: UpdateHomeCareDto) {
+    const homeCare = await this.homeCareRepository.findOneBy({refHomeCare});
+    if (homeCare == null) {
+      throw new HttpException("Service not found", HttpStatus.NOT_FOUND)
+    }    
+    Object.assign(homeCare, updateHomeCareDto);
+    try {
+      await this.homeCareRepository.save(homeCare);
+    } catch (error) {
+      throw new ConflictException(error.driverError.detail);
+    }
+    return homeCare;
   }
 
-  update(id: number, updateHomeCareDto: UpdateHomeCareDto) {
-    return `This action updates a #${id} homeCare`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} homeCare`;
-  }
 }

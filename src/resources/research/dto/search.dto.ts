@@ -12,4 +12,9 @@ export class SearchDto {
     @IsBoolean()
     @IsOptional()
     post: boolean;
+
+    @IsBoolean()
+    @IsOptional()
+    service: boolean;
+
 }

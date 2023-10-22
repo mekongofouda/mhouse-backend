@@ -1,6 +1,6 @@
 import { AccountEntity } from "src/resources/account/entities/account.entity";
 import { TimestampEntity } from "src/generics/timestamp.entity";
-import { Privilege } from "src/resources/privilege/entities/privilege.entity";
+import { Privilege } from "src/resources/role/privilege/entities/privilege.entity";
 import { Column, Entity, JoinTable, ManyToMany, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity()

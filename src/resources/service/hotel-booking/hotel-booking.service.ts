@@ -1,26 +1,54 @@
-import { Injectable } from '@nestjs/common';
-import { CreateHotelBookingDto } from './dto/create-hotel-booking.dto';
+import { BadRequestException, ConflictException, HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { AddHotelBookingDto } from './dto/add-hotel-booking.dto';
 import { UpdateHotelBookingDto } from './dto/update-hotel-booking.dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { HotelBooking } from './entities/hotel-booking.entity';
 
 @Injectable()
 export class HotelBookingService {
-  create(createHotelBookingDto: CreateHotelBookingDto) {
-    return 'This action adds a new hotelBooking';
+
+  constructor(  
+    @InjectRepository(HotelBooking) 
+    private readonly hotelBookingRepository: Repository<HotelBooking>
+  ){}
+
+  async addHotelBooking(addHotelBookingDto: AddHotelBookingDto) {
+    
+    //Create the service object with Dto to save it 
+    const service = await this.hotelBookingRepository.create(addHotelBookingDto); 
+    if (service == null) {
+      throw new BadRequestException("Hare not found");
+    }
+
+    try {
+      await this.hotelBookingRepository.save(service);
+    } catch (error) {
+      throw new ConflictException(error.driverError.detail);
+    }
+    return service;
   }
 
-  findAll() {
-    return `This action returns all hotelBooking`;
+  async showHotelBookingDetail(refHotelBooking: string) {
+    const service = await this.hotelBookingRepository.findOneBy({refHotelBooking});
+    if (!service) {
+      throw new HttpException("Service not found", HttpStatus.NOT_FOUND)
+    }    
+    return service;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} hotelBooking`;
+  async updateHotelBooking(refHotelBooking: string, updateHotelBookingDto: UpdateHotelBookingDto) {
+    const service = await this.hotelBookingRepository.findOneBy({refHotelBooking});
+    if (service == null) {
+      throw new HttpException("Service not found", HttpStatus.NOT_FOUND)
+    }    
+    Object.assign(service, updateHotelBookingDto);
+    try {
+      await this.hotelBookingRepository.save(service);
+    } catch (error) {
+      throw new ConflictException(error.driverError.detail);
+    }
+    return service;
   }
 
-  update(id: number, updateHotelBookingDto: UpdateHotelBookingDto) {
-    return `This action updates a #${id} hotelBooking`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} hotelBooking`;
-  }
 }

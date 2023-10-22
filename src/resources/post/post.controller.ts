@@ -1,10 +1,10 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Query, UseGuards, Req } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query, UseGuards, Req, HttpStatus } from '@nestjs/common';
 import { PostService } from './post.service';
 import { PostDto } from './dto/post.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
 import { ReferencePipe } from 'src/pipes/reference/reference.pipe';
 import { ListPostDto } from './dto/list-post.dto';
-import { JwtAuthGuard } from 'src/resources/auth/auth.guard';
+import { JwtAuthGuard } from 'src/resources/account/auth/auth.guard';
 import { Request } from 'express';
 import { Account } from 'src/decorators/account.decorator';
 import { MhouseResponseInterface } from 'src/interfaces/mhouse-response.interface';
@@ -26,7 +26,7 @@ export class PostController {
       return {
         data: data,
         message: "Publication effectuée avec succès",
-        code:"200"
+        code: HttpStatus.OK
       }
   }
 
@@ -40,7 +40,7 @@ export class PostController {
     return {
       data: data,
       message: "Liste des publications obtenue avec succès",
-      code:"200"
+      code: HttpStatus.OK
     }
   }
 
@@ -53,24 +53,34 @@ export class PostController {
     return {
       data: data,
       message: "Liste des offres obtenue avec succès",
-      code:"200"
+      code: HttpStatus.OK
     };
   }
 
-  // @Patch(':ref')
-  // @UseGuards(JwtAuthGuard)
-  // async updatePost(
-  //   @Param('ref') ref: string, 
-  //   @Body() updatePostDto: UpdatePostDto
-  //   ): Promise<MhouseResponseInterface> {
-  //   return this.postService.updatePost(ref, updatePostDto);
-  // }
+  @Patch(':ref')
+  @UseGuards(JwtAuthGuard)
+  async updatePost(
+    @Param('ref') ref: string, 
+    @Body() updatePostDto: UpdatePostDto
+    ): Promise<MhouseResponseInterface> {
+    const data = await this.postService.updatePost(ref, updatePostDto);
+    return {
+      data: data,
+      message: "Liste des offres obtenue avec succès",
+      code: HttpStatus.OK
+    };
+  }
 
-  // @Delete(':ref')
-  // @UseGuards(JwtAuthGuard)
-  // async deletePost(
-  //   @Param('ref') ref: string
-  //   ): Promise<MhouseResponseInterface> {
-  //   return await this.postService.deletePost(ref);
-  // }
+  @Delete(':ref')
+  @UseGuards(JwtAuthGuard)
+  async deletePost(
+    @Param('ref') ref: string
+    ): Promise<MhouseResponseInterface> {
+    const data = await this.postService.deletePost(ref);
+    return {
+      data: data,
+      message: "Liste des offres obtenue avec succès",
+      code: HttpStatus.OK
+    };
+  }
 }

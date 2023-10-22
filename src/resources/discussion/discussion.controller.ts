@@ -1,10 +1,10 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Query, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query, UseGuards, HttpStatus, ParseIntPipe } from '@nestjs/common';
 import { DiscussionService } from './discussion.service';
 import { AddDiscussionDto } from './dto/add-discussion.dto';
 import { UpdateDiscussionDto } from './dto/update-discussion.dto';
 import { ReferencePipe } from 'src/pipes/reference/reference.pipe';
 import { ListDiscussionDto } from './dto/list-discussion.dto';
-import { JwtAuthGuard } from 'src/resources/auth/auth.guard';
+import { JwtAuthGuard } from 'src/resources/account/auth/auth.guard';
 import { Account } from 'src/decorators/account.decorator';
 import { MhouseResponseInterface } from 'src/interfaces/mhouse-response.interface';
 
@@ -21,11 +21,11 @@ export class DiscussionController {
     @Body(ReferencePipe) addDiscussionDto: AddDiscussionDto,
     @Account() account
     ): Promise<MhouseResponseInterface> {
-    const data = this.discussionService.addDiscussion(addDiscussionDto, account);
+    const data = await this.discussionService.addDiscussion(addDiscussionDto, account);
     return {
       data: data,
       message: "Discussion créée avec succès",
-      code:"200"
+      code: HttpStatus.OK
     }
   }
 
@@ -39,7 +39,7 @@ export class DiscussionController {
     return {
       data: data,
       message: "Liste des discussions obtenue avec succès",
-      code:"200"
+      code: HttpStatus.OK
     }
   }
 
@@ -52,25 +52,34 @@ export class DiscussionController {
     return {
       data: data,
       message: "Liste des discussions obtenue avec succès",
-      code:"200"
+      code: HttpStatus.OK
     };
   }
 
-  // @Patch(':ref')
-  // @UseGuards(JwtAuthGuard)
-  // async updateDiscussion(
-  //   @Param('ref') ref: string, 
-  //   @Body() updateDiscussionDto: UpdateDiscussionDto
-  // ): Promise<MhouseResponseInterface> {
-  //   return await this.discussionService.updateDiscussion(ref, updateDiscussionDto);
-  // }
+  @Patch(':ref')
+  @UseGuards(JwtAuthGuard)
+  async updateDiscussion(
+    @Param('ref') ref: string, 
+    @Body() updateDiscussionDto: UpdateDiscussionDto
+  ): Promise<MhouseResponseInterface> {
+    const data = await this.discussionService.updateDiscussion(ref, updateDiscussionDto);
+    return {
+      data: data,
+      message: "Discussion mise à jour avec succès",
+      code: HttpStatus.OK
+    };
+  }
 
-  // @Delete(':ref')
-  // @UseGuards(JwtAuthGuard)
-  // async deleteDiscussion(
-  //   @Param('ref') ref: string,
-  //   @Account() user
-  // ): Promise<MhouseResponseInterface> {
-  //   return await this.discussionService.deleteDiscussion(ref);
-  // }
+  @Delete(':ref')
+  @UseGuards(JwtAuthGuard)
+  async deleteDiscussion(
+    @Param('ref') ref: string,
+  ): Promise<MhouseResponseInterface> {
+    const data = await this.discussionService.deleteDiscussion(ref);
+    return {
+      data: data,
+      message: "Discussion supprimée avec succès",
+      code: HttpStatus.OK
+    };
+  }
 }

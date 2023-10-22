@@ -1,6 +1,6 @@
 import { AccountEntity } from "src/resources/account/entities/account.entity";
 import { TimestampEntity } from "src/generics/timestamp.entity";
-import { Message } from "src/resources/message/entities/message.entity";
+import { Message } from "src/resources/discussion/message/entities/message.entity";
 import { Column, Entity, ManyToMany, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity()

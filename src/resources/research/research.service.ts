@@ -6,7 +6,19 @@ import { ShowResearchResultDto } from './dto/show-research-result.dto';
 export class ResearchService {
 
   async search(searchDto: SearchDto) {
-    return await 'This action adds a new research';
+    const textSearch:string = searchDto.text;
+    if (searchDto.account != undefined) {
+      
+    } 
+    
+    if (searchDto.post != undefined) {
+      
+    }
+
+    if (searchDto.service != undefined) {
+      
+    }
+    return textSearch;
   }
 
   async showResearchResult(showResearchResultDto: ShowResearchResultDto) {

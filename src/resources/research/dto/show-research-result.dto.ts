@@ -1,14 +1,14 @@
 import { Type } from "class-transformer";
-import { IsDateString, IsOptional } from "class-validator";
+import { IsDate, IsOptional } from "class-validator";
 
 export class ShowResearchResultDto {
     
-    @IsDateString()
+    @IsDate()
     @IsOptional()
     @Type(()=> Date)
     createdAt: Date;
 
-    @IsDateString()
+    @IsDate()
     @IsOptional()
     @Type(()=> Date)
     updatedAt: Date;

@@ -1,34 +1,54 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, UseGuards, HttpStatus } from '@nestjs/common';
 import { RealEstateService } from './real-estate.service';
-import { CreateRealEstateDto } from './dto/create-real-estate.dto';
+import { AddRealEstateDto } from './dto/add-real-estate.dto';
 import { UpdateRealEstateDto } from './dto/update-real-estate.dto';
+import { ReferencePipe } from 'src/pipes/reference/reference.pipe';
+import { JwtAuthGuard } from 'src/resources/account/auth/auth.guard';
+import { MhouseResponseInterface } from 'src/interfaces/mhouse-response.interface';
 
 @Controller('real-estate')
 export class RealEstateController {
-  constructor(private readonly realEstateService: RealEstateService) {}
+  constructor(
+    private readonly realEstateService: RealEstateService
+    ) {}
 
   @Post()
-  create(@Body() createRealEstateDto: CreateRealEstateDto) {
-    return this.realEstateService.create(createRealEstateDto);
+  @UseGuards(JwtAuthGuard)
+  async addRealEstate(
+    @Body(ReferencePipe) addRealEstateDto:AddRealEstateDto
+    ): Promise<MhouseResponseInterface> {
+    const data = this.realEstateService.addRealEstate(addRealEstateDto);
+    return {
+      data: data,
+      message: "Partage effectué avec succès",
+      code: HttpStatus.OK
+    }
   }
 
-  @Get()
-  findAll() {
-    return this.realEstateService.findAll();
+  @Get(':ref')
+  @UseGuards(JwtAuthGuard)
+  async showRealEstateDetail(
+    @Param('ref') ref: string
+    ): Promise<MhouseResponseInterface> {
+    const data = await this.realEstateService.showRealEstateDetail(ref);
+    return {
+      data: data,
+      message: "Partage effectué avec succès",
+      code: HttpStatus.OK
+    }
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.realEstateService.findOne(+id);
-  }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateRealEstateDto: UpdateRealEstateDto) {
-    return this.realEstateService.update(+id, updateRealEstateDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.realEstateService.remove(+id);
+  @Patch(':ref')
+  @UseGuards(JwtAuthGuard)
+  async updateRealEstate(
+    @Param('ref') ref: string, 
+    @Body() updateRealEstateDto: UpdateRealEstateDto
+    ): Promise<MhouseResponseInterface> {
+    const data = await this.realEstateService.updateRealEstate(ref, updateRealEstateDto);
+    return {
+      data: data,
+      message: "Partage effectué avec succès",
+      code: HttpStatus.OK
+    }
   }
 }

@@ -5,15 +5,11 @@ import { ListRoleDto } from './dto/list-role.dto';
 import { Role } from './entities/role.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { AccountEntity } from 'src/resources/account/entities/account.entity';
 
 @Injectable()
 export class RoleService {
 
   constructor(
-    @InjectRepository(AccountEntity) 
-    private readonly accountRepository: Repository<AccountEntity>,
-
     @InjectRepository(Role) 
     private readonly roleRepository: Repository<Role>
   ){}
@@ -30,36 +26,72 @@ export class RoleService {
 
   async listRole(listRoleDto: ListRoleDto): Promise<Role[]> {
 
-    const listRoles = this.roleRepository.find();
-    if (listRoles == null) {
-      throw new HttpException("Roles not found", HttpStatus.NOT_FOUND);
+    let listRoles: Role[]=[];
+    let roles: Role[]=[];
+
+    if (listRoleDto.all == 1){
+      listRoles = await this.roleRepository.find();
     }
+
+    listRoles.filter(role => {
+      if (listRoleDto.createdAt != undefined) {
+        if (role.createdAt.toDateString() == listRoleDto.createdAt.toDateString()) {
+          roles.push(role);
+        }
+      }      
+      if (listRoleDto.updatedAt != undefined) {
+        if (role.updatedAt.toDateString() == listRoleDto.updatedAt.toDateString()) {
+          roles.push(role);
+        }
+      }   
+    });
+
+    if ((roles.length == 0) 
+    && ((listRoleDto.createdAt != undefined)||(listRoleDto.updatedAt != undefined)
+    )) {
+      throw new HttpException("Role not found", HttpStatus.NOT_FOUND);
+    } else if (roles.length != 0) {
+      listRoles = roles;
+    }
+
     return await listRoles;
   }
 
   async showRoleDetail(refRole: string) {
-    const role = await this.roleRepository.findOne({where:{refRole}});
-    console.log(role);
+
+    const role = await this.roleRepository.findOneBy({refRole});
     if (role == null) {
       throw new HttpException("Role not found", HttpStatus.NOT_FOUND)
     }    
     return role;
+
   }
 
-  // async updateRole(refRole: string, updateRoleDto: UpdateRoleDto) {
-  //   const role = await this.roleRepository.findOne({where:{refRole}});
-  //   if (role == null) {
-  //     throw new HttpException("Role not found", HttpStatus.NOT_FOUND)
-  //   }    
-  //   Object.assign(role, updateRoleDto);
-  //   return await this.roleRepository.save(role);
-  // }
+  async updateRole(refRole: string, updateRoleDto: UpdateRoleDto) {
+    const role = await this.roleRepository.findOne({where:{refRole}});
+    if (role == null) {
+      throw new HttpException("Role not found", HttpStatus.NOT_FOUND)
+    }    
+    Object.assign(role, updateRoleDto);
+    try {
+      await this.roleRepository.save(role);
+    } catch (error) {
+      throw new ConflictException(error.driverError.detail);
+    }
 
-  // async deleteRole(refRole: string) {
-  //   const role = await this.roleRepository.findOneBy({refRole});
-  //   if (role == null) {
-  //     throw new HttpException("Role not found", HttpStatus.NOT_FOUND)
-  //   }    
-  //   return await this.roleRepository.softRemove(role);
-  // }
+    return role;
+  }
+
+  async deleteRole(refRole: string) {
+    const role = await this.roleRepository.findOneBy({refRole});
+    if (role == null) {
+      throw new HttpException("Role not found", HttpStatus.NOT_FOUND);
+    }    
+    try {
+      await this.roleRepository.softRemove(role);
+    } catch (error) {
+      throw new ConflictException(error.driverError.detail);
+    }
+    return role;
+  }
 }

@@ -19,17 +19,15 @@ export class ServiceService {
   ){}
 
   async addService(addServiceDto: AddServiceDto, account: AccountEntity) {
+
     //Get post to add at the service
     const acccount = await this.accountRepository.create(account);
     if (!acccount) {
-      throw new HttpException("Share not found", HttpStatus.NOT_FOUND)
+      throw new HttpException("Account not found", HttpStatus.NOT_FOUND)
     }
 
     //Create the service object with Dto to save it 
     const service = await this.serviceRepository.create(addServiceDto); 
-    if (!service) {
-      throw new BadRequestException("Hare not found");
-    }
 
     //Set properties
     service.account = account;
@@ -39,43 +37,84 @@ export class ServiceService {
     } catch (error) {
       throw new ConflictException(error.driverError.detail);
     }
+
     return service;
   }
 
-  async listService(listServiceto: ListServiceDto, account: AccountEntity): Promise<Service[]> {
+  async listService(listServiceDto: ListServiceDto, account: AccountEntity): Promise<Service[]> {
     
-    const userAccount = await this.accountRepository.create(account);
-    let listServices: Service[] = [];
-    if (userAccount == null) {
-      throw new HttpException("Account not found", HttpStatus.NOT_FOUND);
-    }
-    listServices = userAccount.services;
-    return await listServices;
+    let listServices: Service[]=[];
+    let services: Service[]=[];
 
+    if (listServiceDto.refAccount != undefined) {
+      const userAccount = await this.accountRepository.findOneBy({refAccount: listServiceDto.refAccount});
+      if (userAccount != null) {
+        listServices = userAccount.services;
+      } else {
+        throw new HttpException("Discussion not found", HttpStatus.NOT_FOUND)
+      }  
+    } else if (listServiceDto.all == 1){
+      listServices = await this.serviceRepository.find();
+    } else {
+      listServices = account.services;  
+    }
+
+    listServices.filter(role => {
+      if (listServiceDto.createdAt != undefined) {
+        if (role.createdAt.toDateString() == listServiceDto.createdAt.toDateString()) {
+          services.push(role);
+        }
+      }      
+      if (listServiceDto.updatedAt != undefined) {
+        if (role.updatedAt.toDateString() == listServiceDto.updatedAt.toDateString()) {
+          services.push(role);
+        }
+      }   
+    });
+
+    if ((services.length == 0) 
+    && ((listServiceDto.createdAt != undefined)||(listServiceDto.updatedAt != undefined)
+    )) {
+      throw new HttpException("Role not found", HttpStatus.NOT_FOUND);
+    } else if (services.length != 0) {
+      listServices = services;
+    }
+
+    return listServices;
   }
 
   async showServiceDetail(refService: string) {
-    const service = await this.serviceRepository.findOne({where:{refService}});
-    if (!service) {
+    const service = await this.serviceRepository.findOneBy({refService});
+    if (service == null) {
       throw new HttpException("Service not found", HttpStatus.NOT_FOUND)
     }    
     return service;
   }
 
-  // async updateService(refService: string, updateServiceDto: UpdateServiceDto) {
-  //   const service = await this.serviceRepository.findOne({where:{refService}});
-  //   if (service == null) {
-  //     throw new HttpException("Service not found", HttpStatus.NOT_FOUND)
-  //   }    
-  //   Object.assign(service, updateServiceDto);
-  //   return await this.serviceRepository.save(service);
-  // }
+  async updateService(refService: string, updateServiceDto: UpdateServiceDto) {
+    const service = await this.serviceRepository.findOneBy({refService});
+    if (service == null) {
+      throw new HttpException("Service not found", HttpStatus.NOT_FOUND)
+    }    
+    Object.assign(service, updateServiceDto);
+    try {
+      await this.serviceRepository.save(service);
+    } catch (error) {
+      throw new ConflictException(error.driverError.detail);
+    }
+    return service;
+  }
 
-  // async deleteService(refService: string) {
-  //   const service = await this.serviceRepository.findOneBy({refService});
-  //   if (service == null) {
-  //     throw new HttpException("Service not found", HttpStatus.NOT_FOUND)
-  //   }    
-  //   return await this.serviceRepository.softRemove(service);
-  // }
+  async deleteService(refService: string) {
+    const service = await this.serviceRepository.findOneBy({refService});
+    if (service == null) {
+      throw new HttpException("Service not found", HttpStatus.NOT_FOUND);
+    }    
+    try {
+      await this.serviceRepository.softRemove(service);
+    } catch (error) {
+      throw new ConflictException(error.driverError.detail);
+    }
+    return service;
+  }
 }

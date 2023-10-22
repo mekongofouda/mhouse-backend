@@ -4,7 +4,7 @@ import { SendNotificationDto } from './dto/send-notification.dto';
 import { MarkReadedDto } from './dto/markReaded-notification.dto';
 import { ListNotificationDto } from './dto/list-notification.dto';
 import { ReferencePipe } from 'src/pipes/reference/reference.pipe';
-import { JwtAuthGuard } from 'src/resources/auth/auth.guard';
+import { JwtAuthGuard } from 'src/resources/account/auth/auth.guard';
 
 @Controller('notification')
 export class NotificationController {

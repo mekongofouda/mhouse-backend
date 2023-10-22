@@ -1,34 +1,53 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, HttpStatus } from '@nestjs/common';
 import { HotelBookingService } from './hotel-booking.service';
-import { CreateHotelBookingDto } from './dto/create-hotel-booking.dto';
+import { AddHotelBookingDto } from './dto/add-hotel-booking.dto';
 import { UpdateHotelBookingDto } from './dto/update-hotel-booking.dto';
+import { ReferencePipe } from 'src/pipes/reference/reference.pipe';
+import { JwtAuthGuard } from 'src/resources/account/auth/auth.guard';
+import { MhouseResponseInterface } from 'src/interfaces/mhouse-response.interface';
 
 @Controller('hotel-booking')
 export class HotelBookingController {
   constructor(private readonly hotelBookingService: HotelBookingService) {}
 
   @Post()
-  create(@Body() createHotelBookingDto: CreateHotelBookingDto) {
-    return this.hotelBookingService.create(createHotelBookingDto);
+    @UseGuards(JwtAuthGuard)
+    async addHotelBooking(
+    @Body(ReferencePipe) addHotelBookingDto: AddHotelBookingDto
+    ): Promise<MhouseResponseInterface> {
+     const data = this.hotelBookingService.addHotelBooking(addHotelBookingDto);
+     return {
+      data: data,
+      message: "Partage effectué avec succès",
+      code: HttpStatus.OK
+    }
   }
 
-  @Get()
-  findAll() {
-    return this.hotelBookingService.findAll();
+  @Get(':ref')
+    @UseGuards(JwtAuthGuard)
+    async showHotelBookingDetail(
+    @Param('ref') ref: string
+    ): Promise<MhouseResponseInterface> {
+     const data = this.hotelBookingService.showHotelBookingDetail(ref);
+     return {
+      data: data,
+      message: "Partage effectué avec succès",
+      code: HttpStatus.OK
+    }
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.hotelBookingService.findOne(+id);
+  @Patch(':ref')
+    @UseGuards(JwtAuthGuard)
+    async updateHotelBooking(
+    @Param('ref') ref: string, 
+    @Body() updateHotelBookingDto: UpdateHotelBookingDto
+    ): Promise<MhouseResponseInterface> {
+    const data = this.hotelBookingService.updateHotelBooking(ref, updateHotelBookingDto);
+    return {
+      data: data,
+      message: "Partage effectué avec succès",
+      code: HttpStatus.OK
+    }
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateHotelBookingDto: UpdateHotelBookingDto) {
-    return this.hotelBookingService.update(+id, updateHotelBookingDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.hotelBookingService.remove(+id);
-  }
 }
