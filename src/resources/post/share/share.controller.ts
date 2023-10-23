@@ -37,7 +37,7 @@ export class ShareController {
     const data = await this.shareService.listShare(listShareDto, account);
     return {
       data: data,
-      message: "Partage effectué avec succès",
+      message: "Liste des partages obtenue avec succès",
       code: HttpStatus.OK
     }
   }
@@ -50,7 +50,7 @@ export class ShareController {
     const data = await this.shareService.showShareDetail(ref);
     return {
       data: data,
-      message: "Partage effectué avec succès",
+      message: "Détails du partage obtenus avec succès avec succès",
       code: HttpStatus.OK
     };
   }

@@ -46,7 +46,7 @@ export class SponsorService {
 
     let listSponsors: Sponsor[] = [];
     let sponsors: Sponsor[] = [];
-    let tab;
+
     if (listSponsorDto.refAccount != undefined) {
       const userAccount = await this.accountRepository.findOneBy({refAccount: listSponsorDto.refAccount});
       if (userAccount == null) {
@@ -58,11 +58,11 @@ export class SponsorService {
     } else if (listSponsorDto.all == 1){
       listSponsors = await this.sponsorRepository.find();
     } else {
-      const userAccount = await this.accountRepository.findOneBy({refAccount: account.refAccount});
-      userAccount.posts.forEach(post => {
-        tab = post.sponsors;
-        listSponsors.concat(tab); 
-        console.log(post.sponsors, tab);
+      account.posts.filter(post => {
+        sponsors = post.sponsors;
+        sponsors.forEach(sponsor => {
+          listSponsors.push(sponsor);
+        });
       });
     }
 
@@ -71,35 +71,35 @@ export class SponsorService {
       if (post == null) {
         throw new HttpException("Post not found", HttpStatus.NOT_FOUND);
       } 
-      listSponsors.filter(sponsor => {
-        if (sponsor.post == post) {
-            sponsors.push(sponsor);
-        }      
-      });
-      listSponsors = sponsors;
+      sponsors = post.sponsors;
+      listSponsors = post.sponsors;
     } 
 
-    listSponsors.filter(post => {
+    listSponsors.filter(sponsor => {
       if (listSponsorDto.createdAt != undefined) {
-        if (post.createdAt.toDateString() == listSponsorDto.createdAt.toDateString()) {
-          sponsors.push(post);
+        if (sponsor.createdAt.toDateString() == listSponsorDto.createdAt.toDateString()) {
+          if (!sponsors.includes(sponsor)) {
+            sponsors.push(sponsor);
+          }
         }
       }      
       if (listSponsorDto.updatedAt != undefined) {
-        if (post.updatedAt.toDateString() == listSponsorDto.updatedAt.toDateString()) {
-          sponsors.push(post);
+        if (sponsor.updatedAt.toDateString() == listSponsorDto.updatedAt.toDateString()) {
+          if (!sponsors.includes(sponsor)) {
+            sponsors.push(sponsor);
+          }
         }
-      }   
+      } 
     });
 
     if ((sponsors.length == 0) 
-    && ((listSponsorDto.createdAt != undefined)||(listSponsorDto.updatedAt != undefined))
-    ) {
+      && ((listSponsorDto.createdAt != undefined)
+      ||(listSponsorDto.updatedAt != undefined)
+      )) {
       throw new HttpException("Sponsor not found", HttpStatus.NOT_FOUND);
-    } else if (sponsors.length != 0) {
+    }  else if (sponsors.length != 0) {
       listSponsors = sponsors;
     }
-    
     return listSponsors;
   }
 

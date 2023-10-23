@@ -47,8 +47,7 @@ export class ShareService {
   }
 
   async listShare(listShareDto: ListShareDto, account: any): Promise<Share[]> {
-    let listShares: Share[];
-
+    let listShares: Share[] = [];
     let shares: Share[] = [];
 
     if (listShareDto.refAccount != undefined) {
@@ -62,44 +61,48 @@ export class ShareService {
     } else if (listShareDto.all == 1){
       listShares = await this.shareRepository.find();
     } else {
-      account.discussions.filter(discussion => {
-        listShares.concat(discussion.offers)
+      account.post.filter(post => {
+        shares = post.shares;
+        shares.forEach(share => {
+          listShares.push(share);
+        });
       });
     }
 
     if (listShareDto.refPost != undefined) {
       const post = await this.postRepository.findOneBy({refPost: listShareDto.refPost});
       if (post == null) {
-        throw new HttpException("Service not found", HttpStatus.NOT_FOUND);
+        throw new HttpException("Post not found", HttpStatus.NOT_FOUND);
       } 
-      listShares.filter(offer => {
-        if (offer.post == post) {
-          shares.push(offer);
-        }      
-      });
-      listShares = shares;
+      shares = post.shares;
+      listShares = post.shares;;
     } 
-    listShares.filter(post => {
+
+    listShares.filter(share => {
       if (listShareDto.createdAt != undefined) {
-        if (post.createdAt.toDateString() == listShareDto.createdAt.toDateString()) {
-          shares.push(post);
+        if (share.createdAt.toDateString() == listShareDto.createdAt.toDateString()) {
+          if (!shares.includes(share)) {
+            shares.push(share);
+          }
         }
       }      
       if (listShareDto.updatedAt != undefined) {
-        if (post.updatedAt.toDateString() == listShareDto.updatedAt.toDateString()) {
-          shares.push(post);
+        if (share.updatedAt.toDateString() == listShareDto.updatedAt.toDateString()) {
+          if (!shares.includes(share)) {
+            shares.push(share);
+          }
         }
       }   
     });
 
     if ((shares.length == 0) 
-    && ((listShareDto.createdAt != undefined)||(listShareDto.updatedAt != undefined))
-    ) {
-      throw new HttpException("Message not found", HttpStatus.NOT_FOUND);
+    && ((listShareDto.createdAt != undefined)
+    ||(listShareDto.updatedAt != undefined)
+    )) {
+      throw new HttpException("Share not found", HttpStatus.NOT_FOUND);
     } else if (shares.length != 0) {
       listShares = shares;
     }
-
     return listShares;
   }
 

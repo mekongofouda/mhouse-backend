@@ -10,12 +10,12 @@ export class ListSponsorDto {
 
     @IsString()
     @IsOptional()
-    @MaxLength(16, { message: "La taille maximale du titre est de 32 caractères"})
+    @MaxLength(20, { message: "La taille maximale du titre est de 20 caractères"})
     refAccount: string;
     
     @IsString()
     @IsOptional()
-    @MaxLength(16, { message: "La taille maximale de la description est de 64 caractères"})
+    @MaxLength(20, { message: "La taille maximale de la description est de 20S caractères"})
     refPost: string;
 
     @IsDate()

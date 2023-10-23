@@ -72,8 +72,14 @@ export class LikeService {
     } else if (listLikeDto.all == 1){
       listLikes = await this.likeRepository.find();
     } else {
-      account.discussions.filter(discussion => {
-        listLikes.concat(discussion.offers)
+      account.posts.filter(post => {
+        likes = post.likes;
+        likes.forEach(like => {
+          likes = post.likes;
+          likes.forEach(sponsor => {
+            listLikes.push(sponsor);
+          });
+          });
       });
     }
 
@@ -82,29 +88,30 @@ export class LikeService {
       if (post == null) {
         throw new HttpException("Service not found", HttpStatus.NOT_FOUND);
       } 
-      listLikes.filter(offer => {
-        if (offer.post == post) {
-            likes.push(offer);
-        }      
-      });
-      listLikes = likes;
+      likes = post.likes;
+      listLikes = post.likes;
     } 
-    listLikes.filter(post => {
+    listLikes.filter(like => {
       if (listLikeDto.createdAt != undefined) {
-        if (post.createdAt.toDateString() == listLikeDto.createdAt.toDateString()) {
-          likes.push(post);
+        if (like.createdAt.toDateString() == listLikeDto.createdAt.toDateString()) {
+          if (!likes.includes(like)) {
+            likes.push(like);
+          }
         }
       }      
       if (listLikeDto.updatedAt != undefined) {
-        if (post.updatedAt.toDateString() == listLikeDto.updatedAt.toDateString()) {
-          likes.push(post);
+        if (like.updatedAt.toDateString() == listLikeDto.updatedAt.toDateString()) {
+          if (!likes.includes(like)) {
+            likes.push(like);
+          }
         }
       }   
     });
 
     if ((likes.length == 0) 
-    && ((listLikeDto.createdAt != undefined)||(listLikeDto.updatedAt != undefined))
-    ) {
+    && ((listLikeDto.createdAt != undefined)
+    ||(listLikeDto.updatedAt != undefined)
+    )) {
       throw new HttpException("Message not found", HttpStatus.NOT_FOUND);
     } else if (likes.length != 0) {
       listLikes = likes;

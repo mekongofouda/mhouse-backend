@@ -69,40 +69,44 @@ export class OfferService {
     } else if (listOfferDto.all == 1){
       listOffers = await this.offerRepository.find();
     } else {
-      account.discussions.filter(discussion => {
-        listOffers.concat(discussion.offers)
+      account.posts.filter(post => {
+        offers = post.offers;
+        offers.forEach(offer => {
+          listOffers.push(offer);
+        });
       });
     }
 
     if (listOfferDto.refPost != undefined) {
       const post = await this.postRepository.findOneBy({refPost: listOfferDto.refPost});
       if (post == null) {
-        throw new HttpException("Service not found", HttpStatus.NOT_FOUND);
+        throw new HttpException("Post not found", HttpStatus.NOT_FOUND);
       } 
-      listOffers.filter(offer => {
-        if (offer.post == post) {
-            offers.push(offer);
-        }      
-      });
-      listOffers = offers;
+      offers = post.offers;
+      listOffers = post.offers;;
     } 
-    listOffers.filter(post => {
+    listOffers.filter(offer => {
       if (listOfferDto.createdAt != undefined) {
-        if (post.createdAt.toDateString() == listOfferDto.createdAt.toDateString()) {
-          offers.push(post);
+        if (offer.createdAt.toDateString() == listOfferDto.createdAt.toDateString()) {
+          if (!offers.includes(offer)) {
+            offers.push(offer);
+          }
         }
       }      
       if (listOfferDto.updatedAt != undefined) {
-        if (post.updatedAt.toDateString() == listOfferDto.updatedAt.toDateString()) {
-          offers.push(post);
+        if (offer.updatedAt.toDateString() == listOfferDto.updatedAt.toDateString()) {
+          if (!offers.includes(offer)) {
+            offers.push(offer);
+          }
         }
       }   
     });
 
     if ((offers.length == 0) 
-    && ((listOfferDto.createdAt != undefined)||(listOfferDto.updatedAt != undefined))
-    ) {
-      throw new HttpException("Message not found", HttpStatus.NOT_FOUND);
+    && ((listOfferDto.createdAt != undefined)
+    ||(listOfferDto.updatedAt != undefined)
+    )) {
+      throw new HttpException("Offer not found", HttpStatus.NOT_FOUND);
     } else if (offers.length != 0) {
       listOffers = offers;
     }

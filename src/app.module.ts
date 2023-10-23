@@ -23,7 +23,6 @@ import { RealEstateModule } from './resources/Service/real-estate/real-estate.mo
 import { HotelBookingModule } from './resources/Service/hotel-booking/hotel-booking.module';
 import { HomeCareModule } from './resources/Service/home-care/home-care.module';
 import { dbConstants } from './constants';
-import { ResponseTransforMiddleware } from './middlewares/response-transfor/response-transfor.middleware';
 
 @Module({
   imports: [
@@ -61,9 +60,4 @@ import { ResponseTransforMiddleware } from './middlewares/response-transfor/resp
   providers: [AppService],
 })
 export class AppModule {
-  configure(consumer: MiddlewareConsumer) {
-    consumer
-      .apply(ResponseTransforMiddleware)
-      .forRoutes('account');
-  }
 }

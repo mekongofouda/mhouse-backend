@@ -49,7 +49,7 @@ export class SponsorController {
     const data = await this.sponsorService.showSponsorDetail(ref);
     return {
       data: data,
-      message: "Liste des offres obtenue avec succès",
+      message: "Détails du sponsor obtenus avec succès avec succès",
       code: HttpStatus.OK
     };
   }
