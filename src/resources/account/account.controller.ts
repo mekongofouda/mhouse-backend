@@ -28,7 +28,22 @@ export class AccountController {
 //     };
 //   }
 
-  @Get()
+// @Get()
+// @UseGuards(JwtAuthGuard)
+// @UseInterceptors(TransformResponseInterceptor)
+// async listUserAccount(
+//   @Query() listUserAccountDto: ListUserAccountDto
+// ): Promise<MhouseResponseInterface> {
+//   const data = await this.accountService.listUserAccount(listUserAccountDto);
+//   return {
+//     data: data,
+//     message: "Liste des comptes utilisateurs obtenue avec succès",
+//     code: HttpStatus.OK
+//   }
+// }
+
+ 
+@Get()
   @UseGuards(JwtAuthGuard)
   @UseInterceptors(TransformResponseInterceptor)
   async listUserAccount(
