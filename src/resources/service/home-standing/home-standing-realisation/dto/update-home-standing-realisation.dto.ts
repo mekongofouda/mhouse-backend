@@ -1,4 +1,4 @@
 import { PartialType } from '@nestjs/mapped-types';
-import { CreateHomeStandingRealisationDto } from './create-home-standing-realisation.dto';
+import { AddHomeStandingRealisationDto } from './add-home-standing-realisation.dto';
 
-export class UpdateHomeStandingRealisationDto extends PartialType(CreateHomeStandingRealisationDto) {}
+export class UpdateHomeStandingRealisationDto extends PartialType(AddHomeStandingRealisationDto) {}

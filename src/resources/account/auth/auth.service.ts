@@ -103,6 +103,10 @@ export class AuthService {
     return account;
   }
   
+  async logout() {
+    return await `This action returns a auth`;
+  }
+
   googleLogin(req) {
     if (!req.user) {
       return 'No user from google'
@@ -113,8 +117,5 @@ export class AuthService {
       user: req.user
     }
   }
-  // async logout() {
-  //   return await `This action returns a auth`;
-  // }
 
 }

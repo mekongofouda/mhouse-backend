@@ -1,10 +1,11 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Query, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query, UseGuards, HttpStatus } from '@nestjs/common';
 import { NotificationService } from './notification.service';
 import { SendNotificationDto } from './dto/send-notification.dto';
 import { MarkReadedDto } from './dto/markReaded-notification.dto';
 import { ListNotificationDto } from './dto/list-notification.dto';
 import { ReferencePipe } from 'src/pipes/reference/reference.pipe';
 import { JwtAuthGuard } from 'src/resources/account/auth/auth.guard';
+import { MhouseResponseInterface } from 'src/interfaces/mhouse-response.interface';
 
 @Controller('notification')
 export class NotificationController {
@@ -13,13 +14,18 @@ export class NotificationController {
     private readonly notificationService: NotificationService,
   ) {}
 
-  // @Post()
-  // @UseGuards(JwtAuthGuard)
-  // async sendNotification(
-  //   @Body(ReferencePipe) sendNotificationDto: SendNotificationDto
-  //   ): Promise<MhouseResponseInterface> {
-  //   return await this.notificationService.sendNotification(sendNotificationDto);
-  // }
+  @Post()
+  @UseGuards(JwtAuthGuard)
+  async sendNotification(
+    @Body(ReferencePipe) sendNotificationDto: SendNotificationDto
+    ): Promise<MhouseResponseInterface> {
+    const data = await this.notificationService.sendNotification(sendNotificationDto);
+    return {
+      data: data,
+      message: "Discussion créée avec succès",
+      code: HttpStatus.OK
+    };
+  }
 
   // @Get()
   // @UseGuards(JwtAuthGuard)

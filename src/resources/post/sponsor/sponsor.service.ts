@@ -21,9 +21,16 @@ export class SponsorService {
     private readonly sponsorRepository: Repository<Sponsor>
   ){}
 
-  async sponsor(sponsorDto: SponsorDto): Promise<Sponsor> {
+  async sponsor(sponsorDto: SponsorDto, account: any): Promise<Sponsor> {
+
+    const userAccount = await this.accountRepository.findOneBy({refAccount: account.refAccount});
+    if (userAccount == null) {
+      throw new HttpException("Account not found", HttpStatus.NOT_FOUND)
+    }
+
     //Create the sponsor object with Dto to save it 
     const sponsor = await this.sponsorRepository.create(sponsorDto); 
+
     //Get post to add at the sponsor
     const post = await this.postRepository.findOneBy({refPost: sponsorDto.refPost});
     if (post == null) {
@@ -31,6 +38,7 @@ export class SponsorService {
     }
 
     //Set properties
+    sponsor.account = account;
     sponsor.post = post;
 
     try {
@@ -52,18 +60,11 @@ export class SponsorService {
       if (userAccount == null) {
         throw new HttpException("Account not found", HttpStatus.NOT_FOUND);
       } 
-      userAccount.posts.filter(post => {
-        listSponsors.concat(post.sponsors);
-      });
+      listSponsors = userAccount.sponsors;
     } else if (listSponsorDto.all == 1){
       listSponsors = await this.sponsorRepository.find();
     } else {
-      account.posts.filter(post => {
-        sponsors = post.sponsors;
-        sponsors.forEach(sponsor => {
-          listSponsors.push(sponsor);
-        });
-      });
+      listSponsors = account.sponsors;
     }
 
     if (listSponsorDto.refPost != undefined) {
@@ -71,7 +72,7 @@ export class SponsorService {
       if (post == null) {
         throw new HttpException("Post not found", HttpStatus.NOT_FOUND);
       } 
-      sponsors = post.sponsors;
+      sponsors = post.sponsors; 
       listSponsors = post.sponsors;
     } 
 
@@ -80,8 +81,8 @@ export class SponsorService {
         if (sponsor.createdAt.toDateString() == listSponsorDto.createdAt.toDateString()) {
           if (!sponsors.includes(sponsor)) {
             sponsors.push(sponsor);
+            }
           }
-        }
       }      
       if (listSponsorDto.updatedAt != undefined) {
         if (sponsor.updatedAt.toDateString() == listSponsorDto.updatedAt.toDateString()) {

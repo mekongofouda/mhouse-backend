@@ -1,17 +1,27 @@
-import { Controller, Post, Get, Body, UseGuards, HttpStatus, Req } from '@nestjs/common';
+import { 
+  Controller, 
+  Post, 
+  Get, 
+  Body, 
+  UseGuards, 
+  HttpStatus, 
+  Req, 
+  UseInterceptors, 
+  UploadedFile 
+} from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { RegisterDto } from './dto/register.dto';
 import { LoginCredentialsDto } from './dto/login.credentials.dto';
 import { JwtAuthGuard } from './auth.guard';
 import { ReferencePipe } from 'src/pipes/reference/reference.pipe';
-import { AccountEntity } from 'src/resources/account/entities/account.entity';
-import { RegisterAdminDto } from './dto/register-admin.dto';
 import { MhouseResponseInterface } from 'src/interfaces/mhouse-response.interface';
 import { AuthGuard } from '@nestjs/passport';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(
+  private readonly authService: AuthService) {}
 
   @Post()
   async login (
@@ -26,9 +36,12 @@ export class AuthController {
   }
 
   @Post('register')
+  @UseInterceptors(FileInterceptor('avatar'))
   async register(
-    @Body(ReferencePipe) registerDto: RegisterDto
+    @Body(ReferencePipe) registerDto: RegisterDto,
+    @UploadedFile() avatar: Express.Multer.File
     ) : Promise<MhouseResponseInterface> {
+      console.log(avatar);
     const data = await this.authService.register(registerDto);
     return {
       data: data,
@@ -48,8 +61,8 @@ export class AuthController {
   async facebookLoginRedirect(
     @Req() req: Request): Promise<any> {
     return {
-      statusCode: HttpStatus.OK,
       data: req,
+      statusCode: HttpStatus.OK
     };
   }
 
@@ -68,18 +81,16 @@ export class AuthController {
     ) {
     return this.authService.googleLogin(req)
   }
-  // @Get()
-  // @UseGuards(JwtAuthGuard)
-  // async logout() {
-  //   return await this.authService.logout();
-  // }
-
-
-  // @Post('register/account')
-  // async registerSocialAccount(
-  //   @Body(ReferencePipe) registerDto: RegisterDto
-  //   ) : Promise<AccountEntity> {
-  //   return this.authService.register(registerDto);
-  // }
-
+  
+  @Get()
+  @UseGuards(JwtAuthGuard)
+  async logout(): Promise<MhouseResponseInterface> {
+    const data = await this.authService.logout();
+    return {
+      data: data,
+      message: "Logout effectué avec succès",
+      code: HttpStatus.OK
+    };
+  }
+  
 }

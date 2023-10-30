@@ -22,7 +22,13 @@ export class ShareService {
   ){}
 
 
-  async share(shareDto: ShareDto): Promise<Share>  {
+  async share(shareDto: ShareDto, account: any): Promise<Share>  {
+
+    const userAccount = await this.accountRepository.findOneBy({refAccount: account.refAccount});
+    if (userAccount == null) {
+      throw new HttpException("Account not found", HttpStatus.NOT_FOUND)
+    }
+
     //Get post to add at the share
     const post = await this.postRepository.findOneBy({refPost: shareDto.refPost});
     if (post == null) {
@@ -37,6 +43,7 @@ export class ShareService {
 
     //Set properties
     share.post = post;
+    share.account = userAccount;
 
     try {
       await this.shareRepository.save(share);
@@ -55,18 +62,12 @@ export class ShareService {
       if (userAccount == null) {
         throw new HttpException("Account not found", HttpStatus.NOT_FOUND);
       } 
-      userAccount.posts.filter(post => {
-        listShares.concat(post.shares)
-      });
+      listShares = userAccount.shares;
     } else if (listShareDto.all == 1){
       listShares = await this.shareRepository.find();
     } else {
-      account.post.filter(post => {
-        shares = post.shares;
-        shares.forEach(share => {
-          listShares.push(share);
-        });
-      });
+      console.log(account);
+      listShares = account.shares;
     }
 
     if (listShareDto.refPost != undefined) {
@@ -75,7 +76,7 @@ export class ShareService {
         throw new HttpException("Post not found", HttpStatus.NOT_FOUND);
       } 
       shares = post.shares;
-      listShares = post.shares;;
+      listShares = post.shares;
     } 
 
     listShares.filter(share => {

@@ -1,10 +1,11 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Query, UseGuards, Sse, HttpStatus } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query, UseGuards, Sse, HttpStatus, UseInterceptors } from '@nestjs/common';
 import { AccountService } from './account.service';
 import { InviteUserDto } from './dto/invite-user.dto';
 import { UpdateUserAccountDto } from './dto/update-user-account.dto';
 import { ListUserAccountDto } from './dto/list-user-account.dto';
 import { JwtAuthGuard } from 'src/resources/account/auth/auth.guard';
 import { MhouseResponseInterface } from 'src/interfaces/mhouse-response.interface';
+import { TransformResponseInterceptor } from 'src/interceptors/transform-response/transform-response.interceptor';
 
 @Controller('account')
 export class AccountController {
@@ -29,13 +30,14 @@ export class AccountController {
 
   @Get()
   @UseGuards(JwtAuthGuard)
+  @UseInterceptors(TransformResponseInterceptor)
   async listUserAccount(
     @Query() listUserAccountDto: ListUserAccountDto
   ): Promise<MhouseResponseInterface> {
     const data = await this.accountService.listUserAccount(listUserAccountDto);
     return {
       data: data,
-      message: "Liste des comptes obtenue avec succès",
+      message: "Liste des comptes utilisateurs obtenue avec succès",
       code: HttpStatus.OK
     }
   }

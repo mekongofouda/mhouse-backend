@@ -1,5 +1,4 @@
-import { Type } from "class-transformer";
-import { IsInt, IsNotEmpty, IsOptional, IsString, MaxLength } from "class-validator";
+import { IsNotEmpty, IsOptional, IsString, MaxLength } from "class-validator";
 
 export class PostDto {
 
@@ -10,7 +9,7 @@ export class PostDto {
     
     @IsString()
     @IsNotEmpty()
-    @MaxLength(32, { message: "La taille maximale du titre est de 32 caractères"})
+    @MaxLength(64, { message: "La taille maximale du titre est de 64 caractères"})
     title: string;
 
     @IsString()

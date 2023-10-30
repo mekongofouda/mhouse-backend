@@ -1,4 +1,11 @@
-import { Controller, Post, Body, Patch, Param, UseGuards, HttpStatus } from '@nestjs/common';
+import { 
+  Controller, 
+  Post, 
+  Body, 
+  Patch, 
+  Param, 
+  UseGuards, 
+  HttpStatus } from '@nestjs/common';
 import { PasswordService } from './password.service';
 import { ResetPasswordDto } from './dto/reset-password.dto';
 import { UpdatePasswordDto } from './dto/update-password.dto';

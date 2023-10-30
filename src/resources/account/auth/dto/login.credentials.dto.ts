@@ -8,12 +8,7 @@ export class LoginCredentialsDto {
 
     @IsString()
     @IsNotEmpty()
-    @MinLength(
-        10, 
-        { 
-            message: "La taille Minimale du mot de passe est de 10 caractères"
-        }
-    )
+    @MinLength(10, { message: "La taille Minimale du mot de passe est de 10 caractères" })
     password: string;
 
 }

@@ -1,5 +1,5 @@
 import { Type } from "class-transformer";
-import { IsBoolean, IsDate, IsInt, IsNumber, IsOptional, IsString } from "class-validator";
+import { IsBoolean, IsDate, IsInt, IsNumber, IsOptional, IsString, MaxLength } from "class-validator";
 
 export class ListDiscussionDto {
     
@@ -10,6 +10,7 @@ export class ListDiscussionDto {
 
     @IsString()
     @IsOptional()
+    @MaxLength(20, { message: "La taille maximale de la référence user est de 20 caractères"})
     refAccount: string;
 
     @IsDate()

@@ -1,26 +1,27 @@
 import { Injectable } from '@nestjs/common';
-import { CreateHotelBookingServiceDto } from './dto/create-hotel-booking-service.dto';
+import { AddHotelBookingServiceDto } from './dto/add-hotel-booking-service.dto';
 import { UpdateHotelBookingServiceDto } from './dto/update-hotel-booking-service.dto';
 
 @Injectable()
 export class HotelBookingServiceService {
-  create(createHotelBookingServiceDto: CreateHotelBookingServiceDto) {
+  
+  async addHotelBookingService(addHotelBookingServiceDto: AddHotelBookingServiceDto) {
     return 'This action adds a new hotelBookingService';
   }
 
-  findAll() {
+  async listHotelBookingService() {
     return `This action returns all hotelBookingService`;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} hotelBookingService`;
+  async showHotelBookingServiceDetail(refHotelBookingService: string) {
+    return `This action returns a #${refHotelBookingService} hotelBookingService`;
   }
 
-  update(id: number, updateHotelBookingServiceDto: UpdateHotelBookingServiceDto) {
-    return `This action updates a #${id} hotelBookingService`;
+  async updateHotelBookingService(refHotelBookingService: string, updateHotelBookingServiceDto: UpdateHotelBookingServiceDto) {
+    return `This action updates a #${refHotelBookingService} hotelBookingService`;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} hotelBookingService`;
+  async deleteHotelBookingService(refHotelBookingService: string) {
+    return `This action removes a #${refHotelBookingService} hotelBookingService`;
   }
 }

@@ -1,10 +1,22 @@
+import { 
+    Column, 
+    Entity, 
+    JoinTable, 
+    ManyToMany, 
+    ManyToOne, 
+    OneToMany, 
+    PrimaryGeneratedColumn 
+} from "typeorm";
 import { Discussion } from "src/resources/discussion/entities/discussion.entity";
 import { TimestampEntity } from "src/generics/timestamp.entity";
 import { PostEntity } from "src/resources/post/entities/post.entity";
 import { Role } from "src/resources/role/entities/role.entity";
 import { Service } from "src/resources/service/entities/service.entity";
-import { Column, Entity, JoinTable, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { Like } from "src/resources/post/like/entities/like.entity";
+import { Share } from "src/resources/post/share/entities/share.entity";
+import { Offer } from "src/resources/post/offer/entities/offer.entity";
+import { Sponsor } from "src/resources/post/sponsor/entities/sponsor.entity";
+import { Message } from "src/resources/discussion/message/entities/message.entity";
 
 @Entity('account')
 export class AccountEntity extends TimestampEntity {
@@ -84,7 +96,7 @@ export class AccountEntity extends TimestampEntity {
         {
             type: "simple-array",
             nullable: true, 
-            default: []
+            default: ""
         })
     followed : string[] ;
 
@@ -97,36 +109,58 @@ export class AccountEntity extends TimestampEntity {
     @OneToMany(
         type => PostEntity,
         (post) => post.account,
-        {
-            eager: true
-        }
+        { eager: true }
     )
     posts : PostEntity[]; 
 
     @OneToMany(
         type => Service,
         (service) => service.account,
-        {
-            eager: true
-        }
+        { eager: true }
     )
     services : Service[]; 
 
     @ManyToMany(
         type => Discussion,
         (discussion) => discussion.accounts,
-        {
-            eager: true
-        }
+        { eager: true }
     )
     @JoinTable()
     discussions : Discussion[]; 
 
-    @ManyToOne(
+    @OneToMany(
         type => Like,
-        (like) => like.account
+        (like) => like.account,
+        { eager: true }
     )
     likes : Like[];
 
+    @OneToMany(
+        type => Offer,
+        (offer) => offer.account,
+        { eager: true }
+    )
+    offers : Offer[];
+
+    @OneToMany(
+        type => Share,
+        (share) => share.account,
+        { eager: true }
+    )
+    shares : Share[];
+
+    @OneToMany(
+        type => Sponsor,
+        (sponsor) => sponsor.account,
+        { eager: true }
+    )
+    sponsors : Sponsor[];
+
+    @OneToMany(
+        type => Message,
+        (message) => message.account,
+        { eager: true }
+    )
+    messages : Message[];
 }
  

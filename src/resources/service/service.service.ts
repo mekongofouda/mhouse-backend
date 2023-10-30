@@ -18,7 +18,7 @@ export class ServiceService {
     private readonly serviceRepository: Repository<Service>
   ){}
 
-  async addService(addServiceDto: AddServiceDto, account: AccountEntity) {
+  async addService( addServiceDto: AddServiceDto, account: AccountEntity) {
 
     //Get post to add at the service
     const acccount = await this.accountRepository.create(account);

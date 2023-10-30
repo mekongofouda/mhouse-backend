@@ -1,9 +1,10 @@
-import { IsEmail, IsNotEmpty, IsNumber, IsString, Length } from "class-validator";
+import { IsEmail, IsNotEmpty, IsNumber, Length } from "class-validator";
 
 export class ValidateResetCodeDto {
 
     @IsNumber()
     @IsNotEmpty()
+    @Length(5, 5, { message: "La taille du code est de 6 caractères"})
     resetCode: number;
 
     @IsEmail()

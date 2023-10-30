@@ -16,7 +16,8 @@ export class Discussion extends TimestampEntity {
     refDiscussion: string;
 
     @Column({
-        length: 32
+        length: 64,
+        nullable: true
     })
     title: string;
     

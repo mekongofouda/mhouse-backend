@@ -1,6 +1,6 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
 import { HomeStandingRealisationService } from './home-standing-realisation.service';
-import { CreateHomeStandingRealisationDto } from './dto/create-home-standing-realisation.dto';
+import { AddHomeStandingRealisationDto } from './dto/add-home-standing-realisation.dto';
 import { UpdateHomeStandingRealisationDto } from './dto/update-home-standing-realisation.dto';
 
 @Controller('home-standing-realisation')
@@ -8,27 +8,32 @@ export class HomeStandingRealisationController {
   constructor(private readonly homeStandingRealisationService: HomeStandingRealisationService) {}
 
   @Post()
-  create(@Body() createHomeStandingRealisationDto: CreateHomeStandingRealisationDto) {
-    return this.homeStandingRealisationService.create(createHomeStandingRealisationDto);
+  addHomeStandingRealisation(
+    @Body() addHomeStandingRealisationDto: AddHomeStandingRealisationDto) {
+    return this.homeStandingRealisationService.addHomeStandingRealisation(addHomeStandingRealisationDto);
   }
 
   @Get()
-  findAll() {
-    return this.homeStandingRealisationService.findAll();
+  listHomeStandingRealisation() {
+    return this.homeStandingRealisationService.listHomeStandingRealisation();
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.homeStandingRealisationService.findOne(+id);
+  @Get(':ref')
+  showHomeStandingRealisationDetail(
+    @Param('ref') ref: string) {
+    return this.homeStandingRealisationService.showHomeStandingRealisationDetail(ref);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateHomeStandingRealisationDto: UpdateHomeStandingRealisationDto) {
-    return this.homeStandingRealisationService.update(+id, updateHomeStandingRealisationDto);
+  @Patch(':ref')
+  updateHomeStandingRealisation(
+    @Param('ref') ref: string, 
+  @Body() updateHomeStandingRealisationDto: UpdateHomeStandingRealisationDto) {
+    return this.homeStandingRealisationService.updateHomeStandingRealisation(ref, updateHomeStandingRealisationDto);
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.homeStandingRealisationService.remove(+id);
+  @Delete(':ref')
+  deleteHomeStandingRealisation(
+    @Param('ref') ref: string) {
+    return this.homeStandingRealisationService.deleteHomeStandingRealisation(ref);
   }
 }

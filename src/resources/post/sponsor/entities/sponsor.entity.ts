@@ -1,5 +1,6 @@
 import { TypeSponsorEnum } from "src/enums/type.sponsor.enum";
 import { TimestampEntity } from "src/generics/timestamp.entity";
+import { AccountEntity } from "src/resources/account/entities/account.entity";
 import { PostEntity } from "src/resources/post/entities/post.entity";
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 
@@ -55,4 +56,9 @@ export class Sponsor extends TimestampEntity {
     )
     post : PostEntity; 
 
+    @ManyToOne(
+        type => AccountEntity,
+        (post) => post.sponsors
+    )
+    account : AccountEntity; 
 }

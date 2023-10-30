@@ -17,9 +17,10 @@ export class SponsorController {
   @Post()
   @UseGuards(JwtAuthGuard)
   async sponsor(
-    @Body(ReferencePipe) sponsorDto: SponsorDto
+    @Body(ReferencePipe) sponsorDto: SponsorDto,
+    @Account() account:AccountEntity
     ): Promise<MhouseResponseInterface> {
-    const data = await this.sponsorService.sponsor(sponsorDto);
+    const data = await this.sponsorService.sponsor(sponsorDto, account);
     return {
       data: data,
       message: "Sponsor effectué avec succès",

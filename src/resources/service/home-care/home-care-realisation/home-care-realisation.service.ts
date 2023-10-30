@@ -1,26 +1,26 @@
 import { Injectable } from '@nestjs/common';
-import { CreateHomeCareRealisationDto } from './dto/create-home-care-realisation.dto';
+import { AddHomeCareRealisationDto } from './dto/add-home-care-realisation.dto';
 import { UpdateHomeCareRealisationDto } from './dto/update-home-care-realisation.dto';
 
 @Injectable()
 export class HomeCareRealisationService {
-  create(createHomeCareRealisationDto: CreateHomeCareRealisationDto) {
+  async addHomeCareRealisation( addHomeCareRealisationDto: AddHomeCareRealisationDto) {
     return 'This action adds a new homeCareRealisation';
   }
 
-  findAll() {
+  async listHomeCareRealisation() {
     return `This action returns all homeCareRealisation`;
   }
 
-  findOne(id: number) {
+  async showHomeCareRealisationDetail(id: string) {
     return `This action returns a #${id} homeCareRealisation`;
   }
 
-  update(id: number, updateHomeCareRealisationDto: UpdateHomeCareRealisationDto) {
+  async updateHomeCareRealisation(id: string, updateHomeCareRealisationDto: UpdateHomeCareRealisationDto) {
     return `This action updates a #${id} homeCareRealisation`;
   }
 
-  remove(id: number) {
+  async deleteHomeCareRealisation(id: string) {
     return `This action removes a #${id} homeCareRealisation`;
   }
 }

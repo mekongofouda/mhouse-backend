@@ -29,13 +29,18 @@ export class OfferController {
     }
   }
 
-  // @Patch(':ref')
-  // @UseGuards(JwtAuthGuard)
-  // toogleValidateOffer(
-  //   @Param('ref') ref: string
-  // ): Promise<MhouseResponseInterface> {
-  //   return this.offerService.toogleValidateOffer(ref);
-  // }
+  @Patch(':ref')
+  @UseGuards(JwtAuthGuard)
+  async validateOffer(
+    @Param('ref') ref: string
+  ): Promise<MhouseResponseInterface> {
+    const data = await this.offerService.validateOffer(ref);
+    return {
+      data: data,
+      message: "Offre validée avec succès",
+      code: HttpStatus.OK
+    }
+  }
 
   @Get()
   @UseGuards(JwtAuthGuard)
@@ -59,25 +64,35 @@ export class OfferController {
     const data = await this.offerService.showOfferDetail(ref);
     return {
       data: data,
-      message: "Liste des offres obtenue avec succès",
+      message: "Détails de l'offre obtenue avec succès",
       code: HttpStatus.OK
     };
   }
 
-  // @Patch(':ref')
-  // @UseGuards(JwtAuthGuard)
-  // async updateOffer(
-  //   @Param('ref') ref: string, 
-  //   @Body() updateOfferDto: UpdateOfferDto
-  // ): Promise<MhouseResponseInterface> {
-  //   return await this.offerService.updateOffer(ref, updateOfferDto);
-  // }
+  @Patch(':ref')
+  @UseGuards(JwtAuthGuard)
+  async updateOffer(
+    @Param('ref') ref: string, 
+    @Body() updateOfferDto: UpdateOfferDto
+  ): Promise<MhouseResponseInterface> {
+    const data = await this.offerService.updateOffer(ref, updateOfferDto);
+    return {
+      data: data,
+      message: "Offre mise à jour avec succès",
+      code: HttpStatus.OK
+    };
+  }
 
-  // @Delete(':ref')
-  // @UseGuards(JwtAuthGuard)
-  // async deleteOffer(
-  //   @Param('ref') ref: string
-  //   ): Promise<MhouseResponseInterface> {
-  //   return await this.offerService.deleteOffer(ref);
-  // }
+  @Delete(':ref')
+  @UseGuards(JwtAuthGuard)
+  async deleteOffer(
+    @Param('ref') ref: string
+    ): Promise<MhouseResponseInterface> {
+    const data = await this.offerService.deleteOffer(ref);
+    return {
+      data: data,
+      message: "Offre supprimée avec succès",
+      code: HttpStatus.OK
+    };
+  }
 }

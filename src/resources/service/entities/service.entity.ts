@@ -21,7 +21,8 @@ export class Service extends TimestampEntity {
     refService: string;
 
     @Column({
-        length: 32
+        length: 64,
+        nullable: true
     })
     title: string;
 

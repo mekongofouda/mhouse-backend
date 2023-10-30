@@ -1,6 +1,7 @@
 import { Discussion } from "src/resources/discussion/entities/discussion.entity";
 import { TimestampEntity } from "src/generics/timestamp.entity";
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { AccountEntity } from "src/resources/account/entities/account.entity";
 
 @Entity()
 export class Message extends TimestampEntity {
@@ -34,4 +35,9 @@ export class Message extends TimestampEntity {
     )
     discussion : Discussion; 
 
+    @ManyToOne(
+        type => AccountEntity,
+        (account) => account.messages
+    )
+    account : AccountEntity; 
 }

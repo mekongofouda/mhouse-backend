@@ -10,12 +10,12 @@ export class ListOfferDto {
 
     @IsString()
     @IsOptional()
-    @MaxLength(16, { message: "La taille maximale du titre est de 32 caractères"})
+    @MaxLength(20, { message: "La taille maximale de la référence user est de 20 caractères"})
     refAccount: string;
     
     @IsString()
     @IsOptional()
-    @MaxLength(16, { message: "La taille maximale de la description est de 64 caractères"})
+    @MaxLength(20, { message: "La taille maximale de la description est de 20 caractères"})
     refPost: string;
 
     @IsDate()

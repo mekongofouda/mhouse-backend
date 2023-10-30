@@ -1,7 +1,12 @@
+import { 
+    Column, 
+    Entity,
+    ManyToOne, 
+    PrimaryGeneratedColumn 
+} from "typeorm";
 import { TimestampEntity } from "src/generics/timestamp.entity";
 import { AccountEntity } from "src/resources/account/entities/account.entity";
 import { PostEntity } from "src/resources/post/entities/post.entity";
-import { Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity()
 export class Like extends TimestampEntity {

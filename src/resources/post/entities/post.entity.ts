@@ -20,7 +20,8 @@ export class PostEntity extends TimestampEntity {
     refPost: string;
    
     @Column({
-        length: 32
+        length: 64,
+        nullable: true
     })
     title: string;
     
@@ -37,34 +38,29 @@ export class PostEntity extends TimestampEntity {
 
     @OneToMany(
         type => Share,
-        (share) => share.post
+        (share) => share.post,
+        { eager: true }
     )
     shares : Share[]; 
 
     @OneToMany(
         type => Like,
         (like) => like.post,
-        {
-            eager: true
-        }
+        { eager: true }
     )
     likes : Like[]; 
 
     @OneToMany(
         type => Offer,
         (offer) => offer.post,
-        {
-            eager: true
-        }
+        { eager: true }
     )
     offers : Offer[]; 
 
     @OneToMany(
         type => Sponsor,
         (sponsor) => sponsor.post,
-        {
-            eager: true
-        }
+        { eager: true }
     )
     sponsors : Sponsor[]; 
 

@@ -1,11 +1,11 @@
 import { Type } from "class-transformer";
-import { IsDate, IsOptional, IsString, Length } from "class-validator";
+import { IsDate, IsOptional, IsString, Length, MaxLength } from "class-validator";
 
 export class ListFollowedDto {
 
     @IsString()
     @IsOptional()
-    @Length(32, 32, { message: "La taille maximale du titre est de 32 caractères"})
+    @MaxLength(20, { message: "La taille maximale de la référence user est de 20 caractères"})
     refAccount: string;
     
     @IsDate()

@@ -10,10 +10,12 @@ export class ListLikeDto {
 
     @IsString()
     @IsOptional()
+    @MaxLength(20, { message: "La taille maximale de la reference user est de 20 caractères"})
     refAccount: string;
 
     @IsString()
     @IsOptional()
+    @MaxLength(20, { message: "La taille maximale de la référence du post est de 20 caractères"})
     refPost: string;
 
     @IsDate()

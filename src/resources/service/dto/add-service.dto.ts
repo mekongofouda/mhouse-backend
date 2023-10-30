@@ -5,7 +5,7 @@ export class AddServiceDto {
 
     @IsString()
     @IsOptional()
-    @MaxLength(32, { message: "La taille maximale du titre est de 32 caractères"})
+    @MaxLength(64, { message: "La taille maximale du titre est de 64 caractères"})
     title: string;
     
     @IsString()

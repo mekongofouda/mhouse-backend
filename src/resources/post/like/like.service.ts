@@ -5,6 +5,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { PostEntity } from 'src/resources/post/entities/post.entity';
 import { AccountEntity } from '../../account/entities/account.entity';
+import { LikeDto } from './dto/like.dto';
 
 @Injectable()
 export class LikeService {
@@ -21,44 +22,49 @@ export class LikeService {
 
   ){}
 
-  async toogleLike(refPost: string, account: any): Promise<Like> {
-    let currentLike: Like;
-    const userAccount = await this.accountRepository.findOneBy(account.refAccount);
+  async like(likeDto: LikeDto, account: any): Promise<Like> {
+
+    let like = await this.likeRepository.create(likeDto);
+    const userAccount = await this.accountRepository.findOneBy({refAccount: account.refAccount});
     if (userAccount == null) {
       throw new HttpException("Account not found", HttpStatus.NOT_FOUND)
     }
-    const post  = await this.postRepository.findOneBy({refPost});
+    const post  = await this.postRepository.findOneBy({refPost: likeDto.refPost});
     if (post == null) {
       throw new HttpException("Post not found", HttpStatus.NOT_FOUND)
     }
-    const likes = post.likes;
-    if (likes == null) {
-      currentLike.account = userAccount;
-      currentLike.post = post;
-      currentLike.isLiked = true;
-      try {
-        await this.likeRepository.save(currentLike);
-      } catch (error) {
-        throw new ConflictException(error.driverError.detail);
-      }
-    } else {
-      likes.forEach(like => {
-        if ((like.account == userAccount) && (like.post == post)) {
-          currentLike = like;
-        }
-        if (currentLike.isLiked == true) {
-          currentLike.isLiked = false;
-        } else {
-          currentLike.isLiked = true;
-        }
-      })
+    like.account = userAccount;
+    like.post = post; 
+    try {
+      await this.likeRepository.save(like);
+    } catch (error) {
+      throw new ConflictException(error.driverError.detail);
     }
-    return currentLike;
+    return like;
+  }
+
+  async unlike(refLike: string): Promise<Like> {
+
+    const like = await this.likeRepository.findOneBy({refLike});
+    if (like == null) {
+      throw new HttpException("Post not found", HttpStatus.NOT_FOUND)
+    }    
+    if (like.isLiked == true) {
+      like.isLiked = false;
+    } else {
+      like.isLiked = true;
+    }
+    try {
+      await this.likeRepository.save(like);
+    } catch (error) {
+      throw new ConflictException(error.driverError.detail);
+    }
+    return like;
   }
 
   async listLike(listLikeDto: ListLikeDto, account: any): Promise<Like[]> {
 
-    let listLikes: Like[];
+    let listLikes: Like[] = [];
     let likes: Like[] = [];
 
     if (listLikeDto.refAccount != undefined) {
@@ -66,27 +72,23 @@ export class LikeService {
       if (userAccount == null) {
         throw new HttpException("Account not found", HttpStatus.NOT_FOUND);
       } 
-      userAccount.posts.filter(post => {
-        listLikes.concat(post.likes)
-      });
+      listLikes = userAccount.likes;
     } else if (listLikeDto.all == 1){
       listLikes = await this.likeRepository.find();
     } else {
-      account.posts.filter(post => {
-        likes = post.likes;
-        likes.forEach(like => {
-          likes = post.likes;
-          likes.forEach(sponsor => {
-            listLikes.push(sponsor);
-          });
-          });
-      });
+      const userAccount = await this.accountRepository.findOneBy({refAccount: account.refAccount});
+      if (userAccount == null) {
+        throw new HttpException("Account not found", HttpStatus.NOT_FOUND);
+      } 
+      if (userAccount.likes != undefined) {
+        listLikes = userAccount.likes;
+      }
     }
 
     if (listLikeDto.refPost != undefined) {
       const post = await this.postRepository.findOneBy({refPost: listLikeDto.refPost});
       if (post == null) {
-        throw new HttpException("Service not found", HttpStatus.NOT_FOUND);
+        throw new HttpException("Post not found", HttpStatus.NOT_FOUND);
       } 
       likes = post.likes;
       listLikes = post.likes;
@@ -112,7 +114,7 @@ export class LikeService {
     && ((listLikeDto.createdAt != undefined)
     ||(listLikeDto.updatedAt != undefined)
     )) {
-      throw new HttpException("Message not found", HttpStatus.NOT_FOUND);
+      throw new HttpException("Like not found", HttpStatus.NOT_FOUND);
     } else if (likes.length != 0) {
       listLikes = likes;
     }

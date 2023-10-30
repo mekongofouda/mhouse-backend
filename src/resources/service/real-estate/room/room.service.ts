@@ -1,26 +1,27 @@
 import { Injectable } from '@nestjs/common';
-import { CreateRoomDto } from './dto/create-room.dto';
+import { AddRoomDto } from './dto/add-room.dto';
 import { UpdateRoomDto } from './dto/update-room.dto';
 
 @Injectable()
 export class RoomService {
-  create(createRoomDto: CreateRoomDto) {
+  
+  async addRoom(AddRoomDto: AddRoomDto) {
     return 'This action adds a new room';
   }
 
-  findAll() {
+  async showRoomList() {
     return `This action returns all room`;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} room`;
+  async showRoomDetail(refRoom: string) {
+    return `This action returns a #${refRoom} room`;
   }
 
-  update(id: number, updateRoomDto: UpdateRoomDto) {
-    return `This action updates a #${id} room`;
+  async updateRoom(refRoom: string, updateRoomDto: UpdateRoomDto) {
+    return `This action updates a #${refRoom} room`;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} room`;
+  async delateRoom(refRoom: string) {
+    return `This action removes a #${refRoom} room`;
   }
 }

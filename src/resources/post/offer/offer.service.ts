@@ -1,4 +1,4 @@
-import { BadRequestException, ConflictException, HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { ConflictException, HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { OfferDto } from './dto/offer.dto';
 import { UpdateOfferDto } from './dto/update-offer.dto';
 import { Offer } from './entities/offer.entity';
@@ -39,19 +39,25 @@ export class OfferService {
     try {
       await this.offerRepository.save(offer);
     } catch (error) {
+      console.log(error);
       throw new ConflictException(error.driverError.detail);
     }
     return offer;
   }
 
-  // async toogleValidateOffer(refOffer: string): Promise<Offer> {
-  //   const offer = await this.offerRepository.findOne({where:{refOffer}});
-  //   if (offer == null) {
-  //     throw new HttpException("Offer not found", HttpStatus.NOT_FOUND)
-  //   }    
-  //   return await this.offerRepository.save(offer);
+  async validateOffer(refOffer: string): Promise<Offer> {
+    const offer = await this.offerRepository.findOne({where:{refOffer}});
+    if (offer == null) {
+      throw new HttpException("Offer not found", HttpStatus.NOT_FOUND)
+    }    
+    if (offer.status == "encours") {
+      offer.status = "valid";
+    } else {
+      offer.status = "rejected";
+    }
+    return await this.offerRepository.save(offer);
 
-  // }
+  }
 
   async listOffer(listOfferDto: ListOfferDto, account: any): Promise<Offer[]> {
 
@@ -63,18 +69,11 @@ export class OfferService {
       if (userAccount == null) {
         throw new HttpException("Account not found", HttpStatus.NOT_FOUND);
       } 
-      userAccount.posts.filter(post => {
-        listOffers.concat(post.offers)
-      });
+      listOffers = userAccount.offers;;
     } else if (listOfferDto.all == 1){
       listOffers = await this.offerRepository.find();
     } else {
-      account.posts.filter(post => {
-        offers = post.offers;
-        offers.forEach(offer => {
-          listOffers.push(offer);
-        });
-      });
+      listOffers = account.offers;;
     }
 
     if (listOfferDto.refPost != undefined) {
@@ -83,7 +82,7 @@ export class OfferService {
         throw new HttpException("Post not found", HttpStatus.NOT_FOUND);
       } 
       offers = post.offers;
-      listOffers = post.offers;;
+      listOffers = post.offers;
     } 
     listOffers.filter(offer => {
       if (listOfferDto.createdAt != undefined) {

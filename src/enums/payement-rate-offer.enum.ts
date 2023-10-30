@@ -1,4 +1,6 @@
 export enum PayementRateOfferEnum {
     JOUR = 'jour',
-    MOIS = 'mois'
+    SEMAINE = 'semaine',
+    MOIS = 'mois',
+    AN = 'an'
 } 

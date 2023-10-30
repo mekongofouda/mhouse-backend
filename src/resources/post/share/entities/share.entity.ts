@@ -1,5 +1,6 @@
 import { TypeShareEnum } from "src/enums/type.share.enum";
 import { TimestampEntity } from "src/generics/timestamp.entity";
+import { AccountEntity } from "src/resources/account/entities/account.entity";
 import { PostEntity } from "src/resources/post/entities/post.entity";
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 
@@ -33,5 +34,12 @@ export class Share extends TimestampEntity {
         (post) => post.shares
     )
     post : PostEntity; 
+
+    @ManyToOne(
+        type => AccountEntity,
+        (account) => account.shares
+    )
+    account : AccountEntity; 
+
 
 }

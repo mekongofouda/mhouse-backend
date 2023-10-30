@@ -1,7 +1,8 @@
 import { TypeHomeCareEnum } from "src/enums/type.home-care.enum";
 import { TimestampEntity } from "src/generics/timestamp.entity";
-import { Column, Entity, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 import { Service } from "../../entities/service.entity";
+import { HomeCareRealisation } from "../home-care-realisation/entities/home-care-realisation.entity";
 
 @Entity('home-care')
 export class HomeCare extends TimestampEntity {
@@ -32,5 +33,11 @@ export class HomeCare extends TimestampEntity {
         (service) => service.homeCare
     )
     service: Service;
+
+    @OneToMany(
+        type => HomeCareRealisation,
+        (homeCareRealisations) => homeCareRealisations.homeCare
+    )
+    homeCareRealisations: HomeCareRealisation[]
 
 }

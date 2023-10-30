@@ -10,30 +10,40 @@ import { RealEstate } from './entities/real-estate.entity';
 export class RealEstateService {
 
   constructor(  
+    @InjectRepository(Service) 
+    private readonly serviceRepository: Repository<Service>,
+
     @InjectRepository(RealEstate) 
     private readonly realEstateRepository: Repository<RealEstate>
+
   ){}
 
   async addRealEstate(addRealEstateDto: AddRealEstateDto) {
 
     //Create the service object with Dto to save it 
-    const realEstate = await this.realEstateRepository.create(addRealEstateDto); 
-    if (realEstate == null) {
-      throw new HttpException("real estate not found", HttpStatus.NOT_FOUND);
+    const service = await this.serviceRepository.create(addRealEstateDto); 
+    if (service == null) {
+      throw new BadRequestException("Service not found");
     }
 
+    //Create the realEstate object with Dto to save it 
+    const realEstate = await this.realEstateRepository.create(addRealEstateDto); 
+    if (service == null) {
+      throw new BadRequestException("Service not found");
+    }
+    realEstate.service = service; 
     try {
       await this.realEstateRepository.save(realEstate);
     } catch (error) {
       throw new ConflictException(error.driverError.detail);
     }
-    return realEstate;
+    return service;
   }
 
   async showRealEstateDetail(refRealEstate: string) {
     const realEstate = await this.realEstateRepository.findOneBy({refRealEstate});
     if (realEstate == null) {
-      throw new HttpException("Service not found", HttpStatus.NOT_FOUND)
+      throw new HttpException("RealEstate not found", HttpStatus.NOT_FOUND)
     }    
     return realEstate;
   }
@@ -41,7 +51,7 @@ export class RealEstateService {
   async updateRealEstate(refRealEstate: string, updateRealEstateDto: UpdateRealEstateDto) {
     const realEstate = await this.realEstateRepository.findOneBy({refRealEstate});
     if (realEstate == null) {
-      throw new HttpException("Service not found", HttpStatus.NOT_FOUND)
+      throw new HttpException("RealEstate not found", HttpStatus.NOT_FOUND)
     }    
     Object.assign(realEstate, updateRealEstateDto);
     try {

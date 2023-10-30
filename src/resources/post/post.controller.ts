@@ -19,10 +19,10 @@ export class PostController {
   @Post()
   @UseGuards(JwtAuthGuard)
   async post(
-    @Account() user,
+    @Account() account,
     @Body(ReferencePipe) postDto: PostDto
     ): Promise<MhouseResponseInterface> {
-      const data = await this.postService.post(postDto, user);
+      const data = await this.postService.post(postDto, account);
       return {
         data: data,
         message: "Publication effectuée avec succès",
@@ -52,7 +52,7 @@ export class PostController {
     const data = await this.postService.showPostDetail(ref);
     return {
       data: data,
-      message: "Liste des offres obtenue avec succès",
+      message: "Détails de la publication obtenues avec succès",
       code: HttpStatus.OK
     };
   }
@@ -66,7 +66,7 @@ export class PostController {
     const data = await this.postService.updatePost(ref, updatePostDto);
     return {
       data: data,
-      message: "Liste des offres obtenue avec succès",
+      message: "Mise à jour de la publication effectuée avec succès",
       code: HttpStatus.OK
     };
   }
@@ -79,7 +79,7 @@ export class PostController {
     const data = await this.postService.deletePost(ref);
     return {
       data: data,
-      message: "Liste des offres obtenue avec succès",
+      message: "Publication supprimée avec succès",
       code: HttpStatus.OK
     };
   }

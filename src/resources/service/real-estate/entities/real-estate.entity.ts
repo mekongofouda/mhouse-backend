@@ -1,8 +1,9 @@
 import { StatusRealEstateEnum } from "src/enums/status.real-estate.enum";
 import { TypeRealEstateEnum } from "src/enums/type.real-estate.enum";
 import { TimestampEntity } from "src/generics/timestamp.entity";
-import { Column, Entity, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 import { Service } from "../../entities/service.entity";
+import { Room } from "../room/entities/room.entity";
 
 @Entity('real-estate')
 export class RealEstate extends TimestampEntity {
@@ -75,5 +76,11 @@ export class RealEstate extends TimestampEntity {
     )
     service: Service;
 
+    @OneToMany(
+        type => Room,
+        (room) => room.realEstate
+    )
+    rooms: Room[]
+    
 }
 

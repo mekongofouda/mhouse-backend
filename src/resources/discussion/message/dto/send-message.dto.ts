@@ -4,12 +4,12 @@ export class SendMessageDto {
 
     @IsString()
     @IsOptional()
-    @MaxLength(64, { message: "La taille maximale de la description est de 64 caractères"})
+    @MaxLength(20, { message: "La taille maximale de la description est de 20 caractères"})
     refDiscussion: string;
     
     @IsString()
     @IsOptional()
-    @MaxLength(64, { message: "La taille maximale de la description est de 64 caractères"})
+    @MaxLength(128, { message: "La taille maximale de la description est de 128 caractères"})
     description: string;
 
     @IsString()

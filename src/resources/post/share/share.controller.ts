@@ -18,9 +18,10 @@ export class ShareController {
   @Post()
   @UseGuards(JwtAuthGuard)
   async share(
-    @Body(ReferencePipe) shareDto: ShareDto
+    @Body(ReferencePipe) shareDto: ShareDto,
+    @Account() account:AccountEntity
     ): Promise<MhouseResponseInterface> {
-    const data = await this.shareService.share(shareDto);
+    const data = await this.shareService.share(shareDto, account);
     return {
       data: data,
       message: "Partage effectué avec succès",

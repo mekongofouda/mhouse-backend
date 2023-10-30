@@ -47,8 +47,8 @@ export class PostService {
 
   async listPost(listPostDto: ListPostDto, account: any): Promise<PostEntity[]>{
 
-    let listPosts: PostEntity[]=[];
-    let posts: PostEntity[]=[];
+    let listPosts: PostEntity[] = [];
+    let posts: PostEntity[] = [];
 
     if (listPostDto.refAccount != undefined) {
       const userAccount = await this.accountRepository.findOneBy({refAccount: listPostDto.refAccount});
@@ -116,7 +116,6 @@ export class PostService {
     } catch (error) {
       throw new ConflictException(error.driverError.detail);
     }
-
     return post; 
   }
 

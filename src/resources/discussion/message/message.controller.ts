@@ -56,11 +56,16 @@ export class MessageController {
     };
   }
 
-  // @Delete(':ref')
-  // @UseGuards(JwtAuthGuard)
-  // async deleteMessage(
-  //   @Param('ref') ref: string
-  //   ): Promise<Message> {
-  //   return await this.messageService.deleteMessage(ref);
-  // }
+  @Delete(':ref')
+  @UseGuards(JwtAuthGuard)
+  async deleteMessage(
+    @Param('ref') ref: string
+    ): Promise<MhouseResponseInterface> {
+    const data = await this.messageService.deleteMessage(ref);
+    return {
+      data: data,
+      message: "Message supprimé avec succès",
+      code: HttpStatus.OK
+    };
+  }
 }

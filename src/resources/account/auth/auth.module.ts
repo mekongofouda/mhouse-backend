@@ -6,11 +6,11 @@ import { JwtModule } from '@nestjs/jwt';
 import { AccountService } from 'src/resources/account/account.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AccountEntity } from 'src/resources/account/entities/account.entity';
-import { JwtStrategy } from './strategy/jwt.strategy';
+import { JwtStrategy } from './strategies/jwt.strategy';
 import { ConfigService } from '@nestjs/config';
 import { jwtConstants } from '../../../constants';
 import { Role } from 'src/resources/role/entities/role.entity';
-import { FacebookStrategy } from './strategy/facebook.strategy';
+import { FacebookStrategy } from './strategies/facebook.strategy';
 
 @Module({
   imports: [

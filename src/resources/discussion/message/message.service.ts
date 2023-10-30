@@ -48,23 +48,19 @@ export class MessageService {
 
   async listMessage(listMessageDto: ListMessageDto, account: any): Promise<Message[]>{
 
-    let listMessages: Message[]=[];
-    let messages: Message[]=[];
+    let listMessages: Message[] = [];
+    let messages: Message[] = [];
 
     if (listMessageDto.refAccount != undefined) {
       const userAccount = await this.accountRepository.findOneBy({refAccount: listMessageDto.refAccount});
       if (userAccount == null) {
         throw new HttpException("Account not found", HttpStatus.NOT_FOUND);
       } 
-      userAccount.discussions.filter(discussion => {
-        listMessages.concat(discussion.messages)
-      });
+      listMessages = userAccount.messages;
     } else if (listMessageDto.all == 1){
       listMessages = await this.messageRepository.find();
     } else {
-      account.discussions.filter(discussion => {
-        listMessages.concat(discussion.messages)
-      });
+      listMessages = account.messages;
     }
 
     if (listMessageDto.refDiscussion != undefined) {

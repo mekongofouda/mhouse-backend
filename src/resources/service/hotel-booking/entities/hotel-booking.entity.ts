@@ -1,7 +1,8 @@
 import { TypeHotelBookingEnum } from "src/enums/type.hotel-booking.enum";
 import { TimestampEntity } from "src/generics/timestamp.entity";
-import { Column, Entity, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 import { Service } from "../../entities/service.entity";
+import { HotelBookingService } from "../hotel-booking-service/entities/hotel-booking-service.entity";
 
 @Entity('hotel-booking')
 export class HotelBooking extends TimestampEntity {
@@ -33,4 +34,9 @@ export class HotelBooking extends TimestampEntity {
     )
     service: Service;
 
+    @OneToMany(
+        type => HotelBookingService,
+        (hotelBookingService) => hotelBookingService.hotelBooking
+    )
+    hotelBookingServices: HotelBookingService[];
 }

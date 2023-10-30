@@ -1,12 +1,22 @@
-import { Controller, Get, Post, Body, Patch, Param, Query, UseGuards, HttpStatus } from '@nestjs/common';
+import { 
+  Controller, 
+  Get, 
+  Post, 
+  Body, 
+  Patch, 
+  Param, 
+  Query, 
+  UseGuards, 
+  HttpStatus 
+} from '@nestjs/common';
 import { LikeService } from './like.service';
 import { ListLikeDto } from './dto/list-like.dto';
 import { ReferencePipe } from 'src/pipes/reference/reference.pipe';
-import { Like } from './entities/like.entity';
 import { JwtAuthGuard } from 'src/resources/account/auth/auth.guard';
 import { MhouseResponseInterface } from 'src/interfaces/mhouse-response.interface';
 import { Account } from 'src/decorators/account.decorator';
 import { AccountEntity } from '../../account/entities/account.entity';
+import { LikeDto } from './dto/like.dto';
 
 @Controller('like')
 export class LikeController {
@@ -16,13 +26,26 @@ export class LikeController {
   ) {}
 
 
-  @Patch('ref')
+  @Post()
   @UseGuards(JwtAuthGuard)
-  async toogleLike(
-    @Param('ref') ref: string,
+  async like(
+    @Body(ReferencePipe) likeDto: LikeDto,
     @Account() account:AccountEntity
     ): Promise<MhouseResponseInterface> {
-    const data = await this.likeService.toogleLike(ref, account);
+    const data = await this.likeService.like(likeDto, account);
+    return {
+      data: data,
+      message: "Liste des likes obtenue avec succès",
+      code: HttpStatus.OK
+    };
+  }
+
+  @Patch(':ref')
+  @UseGuards(JwtAuthGuard)
+  async unlike(
+    @Param('ref') refLike: string
+    ): Promise<MhouseResponseInterface> {
+    const data = await this.likeService.unlike(refLike);
     return {
       data: data,
       message: "Liste des likes obtenue avec succès",

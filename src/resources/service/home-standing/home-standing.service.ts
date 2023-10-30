@@ -4,25 +4,36 @@ import { UpdateHomeStandingDto } from './dto/update-home-standing.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { HomeStanding } from './entities/home-standing.entity';
+import { Service } from '../entities/service.entity';
 
 @Injectable()
 export class HomeStandingService {
   
     constructor(  
+      @InjectRepository(Service) 
+      private readonly serviceRepository: Repository<Service>,
+
       @InjectRepository(HomeStanding) 
       private readonly homeStandingRepository: Repository<HomeStanding>
+
     ){}
 
   async addHomeStanding(addHomeStandingDto: AddHomeStandingDto) {
 
     //Create the service object with Dto to save it 
-    const service = await this.homeStandingRepository.create(addHomeStandingDto); 
+    const service = await this.serviceRepository.create(addHomeStandingDto); 
     if (service == null) {
-      throw new BadRequestException("Hare not found");
+      throw new BadRequestException("Service not found");
     }
 
+    //Create the homeCare object with Dto to save it 
+    const homeCare = await this.homeStandingRepository.create(addHomeStandingDto); 
+    if (service == null) {
+      throw new BadRequestException("Service not found");
+    }
+    homeCare.service = service; 
     try {
-      await this.homeStandingRepository.save(service);
+      await this.homeStandingRepository.save(homeCare);
     } catch (error) {
       throw new ConflictException(error.driverError.detail);
     }

@@ -14,21 +14,36 @@ export class FollowerService {
     private readonly accountRepository: Repository<AccountEntity>
   ){}
 
-  async toogleFollow(refAccount: string, account: any) {
+  async follow(refAccount: string, account: any) {
+    const userAccount = await this.accountRepository.findOneBy({refAccount});
+    if (userAccount == null) {
+      throw new HttpException("Account not found", HttpStatus.NOT_FOUND);
+    }    
+
+    const myAccount = await this.accountRepository.create(account)[0];
+    myAccount.followed.push(userAccount.refAccount);
+
+    try {
+      await this.accountRepository.save(myAccount);
+    } catch (error) { 
+      throw new ConflictException(error.driverError.detail);
+    }
+    return myAccount;
+  }
+
+  async notFollow(refAccount: string, account: any) {
     const userAccount = await this.accountRepository.findOne({where:{refAccount}});
     if (userAccount == null) {
       throw new HttpException("Account not found", HttpStatus.NOT_FOUND);
     }    
     const myAccount = await this.accountRepository.create(account)[0];
-    if (myAccount.followed.find(ref => {
-      account.refAccount = ref;
-    }) != undefined) {
-      myAccount.followed.splice(myAccount.followed.findIndex(ref => {
-        account.refAccount = ref;
-      }));
-    } else {
-      myAccount.followed.push(myAccount.refAccount);
-    }
+    const index = myAccount.followed.findIndex(refAccount => {
+      refAccount == userAccount.refAccount;
+    })
+    console.log(index);
+    myAccount.followed.includes(userAccount.refAccount)
+    myAccount.followed.splice(index, 1);
+
     try {
       await this.accountRepository.save(myAccount);
     } catch (error) { 

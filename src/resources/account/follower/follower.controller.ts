@@ -14,13 +14,33 @@ export class FollowerController {
   constructor(private readonly followerService: FollowerService) {}
 
 
-  // @Patch(':ref')
-  // @UseGuards(JwtAuthGuard)
-  // async toogleFollow(
-  //   @Param('ref') ref: string, 
-  // ): Promise<MhouseResponseInterface> {
-  //   return await this.followerService.toogleFollow(ref);
-  // }
+  @Patch(':ref')
+  @UseGuards(JwtAuthGuard)
+  async follow(
+    @Param('ref') ref: string, 
+    @Account() account
+  ): Promise<MhouseResponseInterface> {
+    const data = await this.followerService.follow(ref, account);
+    return {
+      data: data,
+      message: "Utilisateur non suivi !",
+      code: HttpStatus.OK
+    }
+  }
+
+  @Patch(':ref')
+  @UseGuards(JwtAuthGuard)
+  async notFollow(
+    @Param('ref') ref: string, 
+    @Account() account
+  ): Promise<MhouseResponseInterface> {
+    const data = await this.followerService.notFollow(ref, account);
+    return {
+      data: data,
+      message: "Utilisateur non suivi !",
+      code: HttpStatus.OK
+    }
+  }
 
   @Get()
   @UseGuards(JwtAuthGuard)

@@ -1,6 +1,7 @@
-import { Column, Entity, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 import { Service } from "../../entities/service.entity";
 import { TypeHomeStandingEnum } from "src/enums/type.home-standing.enum";
+import { HomeStandingRealisation } from "../home-standing-realisation/entities/home-standing-realisation.entity";
 
 @Entity('hotel-standing')
 export class HomeStanding {
@@ -31,4 +32,10 @@ export class HomeStanding {
         (service) => service.homeStanding
     )
     service: Service;
+
+    @OneToMany(
+        type => HomeStandingRealisation,
+        (realisation) => realisation.homeStanding
+    )
+    homeStandingRealisations: HomeStandingRealisation[]
 }
