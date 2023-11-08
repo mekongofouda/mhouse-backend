@@ -1,10 +1,10 @@
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 import { HomeStanding } from "../../entities/home-standing.entity";
-import { TypeHomeStandingEnum } from "src/enums/type.home-standing.enum";
 import { TypeHomeStandingRealisationEnum } from "src/enums/type.home-standing-realisation.enum";
+import { TimestampEntity } from "src/generics/timestamp.entity";
 
 @Entity('hotel-standing-realisation')
-export class HomeStandingRealisation {
+export class HomeStandingRealisation extends TimestampEntity {
 
     @PrimaryGeneratedColumn()
     id: number;
@@ -12,7 +12,7 @@ export class HomeStandingRealisation {
     @Column({
         length: 20,
     })
-    refHoomeStandingRealisation: string;
+    refHomeStandingRealisation: string;
 
     @Column({
         length: 64,
@@ -22,7 +22,7 @@ export class HomeStandingRealisation {
 
     @Column({
         length: 256,
-        nullable: true
+        nullable: true 
     })
     description: string;
 

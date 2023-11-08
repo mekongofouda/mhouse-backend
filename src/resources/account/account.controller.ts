@@ -6,6 +6,7 @@ import { ListUserAccountDto } from './dto/list-user-account.dto';
 import { JwtAuthGuard } from 'src/resources/account/auth/auth.guard';
 import { MhouseResponseInterface } from 'src/interfaces/mhouse-response.interface';
 import { TransformResponseInterceptor } from 'src/interceptors/transform-response/transform-response.interceptor';
+import { Account } from 'src/decorators/account.decorator';
 
 @Controller('account')
 export class AccountController {
@@ -14,42 +15,55 @@ export class AccountController {
     private readonly accountService: AccountService
     ) {}
 
-//   @Post()
-//   @UseGuards(JwtAuthGuard)
-//   async inviteUser(
-//     @Body() inviteUserDto: InviteUserDto,
+  @Post()
+  @UseGuards(JwtAuthGuard)
+  async inviteUser(
+    @Body() inviteUserDto: InviteUserDto,
     
-//     ) {
-//     const data = await this.accountService.invite(inviteUserDto);
-//     return {
-//       data: data,
-//       message: "Liste des comptes obtenue avec succès",
-//       code: HttpStatus.OK
-//     };
-//   }
+    ) {
+    const data = await this.accountService.invite(inviteUserDto);
+    return {
+      data: data,
+      message: "Utilisateur invité avec succès",
+      code: HttpStatus.OK
+    };
+  }
 
-// @Get()
-// @UseGuards(JwtAuthGuard)
-// @UseInterceptors(TransformResponseInterceptor)
-// async listUserAccount(
-//   @Query() listUserAccountDto: ListUserAccountDto
-// ): Promise<MhouseResponseInterface> {
-//   const data = await this.accountService.listUserAccount(listUserAccountDto);
-//   return {
-//     data: data,
-//     message: "Liste des comptes utilisateurs obtenue avec succès",
-//     code: HttpStatus.OK
-//   }
-// }
+  @Patch(':ref')
+  @UseGuards(JwtAuthGuard)
+  async updateUserAccount(
+    @Param('ref') ref: string, 
+  @Body() updateUserAccountDto: UpdateUserAccountDto
+  ): Promise<MhouseResponseInterface> {
+    const data = await this.accountService.updateUserAccount(ref, updateUserAccountDto);
+    return {
+      data: data,
+      message: "Compte mis à jour avec succès",
+      code: HttpStatus.OK
+    };
+  }
 
- 
-@Get()
+  @Get()
   @UseGuards(JwtAuthGuard)
   @UseInterceptors(TransformResponseInterceptor)
   async listUserAccount(
     @Query() listUserAccountDto: ListUserAccountDto
   ): Promise<MhouseResponseInterface> {
     const data = await this.accountService.listUserAccount(listUserAccountDto);
+    return {
+      data: data,
+      message: "Liste des comptes utilisateurs obtenue avec succès",
+      code: HttpStatus.OK
+    }
+  }
+
+  @Get('home')
+  @UseGuards(JwtAuthGuard)
+  @UseInterceptors(TransformResponseInterceptor)
+  async getHome(
+    @Account() account
+  ): Promise<MhouseResponseInterface> {
+    const data = await this.accountService.getHome(account);
     return {
       data: data,
       message: "Liste des comptes utilisateurs obtenue avec succès",
@@ -70,19 +84,6 @@ export class AccountController {
     };
   }
 
-  @Patch(':ref')
-  @UseGuards(JwtAuthGuard)
-  async updateUserAccount(
-    @Param('ref') ref: string, 
-  @Body() updateUserAccountDto: UpdateUserAccountDto
-  ): Promise<MhouseResponseInterface> {
-    const data = await this.accountService.updateUserAccount(ref, updateUserAccountDto);
-    return {
-      data: data,
-      message: "Compte mis à jour avec succès",
-      code: HttpStatus.OK
-    };
-  }
 
   @Delete(':ref')
   @UseGuards(JwtAuthGuard)

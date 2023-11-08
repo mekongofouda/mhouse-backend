@@ -2,9 +2,10 @@ import { Column, Entity, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typ
 import { Service } from "../../entities/service.entity";
 import { TypeHomeStandingEnum } from "src/enums/type.home-standing.enum";
 import { HomeStandingRealisation } from "../home-standing-realisation/entities/home-standing-realisation.entity";
+import { TimestampEntity } from "src/generics/timestamp.entity";
 
 @Entity('hotel-standing')
-export class HomeStanding {
+export class HomeStanding extends TimestampEntity {
 
     @PrimaryGeneratedColumn()
     id: number;

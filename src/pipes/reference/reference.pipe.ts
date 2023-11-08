@@ -76,6 +76,37 @@ export class ReferencePipe implements PipeTransform {
       value.refSponsor = "RSPS"+randNumber.toString()+date.getFullYear()+date.getMonth()+date.getDay()+date.getMonth()+date.getMinutes()+date.getSeconds();
     }
 
+    if (metadata.metatype.name == 'AddRealEstateDto') {
+      const date = new Date();
+      const randNumber  = Math.floor(Math.random() * 100);
+      value.refRealEstate = "RRES"+randNumber.toString()+date.getFullYear()+date.getMonth()+date.getDay()+date.getMonth()+date.getMinutes()+date.getSeconds();
+    }
+
+    if (metadata.metatype.name == 'AddHomeCereDto') {
+      const date = new Date();
+      const randNumber  = Math.floor(Math.random() * 100);
+      value.refRealEstate = "RRES"+randNumber.toString()+date.getFullYear()+date.getMonth()+date.getDay()+date.getMonth()+date.getMinutes()+date.getSeconds();
+    }
+    if (metadata.metatype.name == 'AddHomeStandingDto') {
+      const date = new Date();
+      const randNumber  = Math.floor(Math.random() * 100);
+      value.refRealEstate = "RRES"+randNumber.toString()+date.getFullYear()+date.getMonth()+date.getDay()+date.getMonth()+date.getMinutes()+date.getSeconds();
+    }
+    if (metadata.metatype.name == 'AddHotelBookingDto') {
+      const date = new Date();
+      const randNumber  = Math.floor(Math.random() * 100);
+      value.refRealEstate = "RRES"+randNumber.toString()+date.getFullYear()+date.getMonth()+date.getDay()+date.getMonth()+date.getMinutes()+date.getSeconds();
+    }
+    if (metadata.metatype.name == 'AddRealEstateRealisationDto') {
+      const date = new Date();
+      const randNumber  = Math.floor(Math.random() * 100);
+      value.refRealEstate = "RRES"+randNumber.toString()+date.getFullYear()+date.getMonth()+date.getDay()+date.getMonth()+date.getMinutes()+date.getSeconds();
+    }
+    if (metadata.metatype.name == 'AddHomeCareRealisationDto') {
+      const date = new Date();
+      const randNumber  = Math.floor(Math.random() * 100);
+      value.refRealEstate = "RRES"+randNumber.toString()+date.getFullYear()+date.getMonth()+date.getDay()+date.getMonth()+date.getMinutes()+date.getSeconds();
+    }
     return value; 
   }
 }

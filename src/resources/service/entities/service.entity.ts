@@ -1,7 +1,7 @@
 import { AccountEntity } from "src/resources/account/entities/account.entity";
 import { TypeServiceEnum } from "src/enums/type.service.enum";
 import { TimestampEntity } from "src/generics/timestamp.entity";
-import { Column, Entity, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, JoinColumn, JoinTable, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 import { PostEntity } from "src/resources/post/entities/post.entity";
 import { RealEstate } from "../real-estate/entities/real-estate.entity";
 import { HomeCare } from "../home-care/entities/home-care.entity";
@@ -86,10 +86,10 @@ export class Service extends TimestampEntity {
     )
     posts: PostEntity[];
 
-    @OneToOne(
-        type => RealEstate,
-        (realEstate) => realEstate.service
+    @OneToOne( () => Service,
+        {cascade: true}
     )
+    @JoinColumn()
     realEstate: RealEstate;
 
     @OneToOne(

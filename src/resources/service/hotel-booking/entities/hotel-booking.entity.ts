@@ -17,6 +17,12 @@ export class HotelBooking extends TimestampEntity {
     refHotelBooking: string;
 
     @Column({
+        length: 64,
+        nullable: true
+    })
+    hotelName: string;
+
+    @Column({
         type: 'enum',
         enum: TypeHotelBookingEnum,
         default: TypeHotelBookingEnum.MOTEL

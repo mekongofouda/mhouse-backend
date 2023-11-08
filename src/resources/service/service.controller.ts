@@ -4,7 +4,6 @@ import { AddServiceDto } from './dto/add-service.dto';
 import { UpdateServiceDto } from './dto/update-service.dto';
 import { ReferencePipe } from 'src/pipes/reference/reference.pipe';
 import { ListServiceDto } from './dto/list-service.dto';
-import { Service } from './entities/service.entity';
 import { JwtAuthGuard } from 'src/resources/account/auth/auth.guard';
 import { Account } from 'src/decorators/account.decorator';
 import { MhouseResponseInterface } from 'src/interfaces/mhouse-response.interface';
@@ -20,15 +19,14 @@ export class ServiceController {
   @UseGuards(JwtAuthGuard)
   async addService(
     @Body(ReferencePipe) addServiceDto: AddServiceDto,
-    @Account() user
+    @Account() account
     ): Promise<MhouseResponseInterface> {
-    const data = await this.serviceService.addService(addServiceDto, user);
+    const data = await this.serviceService.addService(addServiceDto, account);
     return {
       data: data,
-      message: "Partage effectué avec succès",
+      message: "Service créé avec succès",
       code: HttpStatus.OK
     }
-    
   }
 
   @Get()
@@ -36,8 +34,13 @@ export class ServiceController {
   async listService(
     @Query() listServiceDto: ListServiceDto,
     @Account() account
-  ): Promise<Service[]> {
-    return await this.serviceService.listService(listServiceDto, account);
+  ): Promise<MhouseResponseInterface> {
+    const data = await this.serviceService.listService(listServiceDto, account);
+    return {
+      data: data,
+      message: "Partage effectué avec succès",
+      code: HttpStatus.OK
+    }
   }
 
   @Get(':ref')
@@ -62,7 +65,7 @@ export class ServiceController {
     const data = await this.serviceService.updateService(ref, updateServiceDto);
     return {
       data: data,
-      message: "Partage effectué avec succès",
+      message: "Service supprimé avec succès",
       code: HttpStatus.OK
     };
   }

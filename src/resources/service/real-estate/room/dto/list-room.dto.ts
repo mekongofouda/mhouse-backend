@@ -1,8 +1,8 @@
 import { Type } from "class-transformer";
-import { IsDate, IsInt, IsOptional, IsString, MaxLength } from "class-validator";
+import { IsDate, IsInt, IsOptional, IsString } from "class-validator";
 
-export class ListDiscussionDto {
-    
+export class ListRoomDto {
+
     @IsInt()
     @IsOptional()
     @Type(()=> Number)
@@ -10,8 +10,11 @@ export class ListDiscussionDto {
 
     @IsString()
     @IsOptional()
-    @MaxLength(20, { message: "La taille maximale de la référence user est de 20 caractères"})
     refAccount: string;
+
+    @IsString()
+    @IsOptional()
+    refRealEstate: string;
 
     @IsDate()
     @IsOptional()
@@ -22,5 +25,5 @@ export class ListDiscussionDto {
     @IsOptional()
     @Type(()=> Date)
     updatedAt: Date;
-
+    
 }

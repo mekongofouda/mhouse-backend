@@ -19,10 +19,9 @@ export class AccountService {
     private readonly accountRepository: Repository<AccountEntity>
   ){}
 
-  // async invite(inviteUserDto: InviteUserDto) {
-    
-  //   return 'This action adds a new account';
-  // }
+  async invite(inviteUserDto: InviteUserDto) {
+    return 'This action invites a new account';
+  }
 
   async listUserAccount(listUserAccountDto: ListUserAccountDto) {
 
@@ -64,6 +63,13 @@ export class AccountService {
     return await listUserAccount;
   }
   
+  async getHome(account: any) {
+
+    const posts  = account.posts;
+    return await posts;
+    
+  }
+
   async showUserProfile(refAccount: string) {
     const account = await this.accountRepository.findOneBy({refAccount});
     if (account == null) {

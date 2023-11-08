@@ -5,18 +5,12 @@ export class RegisterDto {
 
     @IsString()
     @IsNotEmpty()
-    @MaxLength(
-        32, 
-        { message: "La taille maximale du nom est de 32 caractères"
-    })
+    @MaxLength( 32, { message: "La taille maximale du nom est de 32 caractères" })
     name: string;
     
     @IsString()
     @IsOptional()
-    @MaxLength(
-        32, 
-        { message: "La taille maximale du prénom est de 32 caractères"
-    })
+    @MaxLength( 32, { message: "La taille maximale du prénom est de 32 caractères" })
     surname: string;
 
     @IsDate()
@@ -25,18 +19,12 @@ export class RegisterDto {
 
     @IsString()
     @IsOptional()
-    @MaxLength(
-        64, 
-        { message: "La taille maximale du lieu de naissance est de 64 caractères"
-    })
+    @MaxLength( 64, { message: "La taille maximale du lieu de naissance est de 64 caractères" })
     placeBirth: string;
 
     @IsString()
     @IsOptional()
-    @MaxLength(
-        16, 
-        { message: "La taille maximale de la description est de 64 caractères"
-    })
+    @MaxLength( 16, { message: "La taille maximale de la description est de 64 caractères" })
     icn: string;
 
     @IsEmail()
@@ -48,24 +36,18 @@ export class RegisterDto {
     @Type(()=> Number)
     phone: number;
 
-    @IsBase64()
+    @IsString()
     @IsOptional()
     avatar: string;
 
     @IsStrongPassword()
     @IsNotEmpty()
-    @MinLength(
-        10, 
-        { message: "La taille minimale du mot de passe est de 10 caractères"
-    })
+    @MinLength( 10, { message: "La taille minimale du mot de passe est de 10 caractères" })
     password: string;
 
     @IsString()
     @IsNotEmpty()
-    @MaxLength(
-        64, 
-        { message: "La taille maximale du lieu de naissance est de 64 caractères"
-    })
+    @MaxLength( 64, { message: "La taille maximale du lieu de naissance est de 64 caractères" })
     accountType: string;
 
 

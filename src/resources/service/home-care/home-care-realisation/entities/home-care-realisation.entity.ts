@@ -1,9 +1,10 @@
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 import { HomeCare } from "../../entities/home-care.entity";
 import { TypeHomeCareRealisationEnum } from "src/enums/type.home-care-realisation.enum";
+import { TimestampEntity } from "src/generics/timestamp.entity";
 
 @Entity('home-care-realisation')
-export class HomeCareRealisation {
+export class HomeCareRealisation extends TimestampEntity {
 
     @PrimaryGeneratedColumn()
     id: number
@@ -11,7 +12,7 @@ export class HomeCareRealisation {
     @Column({
         length: 20,
     })
-    refHotelBooking: string;
+    refHomeCareRealisation: string;
 
     @Column({
         length: 64,

@@ -1,9 +1,10 @@
-import { Column, Entity, ManyToOne, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 import { RealEstate } from "../../entities/real-estate.entity";
 import { TypeRealEstateEnum } from "src/enums/type.real-estate.enum";
+import { TimestampEntity } from "src/generics/timestamp.entity";
 
 @Entity('room')
-export class Room {
+export class Room extends TimestampEntity {
     
     @PrimaryGeneratedColumn()
     id: number;

@@ -17,10 +17,10 @@ export class RealEstateController {
   async addRealEstate(
     @Body(ReferencePipe) addRealEstateDto:AddRealEstateDto
     ): Promise<MhouseResponseInterface> {
-    const data = this.realEstateService.addRealEstate(addRealEstateDto);
+    const data = await this.realEstateService.addRealEstate(addRealEstateDto);
     return {
       data: data,
-      message: "Partage effectué avec succès",
+      message: "Realestate ajouté avec succès",
       code: HttpStatus.OK
     }
   }

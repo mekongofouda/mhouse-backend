@@ -1,4 +1,4 @@
-import { BadRequestException, ConflictException, HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { ConflictException, HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { SponsorDto } from './dto/sponsor.dto';
 import { ListSponsorDto } from './dto/list-sponsor.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -105,6 +105,7 @@ export class SponsorService {
   }
 
   async showSponsorDetail(refSponsor: string) {
+
     const sponsor = await this.sponsorRepository.findOneBy({refSponsor});
     if (sponsor == null) {
       throw new HttpException("Sponsor not found", HttpStatus.NOT_FOUND)

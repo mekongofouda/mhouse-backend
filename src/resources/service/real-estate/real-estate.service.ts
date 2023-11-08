@@ -1,4 +1,4 @@
-import { BadRequestException, ConflictException, HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { ConflictException, HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { AddRealEstateDto } from './dto/add-real-estate.dto';
 import { UpdateRealEstateDto } from './dto/update-real-estate.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -21,15 +21,15 @@ export class RealEstateService {
   async addRealEstate(addRealEstateDto: AddRealEstateDto) {
 
     //Create the service object with Dto to save it 
-    const service = await this.serviceRepository.create(addRealEstateDto); 
+    let service = await this.serviceRepository.findOneBy({refService: addRealEstateDto.refService}); 
     if (service == null) {
-      throw new BadRequestException("Service not found");
+      throw new HttpException("Service not found", HttpStatus.NOT_FOUND);
     }
-
     //Create the realEstate object with Dto to save it 
-    const realEstate = await this.realEstateRepository.create(addRealEstateDto); 
-    if (service == null) {
-      throw new BadRequestException("Service not found");
+    delete addRealEstateDto.refService;
+    let realEstate = await this.realEstateRepository.create(addRealEstateDto); 
+    if (realEstate == null) {
+      throw new HttpException("RealEstate not found", HttpStatus.NOT_FOUND);
     }
     realEstate.service = service; 
     try {
@@ -37,9 +37,9 @@ export class RealEstateService {
     } catch (error) {
       throw new ConflictException(error.driverError.detail);
     }
-    return service;
+    return realEstate;
   }
-
+ 
   async showRealEstateDetail(refRealEstate: string) {
     const realEstate = await this.realEstateRepository.findOneBy({refRealEstate});
     if (realEstate == null) {

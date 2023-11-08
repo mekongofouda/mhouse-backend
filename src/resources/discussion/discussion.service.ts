@@ -20,6 +20,7 @@ export class DiscussionService {
   ){}
 
   async addDiscussion(addDiscussionDto: AddDiscussionDto, account: any): Promise<Discussion> {
+
     const discussion = await this.discussionRepository.create(addDiscussionDto);
     const userAccount = await this.accountRepository.create(account);
 
@@ -35,6 +36,7 @@ export class DiscussionService {
     } catch (error) {
       throw new ConflictException(error.driverError.detail);
     }
+
     return discussion;
   }
 
@@ -82,10 +84,12 @@ export class DiscussionService {
   }
 
   async showDiscussionDetail(refDiscussion: string) {
+
     const discussion = await this.discussionRepository.findOneBy({refDiscussion});
     if (!discussion) {
       throw new HttpException("Discussion not found", HttpStatus.NOT_FOUND)
-    }    
+    }   
+
     return discussion;
   }
 
@@ -95,12 +99,15 @@ export class DiscussionService {
     if (discussion == null) {
       throw new HttpException("Discussion not found", HttpStatus.NOT_FOUND)
     }    
+
     Object.assign(discussion, updateDiscussionDto);
+
     try {
       await this.discussionRepository.save(discussion);
     } catch (error) {
       throw new ConflictException(error.driverError.detail);
     }
+
     return discussion;
 
   }
@@ -110,12 +117,14 @@ export class DiscussionService {
     const discussion = await this.discussionRepository.findOneBy({refDiscussion});
     if (discussion == null) {
       throw new HttpException("Discussion not found", HttpStatus.NOT_FOUND);
-    }    
+    }  
+
     try {
       await this.discussionRepository.softRemove(discussion);
     } catch (error) {
       throw new ConflictException(error.driverError.detail);
     }
+
     return discussion;
   }
 }

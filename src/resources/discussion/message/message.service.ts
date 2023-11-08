@@ -23,6 +23,7 @@ export class MessageService {
   ){}
 
   async sendMessage(sendMessageDto: SendMessageDto): Promise<Message> {
+
     //Get discussion to add at the message
     const discussion = await this.discussionRepository.findOneBy({refDiscussion: sendMessageDto.refDiscussion});
     if (discussion == null) {
@@ -43,6 +44,7 @@ export class MessageService {
     } catch (error) {
       throw new ConflictException(error.driverError.detail);
     }
+    
     return message;
   }
 
@@ -66,7 +68,7 @@ export class MessageService {
     if (listMessageDto.refDiscussion != undefined) {
       const discussion = await this.discussionRepository.findOneBy({refDiscussion: listMessageDto.refDiscussion});
       if (discussion == null) {
-        throw new HttpException("Service not found", HttpStatus.NOT_FOUND);
+        throw new HttpException("Discussion not found", HttpStatus.NOT_FOUND);
       } 
       listMessages.filter(message => {
         if (message.discussion == discussion) {
@@ -107,15 +109,18 @@ export class MessageService {
   }
 
   async deleteMessage(refMessage: string) {
+
     const message = await this.messageRepository.findOneBy({refMessage});
     if (message == null) {
       throw new HttpException("Message not found", HttpStatus.NOT_FOUND)
     }    
+
     try {
       await this.messageRepository.softRemove(message);
     } catch (error) {
       throw new ConflictException(error.driverError.detail);
     }
+
     return message;
   }
 }

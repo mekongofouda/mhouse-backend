@@ -39,15 +39,17 @@ export class AuthController {
   @UseInterceptors(FileInterceptor('avatar'))
   async register(
     @Body(ReferencePipe) registerDto: RegisterDto,
-    @UploadedFile() avatar: Express.Multer.File
-    ) : Promise<MhouseResponseInterface> {
-      console.log(avatar);
-    const data = await this.authService.register(registerDto);
-    return {
-      data: data,
-      message: "Your account has been created successufully",
-      code: HttpStatus.OK
-    };
+    @UploadedFile() file: Express.Multer.File
+    ) 
+    // : Promise<MhouseResponseInterface> 
+    {
+      console.log(file);
+    // const data = await this.authService.register(registerDto);
+    // return {
+    //   data: data,
+    //   message: "Your account has been created successufully",
+    //   code: HttpStatus.OK
+    // };
   }
   
   @Get('facebook')
@@ -72,7 +74,7 @@ export class AuthController {
     @Req() req
     ) {
 
-    }
+  }
 
   @Get('google/redirect')
   @UseGuards(AuthGuard('google'))
