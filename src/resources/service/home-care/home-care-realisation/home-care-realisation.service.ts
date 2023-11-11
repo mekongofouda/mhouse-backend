@@ -24,20 +24,22 @@ export class HomeCareRealisationService {
   ){}
 
   async addHomeCareRealisation( addHomeCareRealisationDto: AddHomeCareRealisationDto) {
+
     //Create the service object with Dto to save it 
-    const homeCare = await this.homeCareRepository.create(addHomeCareRealisationDto); 
+    const homeCare = await this.homeCareRepository.findOneBy({refHomeCare: addHomeCareRealisationDto.refHomeCare}); 
     if (homeCare == null) {
-      throw new BadRequestException("Service not found");
+      throw new BadRequestException("HomeCare not found");
     }
 
-    //Create the homeCare object with Dto to save it 
+    //Create the homeCare object with Dto to save homeCareRealisation on it 
     const homeCareRealisation = await this.homeCareRealisationRepository.create(addHomeCareRealisationDto); 
     if (homeCareRealisation == null) {
-      throw new BadRequestException("Service not found");
+      throw new BadRequestException("HomeCareRealisation not found");
     }
     homeCareRealisation.homeCare = homeCare; 
+
     try {
-      await this.homeCareRepository.save(homeCareRealisation);
+      await this.homeCareRealisationRepository.save(homeCareRealisation);
     } catch (error) {
       throw new ConflictException(error.driverError.detail);
     }
@@ -76,12 +78,14 @@ export class HomeCareRealisationService {
     if (listHomeCareRealisationDto.refHomeCare != undefined) {
       const homeCare = await this.homeCareRepository.findOneBy({refHomeCare: listHomeCareRealisationDto.refHomeCare});
       if (homeCare == null) {
-        throw new HttpException("Post not found", HttpStatus.NOT_FOUND);
+        throw new HttpException("HomeCare not found", HttpStatus.NOT_FOUND);
       } 
       homeCareRealisations = homeCare.homeCareRealisations;
       listHomeCareRealisations = homeCare.homeCareRealisations;
     } 
+
     listHomeCareRealisations.filter(homeCare => {
+
       if (listHomeCareRealisationDto.createdAt != undefined) {
         if (homeCare.createdAt.toDateString() == listHomeCareRealisationDto.createdAt.toDateString()) {
           if (!homeCareRealisations.includes(homeCare)) {
@@ -89,6 +93,7 @@ export class HomeCareRealisationService {
           }
         }
       }      
+
       if (listHomeCareRealisationDto.updatedAt != undefined) {
         if (homeCare.updatedAt.toDateString() == listHomeCareRealisationDto.updatedAt.toDateString()) {
           if (!homeCareRealisations.includes(homeCare)) {
@@ -96,31 +101,37 @@ export class HomeCareRealisationService {
           }
         }
       }   
+
     });
 
     if ((homeCareRealisations.length == 0) 
     && ((listHomeCareRealisationDto.createdAt != undefined)
     ||(listHomeCareRealisationDto.updatedAt != undefined)
     )) {
-      throw new HttpException("Like not found", HttpStatus.NOT_FOUND);
+      throw new HttpException("HomeCareRealisation not found", HttpStatus.NOT_FOUND);
     } else if (homeCareRealisations.length != 0) {
       listHomeCareRealisations = homeCareRealisations;
     }
+
     return listHomeCareRealisations;
+
   }
 
   async showHomeCareRealisationDetail(refHomeCareRealisation: string) {
+    
     const homeCareRealisation = await this.homeCareRealisationRepository.findOneBy({refHomeCareRealisation});
     if (homeCareRealisation == null) {
-      throw new HttpException("Like not found", HttpStatus.NOT_FOUND)
+      throw new HttpException("HomeCareRealisation not found", HttpStatus.NOT_FOUND)
     }    
+
     return homeCareRealisation;
   }
 
   async updateHomeCareRealisation(refHomeCareRealisation: string, updateHomeCareRealisationDto: UpdateHomeCareRealisationDto) {
-    const homeCareRealisation = await this.homeCareRealisationRepository.findOne({where:{refHomeCareRealisation}});
+
+    const homeCareRealisation = await this.homeCareRealisationRepository.findOneBy({refHomeCareRealisation});
     if (homeCareRealisation == null) {
-      throw new HttpException("Offer not found", HttpStatus.NOT_FOUND)
+      throw new HttpException("HomeCareRealisation not found", HttpStatus.NOT_FOUND)
     }    
     Object.assign(homeCareRealisation, updateHomeCareRealisationDto);
     try {
@@ -134,7 +145,7 @@ export class HomeCareRealisationService {
   async deleteHomeCareRealisation(refHomeCareRealisation: string) {
     const homeCareRealisation = await this.homeCareRealisationRepository.findOneBy({refHomeCareRealisation});
     if (homeCareRealisation == null) {
-      throw new HttpException("Offer not found", HttpStatus.NOT_FOUND)
+      throw new HttpException("HomeCareRealisation not found", HttpStatus.NOT_FOUND)
     }   
     try {
       await this.homeCareRealisationRepository.softRemove(homeCareRealisation);

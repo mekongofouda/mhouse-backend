@@ -4,6 +4,11 @@ import { IsBase64, IsNotEmpty, IsOptional, IsString, MaxLength } from "class-val
 export class AddHotelBookingDto {
 
     @IsString()
+    @IsNotEmpty()
+    @MaxLength(20, { message: "La taille maximale du titre est de 20 caractères"})
+    refService: string;
+
+    @IsString()
     @IsOptional()
     @MaxLength(64, { message: "La taille maximale du titre est de 64 caractères"})
     hotelName: string;

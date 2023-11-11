@@ -92,22 +92,22 @@ export class Service extends TimestampEntity {
     @JoinColumn()
     realEstate: RealEstate;
 
-    @OneToOne(
-        type => HomeCare,
-        (homeCare) => homeCare.service
+    @OneToOne( () => Service,
+        {cascade: true}
     )
+    @JoinColumn()
     homeCare: HomeCare;
 
-    @OneToOne(
-        type => HomeStanding,
-        (homeStanding) => homeStanding.service
+    @OneToOne( () => Service,
+        {cascade: true}
     )
+    @JoinColumn()
     homeStanding: HomeStanding;
 
-    @OneToOne(
-        type => HotelBooking,
-        (hotelBooking) => hotelBooking.service
+    @OneToOne( () => Service,
+        {cascade: true}
     )
+    @JoinColumn()
     hotelBooking: HotelBooking;
 
 }

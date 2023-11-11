@@ -11,6 +11,7 @@ export class HomeStandingRealisation extends TimestampEntity {
 
     @Column({
         length: 20,
+        unique: true
     })
     refHomeStandingRealisation: string;
 

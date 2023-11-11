@@ -11,15 +11,15 @@ export class HomeCare extends TimestampEntity {
     id: number;
 
     @Column({
-        length: 20,
-        nullable: true
+        unique: true,
+        length: 20
     })
     refHomeCare: string;
 
     @Column({
         type: 'enum',
         enum: TypeHomeCareEnum,
-        default: TypeHomeCareEnum.HOME_CARE
+        default: TypeHomeCareEnum.JARDINERIE
     })
     type: string
 
@@ -32,7 +32,7 @@ export class HomeCare extends TimestampEntity {
         type => Service,
         (service) => service.homeCare
     )
-    service: Service;
+    service: Service; 
 
     @OneToMany(
         type => HomeCareRealisation,

@@ -15,10 +15,10 @@ export class HotelBookingController {
     async addHotelBooking(
     @Body(ReferencePipe) addHotelBookingDto: AddHotelBookingDto
     ): Promise<MhouseResponseInterface> {
-     const data = this.hotelBookingService.addHotelBooking(addHotelBookingDto);
+     const data = await this.hotelBookingService.addHotelBooking(addHotelBookingDto);
      return {
       data: data,
-      message: "Partage effectué avec succès",
+      message: "Hotel booking ajouté avec succès",
       code: HttpStatus.OK
     }
   }
@@ -28,7 +28,7 @@ export class HotelBookingController {
     async showHotelBookingDetail(
     @Param('ref') ref: string
     ): Promise<MhouseResponseInterface> {
-     const data = this.hotelBookingService.showHotelBookingDetail(ref);
+     const data = await this.hotelBookingService.showHotelBookingDetail(ref);
      return {
       data: data,
       message: "Partage effectué avec succès",
@@ -42,10 +42,10 @@ export class HotelBookingController {
     @Param('ref') ref: string, 
     @Body() updateHotelBookingDto: UpdateHotelBookingDto
     ): Promise<MhouseResponseInterface> {
-    const data = this.hotelBookingService.updateHotelBooking(ref, updateHotelBookingDto);
+    const data = await this.hotelBookingService.updateHotelBooking(ref, updateHotelBookingDto);
     return {
       data: data,
-      message: "Partage effectué avec succès",
+      message: "Hotel booking mis à jour avec succès",
       code: HttpStatus.OK
     }
   }

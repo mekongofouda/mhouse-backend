@@ -6,6 +6,7 @@ import { Account } from 'src/decorators/account.decorator';
 import { ListRoomDto } from './dto/list-room.dto';
 import { MhouseResponseInterface } from 'src/interfaces/mhouse-response.interface';
 import { JwtAuthGuard } from 'src/resources/account/auth/auth.guard';
+import { ReferencePipe } from 'src/pipes/reference/reference.pipe';
 
 @Controller('room')
 export class RoomController {
@@ -14,7 +15,7 @@ export class RoomController {
   @Post()
   @UseGuards(JwtAuthGuard)
   async addRoom(
-    @Body() addRoomDto: AddRoomDto
+    @Body(ReferencePipe) addRoomDto: AddRoomDto
     ): Promise<MhouseResponseInterface> {
     const data = await this.roomService.addRoom(addRoomDto);
     return {

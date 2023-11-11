@@ -4,18 +4,23 @@ import { IsBase64, IsNotEmpty, IsNumber, IsOptional, IsString, MaxLength } from 
 export class AddRoomDto {
 
     @IsString()
+    @IsNotEmpty()
+    @MaxLength(20, { message: "La taille maximale de la référence est de 20 caractères"})
+    refRealEstate: string;
+
+    @IsString()
     @IsOptional()
-    @MaxLength(64, { message: "La taille maximale du titre est de 64 caractères"})
+    @MaxLength(128, { message: "La taille maximale du titre est de 128 caractères"})
     title: string;
 
     @IsString()
     @IsOptional()
-    @MaxLength(64, { message: "La taille maximale de la description est de 64 caractères"})
+    @MaxLength(256, { message: "La taille maximale de la description est de 256 caractères"})
     description: string;
 
     @IsString()
     @IsNotEmpty()
-    @MaxLength(16, { message: "La taille maximale du type est de 16 caractères"})
+    @MaxLength(64, { message: "La taille maximale du type est de 64 caractères"})
     type: string;
 
     @IsNumber()

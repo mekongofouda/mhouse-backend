@@ -4,6 +4,11 @@ export class AddHomeStandingDto {
     
     @IsString()
     @IsNotEmpty()
+    @MaxLength(20, { message: "La taille maximale du titre est de 20 caractères"})
+    refService: string;
+
+    @IsString()
+    @IsNotEmpty()
     @MaxLength( 32, { message: "La taille maximale du nom est de 32 caractères" })
     type: string;
 

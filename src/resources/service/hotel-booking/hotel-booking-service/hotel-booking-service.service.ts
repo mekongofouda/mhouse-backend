@@ -25,22 +25,24 @@ export class HotelBookingServiceService {
 
   async addHotelBookingService(addHotelBookingServiceDto: AddHotelBookingServiceDto) {
     //Create the service object with Dto to save it 
-    const hotelBooking = await this.hotelBookingRepository.create(addHotelBookingServiceDto); 
+    const hotelBooking = await this.hotelBookingRepository.findOneBy({refHotelBooking: addHotelBookingServiceDto.refHotelBooking}); 
     if (hotelBooking == null) {
-      throw new BadRequestException("Service not found");
+      throw new BadRequestException("HotelBooking not found");
     }
 
     //Create the homeCare object with Dto to save it 
     const hotelBookingService = await this.hotelBookingServiceRepository.create(addHotelBookingServiceDto); 
     if (hotelBookingService == null) {
-      throw new BadRequestException("Service not found");
+      throw new BadRequestException("HotelBookingService not found");
     }
     hotelBookingService.hotelBooking = hotelBooking; 
+
     try {
-      await this.hotelBookingRepository.save(hotelBookingService);
+      await this.hotelBookingServiceRepository.save(hotelBookingService);
     } catch (error) {
       throw new ConflictException(error.driverError.detail);
     }
+
     return hotelBookingService;
   }
 
@@ -65,21 +67,22 @@ export class HotelBookingServiceService {
       if (userAccount == null) {
         throw new HttpException("Account not found", HttpStatus.NOT_FOUND);
       } 
-        userAccount.services.forEach( service => {
-          service.hotelBooking.hotelBookingServices.forEach( hotelBookingRealisation => {
-            listHotelBookingServices.push(hotelBookingRealisation)
-          });
+      userAccount.services.forEach( service => {
+        service.hotelBooking.hotelBookingServices.forEach( hotelBookingRealisation => {
+          listHotelBookingServices.push(hotelBookingRealisation)
         });
-      }
+      });
+    }
 
     if (listHotelBookingRealisationDto.refHotelBooking != undefined) {
       const hotelBooking = await this.hotelBookingRepository.findOneBy({refHotelBooking: listHotelBookingRealisationDto.refHotelBooking});
       if (hotelBooking == null) {
-        throw new HttpException("Post not found", HttpStatus.NOT_FOUND);
+        throw new HttpException("HotelBooking not found", HttpStatus.NOT_FOUND);
       } 
       hotelBookingServices = hotelBooking.hotelBookingServices;
       listHotelBookingServices = hotelBooking.hotelBookingServices;
     } 
+
     listHotelBookingServices.filter(hotelBooking => {
       if (listHotelBookingRealisationDto.createdAt != undefined) {
         if (hotelBooking.createdAt.toDateString() == listHotelBookingRealisationDto.createdAt.toDateString()) {
@@ -88,6 +91,7 @@ export class HotelBookingServiceService {
           }
         }
       }      
+
       if (listHotelBookingRealisationDto.updatedAt != undefined) {
         if (hotelBooking.updatedAt.toDateString() == listHotelBookingRealisationDto.updatedAt.toDateString()) {
           if (!hotelBookingServices.includes(hotelBooking)) {
@@ -95,51 +99,64 @@ export class HotelBookingServiceService {
           }
         }
       }   
+
     });
 
     if ((hotelBookingServices.length == 0) 
     && ((listHotelBookingRealisationDto.createdAt != undefined)
     ||(listHotelBookingRealisationDto.updatedAt != undefined)
     )) {
-      throw new HttpException("Like not found", HttpStatus.NOT_FOUND);
+      throw new HttpException("HotelBookingService not found", HttpStatus.NOT_FOUND);
     } else if (hotelBookingServices.length != 0) {
       listHotelBookingServices = hotelBookingServices;
     }
+
     return listHotelBookingServices;
+
   }
 
   async showHotelBookingServiceDetail(refHotelBookingService: string) {
+
     const hotelBookingService = await this.hotelBookingServiceRepository.findOneBy({refHotelBookingService});
     if (hotelBookingService == null) {
-      throw new HttpException("Like not found", HttpStatus.NOT_FOUND)
+      throw new HttpException("HotelBookingService not found", HttpStatus.NOT_FOUND)
     }    
+
     return hotelBookingService;
+
   }
 
   async updateHotelBookingService(refHotelBookingService: string, updateHotelBookingServiceDto: UpdateHotelBookingServiceDto) {
-    const hotelBookingService = await this.hotelBookingServiceRepository.findOne({where:{refHotelBookingService}});
+
+    const hotelBookingService = await this.hotelBookingServiceRepository.findOneBy({refHotelBookingService});
     if (hotelBookingService == null) {
-      throw new HttpException("Offer not found", HttpStatus.NOT_FOUND)
+      throw new HttpException("HotelBookingService not found", HttpStatus.NOT_FOUND)
     }    
-      hotelBookingService    
+    Object.assign(hotelBookingService, updateHotelBookingServiceDto);
+
     try {
       await this.hotelBookingServiceRepository.save(hotelBookingService);
     } catch (error) {
       throw new ConflictException(error.driverError.detail);
     } 
+
     return hotelBookingService;
+
   }
 
   async deleteHotelBookingService(refHotelBookingService: string) {
+
     const hotelBookingService = await this.hotelBookingServiceRepository.findOneBy({refHotelBookingService});
     if (hotelBookingService == null) {
-      throw new HttpException("Offer not found", HttpStatus.NOT_FOUND)
+      throw new HttpException("HotelBookingService not found", HttpStatus.NOT_FOUND)
     }   
+
     try {
       await this.hotelBookingServiceRepository.softRemove(hotelBookingService);
     } catch (error) {
       throw new ConflictException(error.driverError.detail);
     } 
+
     return hotelBookingService;
   }
 }

@@ -20,45 +20,53 @@ export class HotelBookingService {
   async addHotelBooking(addHotelBookingDto: AddHotelBookingDto) {
     
     //Create the service object with Dto to save it 
-    const service = await this.serviceRepository.create(addHotelBookingDto); 
+    let service = await this.serviceRepository.findOneBy({refService: addHotelBookingDto.refService}); 
     if (service == null) {
-      throw new BadRequestException("Service not found");
+      throw new HttpException("Service not found", HttpStatus.NOT_FOUND);
     }
 
     //Create the hotelBooking object with Dto to save it 
-    const hotelBooking = await this.hotelBookingRepository.create(addHotelBookingDto); 
-    if (service == null) {
+    let hotelBooking = await this.hotelBookingRepository.create(addHotelBookingDto); 
+    if (hotelBooking == null) {
       throw new BadRequestException("HotelBooking not found");
     }
     hotelBooking.service = service; 
+
     try {
       await this.hotelBookingRepository.save(hotelBooking);
     } catch (error) {
       throw new ConflictException(error.driverError.detail);
     }
-    return service;
+
+    return hotelBooking;
+
   }
 
   async showHotelBookingDetail(refHotelBooking: string) {
-    const service = await this.hotelBookingRepository.findOneBy({refHotelBooking});
-    if (service == null) {
+    const hotelBooking = await this.hotelBookingRepository.findOneBy({refHotelBooking});
+    if (hotelBooking == null) {
       throw new HttpException("HotelBooking not found", HttpStatus.NOT_FOUND)
     }    
-    return service;
+    return hotelBooking;
+
   }
 
   async updateHotelBooking(refHotelBooking: string, updateHotelBookingDto: UpdateHotelBookingDto) {
-    const service = await this.hotelBookingRepository.findOneBy({refHotelBooking});
-    if (service == null) {
+
+    let hotelBookingService = await this.hotelBookingRepository.findOneBy({refHotelBooking});
+    if (hotelBookingService == null) {
       throw new HttpException("HotelBooking not found", HttpStatus.NOT_FOUND)
     }    
-    Object.assign(service, updateHotelBookingDto);
+    Object.assign(hotelBookingService, updateHotelBookingDto);
+
     try {
-      await this.hotelBookingRepository.save(service);
+      await this.hotelBookingRepository.save(hotelBookingService);
     } catch (error) {
       throw new ConflictException(error.driverError.detail);
     }
-    return service;
+
+    return hotelBookingService;
+
   }
 
 }

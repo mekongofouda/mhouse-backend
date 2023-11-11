@@ -4,6 +4,7 @@ import { AddHomeCareDto } from './dto/add-home-care.dto';
 import { UpdateHomeCareDto } from './dto/update-home-care.dto';
 import { MhouseResponseInterface } from 'src/interfaces/mhouse-response.interface';
 import { JwtAuthGuard } from 'src/resources/account/auth/auth.guard';
+import { ReferencePipe } from 'src/pipes/reference/reference.pipe';
 
 @Controller('home-care')
 export class HomeCareController {
@@ -12,12 +13,12 @@ export class HomeCareController {
   @Post()
   @UseGuards(JwtAuthGuard)
   async addHomeCare(
-    @Body() createHomeCareDto: AddHomeCareDto
+    @Body(ReferencePipe) createHomeCareDto: AddHomeCareDto
     ): Promise<MhouseResponseInterface> {
     const data = await this.homeCareService.addHomeCare(createHomeCareDto);
     return {
       data: data,
-      message: "Partage effectué avec succès",
+      message: "Homecare ajouté avec succès",
       code: HttpStatus.OK
     }
   }
@@ -44,7 +45,7 @@ export class HomeCareController {
     const data = await this.homeCareService.updateHomCare(ref, updateHomeCareDto);
     return {
       data: data,
-      message: "Partage effectué avec succès",
+      message: "Homecare mise à jour avec succès",
       code: HttpStatus.OK
     }
   }

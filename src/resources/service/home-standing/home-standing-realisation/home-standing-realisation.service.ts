@@ -24,20 +24,20 @@ export class HomeStandingRealisationService {
   ){}
  
   async addHomeStandingRealisation(addHomeStandingRealisationDto: AddHomeStandingRealisationDto) {
-    //Create the service object with Dto to save it 
-    const homeStanding = await this.homeStandingRepository.create(addHomeStandingRealisationDto); 
+
+    const homeStanding = await this.homeStandingRepository.findOneBy({refHomeStanding: addHomeStandingRealisationDto.refHomeStanding}); 
     if (homeStanding == null) {
-      throw new BadRequestException("Service not found");
+      throw new BadRequestException("HomeStanding not found");
     }
 
-    //Create the homeCare object with Dto to save it 
     const homeStandingRealisation = await this.homeStandingRealisationRepository.create(addHomeStandingRealisationDto); 
     if (homeStandingRealisation == null) {
-      throw new BadRequestException("Service not found");
+      throw new BadRequestException("HomeStandingRealisation not found");
     }
     homeStandingRealisation.homeStanding = homeStanding; 
+
     try {
-      await this.homeStandingRepository.save(homeStandingRealisation);
+      await this.homeStandingRealisationRepository.save(homeStandingRealisation);
     } catch (error) {
       throw new ConflictException(error.driverError.detail);
     }
@@ -75,7 +75,7 @@ export class HomeStandingRealisationService {
     if (listHomeStandingRealisationDto.refHomeStanding != undefined) {
       const homeStanding = await this.homeStandingRepository.findOneBy({refHomeStanding: listHomeStandingRealisationDto.refHomeStanding});
       if (homeStanding == null) {
-        throw new HttpException("Post not found", HttpStatus.NOT_FOUND);
+        throw new HttpException("HomeStanding not found", HttpStatus.NOT_FOUND);
       } 
       homeStandingRealisations = homeStanding.homeStandingRealisations;
       listHomeStandingRealisations = homeStanding.homeStandingRealisations;
@@ -101,7 +101,7 @@ export class HomeStandingRealisationService {
     && ((listHomeStandingRealisationDto.createdAt != undefined)
     ||(listHomeStandingRealisationDto.updatedAt != undefined)
     )) {
-      throw new HttpException("Like not found", HttpStatus.NOT_FOUND);
+      throw new HttpException("HomeStandingRealisation not found", HttpStatus.NOT_FOUND);
     } else if (homeStandingRealisations.length != 0) {
       listHomeStandingRealisations = homeStandingRealisations;
     }
@@ -111,29 +111,33 @@ export class HomeStandingRealisationService {
   async showHomeStandingRealisationDetail(refHomeStandingRealisation: string) {
     const homeStandingRealisation = await this.homeStandingRealisationRepository.findOneBy({refHomeStandingRealisation});
     if (homeStandingRealisation == null) {
-      throw new HttpException("Like not found", HttpStatus.NOT_FOUND)
+      throw new HttpException("HomeStandingRealisation not found", HttpStatus.NOT_FOUND)
     }    
     return homeStandingRealisation;
   }
 
   async updateHomeStandingRealisation(refHomeStandingRealisation: string, updateHomeStandingRealisationDto: UpdateHomeStandingRealisationDto) {
+
     const homeStandingRealisation = await this.homeStandingRealisationRepository.findOne({where:{refHomeStandingRealisation}});
     if (homeStandingRealisation == null) {
-      throw new HttpException("Offer not found", HttpStatus.NOT_FOUND)
+      throw new HttpException("HomeStandingRealisation not found", HttpStatus.NOT_FOUND)
     }    
     Object.assign(homeStandingRealisation, updateHomeStandingRealisationDto);
+
     try {
       await this.homeStandingRealisationRepository.save(homeStandingRealisation);
     } catch (error) {
       throw new ConflictException(error.driverError.detail);
     } 
+
     return homeStandingRealisation;
+
   }
 
   async deleteHomeStandingRealisation(refHomeStandingRealisation: string) {
     const homeStandingRealisation = await this.homeStandingRealisationRepository.findOneBy({refHomeStandingRealisation});
     if (homeStandingRealisation == null) {
-      throw new HttpException("Offer not found", HttpStatus.NOT_FOUND)
+      throw new HttpException("HomeStandingRealisation not found", HttpStatus.NOT_FOUND)
     }   
     try {
       await this.homeStandingRealisationRepository.softRemove(homeStandingRealisation);

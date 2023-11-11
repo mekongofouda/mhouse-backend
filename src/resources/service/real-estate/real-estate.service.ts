@@ -20,46 +20,55 @@ export class RealEstateService {
 
   async addRealEstate(addRealEstateDto: AddRealEstateDto) {
 
-    //Create the service object with Dto to save it 
+    //Create the service object with Dto to save real estate on it 
     let service = await this.serviceRepository.findOneBy({refService: addRealEstateDto.refService}); 
     if (service == null) {
       throw new HttpException("Service not found", HttpStatus.NOT_FOUND);
     }
+    
     //Create the realEstate object with Dto to save it 
-    delete addRealEstateDto.refService;
     let realEstate = await this.realEstateRepository.create(addRealEstateDto); 
     if (realEstate == null) {
       throw new HttpException("RealEstate not found", HttpStatus.NOT_FOUND);
     }
     realEstate.service = service; 
+
     try {
       await this.realEstateRepository.save(realEstate);
     } catch (error) {
       throw new ConflictException(error.driverError.detail);
     }
+
     return realEstate;
   }
  
   async showRealEstateDetail(refRealEstate: string) {
+
     const realEstate = await this.realEstateRepository.findOneBy({refRealEstate});
     if (realEstate == null) {
       throw new HttpException("RealEstate not found", HttpStatus.NOT_FOUND)
     }    
+    
     return realEstate;
+
   }
 
   async updateRealEstate(refRealEstate: string, updateRealEstateDto: UpdateRealEstateDto) {
-    const realEstate = await this.realEstateRepository.findOneBy({refRealEstate});
+
+    let realEstate = await this.realEstateRepository.findOneBy({refRealEstate});
     if (realEstate == null) {
       throw new HttpException("RealEstate not found", HttpStatus.NOT_FOUND)
     }    
     Object.assign(realEstate, updateRealEstateDto);
+
     try {
       await this.realEstateRepository.save(realEstate);
     } catch (error) {
       throw new ConflictException(error.driverError.detail);
     }
+
     return realEstate;
+
   }
 
 }

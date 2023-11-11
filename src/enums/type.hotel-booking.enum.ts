@@ -1,4 +1,4 @@
 export enum TypeHotelBookingEnum {
-    MOTEL = 'home care',
+    MOTEL = 'motel',
     HOME_STANDING = 'home standing'
 } 

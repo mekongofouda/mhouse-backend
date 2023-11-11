@@ -5,6 +5,7 @@ import { UpdateHomeStandingRealisationDto } from './dto/update-home-standing-rea
 import { Account } from 'src/decorators/account.decorator';
 import { ListHomeStandingRealisationDto } from './dto/list-home-standing-realisation.dto';
 import { MhouseResponseInterface } from 'src/interfaces/mhouse-response.interface';
+import { ReferencePipe } from 'src/pipes/reference/reference.pipe';
 
 @Controller('home-standing-realisation')
 export class HomeStandingRealisationController {
@@ -12,12 +13,12 @@ export class HomeStandingRealisationController {
 
   @Post()
   async addHomeStandingRealisation(
-    @Body() addHomeStandingRealisationDto: AddHomeStandingRealisationDto,
+    @Body(ReferencePipe) addHomeStandingRealisationDto: AddHomeStandingRealisationDto,
     ): Promise<MhouseResponseInterface> {
     const data = await this.homeStandingRealisationService.addHomeStandingRealisation(addHomeStandingRealisationDto);
     return {
       data: data,
-      message: "Partage effectué avec succès",
+      message: "HomeStandingRealisation ajouté avec succès",
       code: HttpStatus.OK
     };
   }
@@ -30,7 +31,7 @@ export class HomeStandingRealisationController {
     const data = await this.homeStandingRealisationService.listHomeStandingRealisation(listHomeStandingRealisationDto, account);
     return {
       data: data,
-      message: "Partage effectué avec succès",
+      message: "HomeStandingRealisation effectué avec succès",
       code: HttpStatus.OK
     };
   }

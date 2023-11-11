@@ -19,7 +19,7 @@ export class HomeStanding extends TimestampEntity {
     @Column({
         type: 'enum',
         enum: TypeHomeStandingEnum,
-        default: TypeHomeStandingEnum.HOME_CARE
+        default: TypeHomeStandingEnum.DECORATION
     })
     type: string
 

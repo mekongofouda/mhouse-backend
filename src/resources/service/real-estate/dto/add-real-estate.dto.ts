@@ -5,6 +5,7 @@ export class AddRealEstateDto {
 
     @IsString()
     @IsNotEmpty()
+    @MaxLength(20, { message: "La taille maximale de la référence est de 20 caractères"})
     refService: string;
 
     @IsString()

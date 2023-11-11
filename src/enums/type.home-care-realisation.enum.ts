@@ -1,4 +1,4 @@
 export enum TypeHomeCareRealisationEnum {
-    HOME_CARE = 'home care',
-    HOME_STANDING = 'home standing'
+    HOME_CARE = 'homecare',
+    HOME_STANDING = 'homestanding'
 } 

@@ -14,20 +14,23 @@ export class RoleService {
     private readonly roleRepository: Repository<Role>
   ){}
 
-  async addRole(addRoleDto: AddRoleDto) {   
+  async addRole(addRoleDto: AddRoleDto) {  
+
     const role = await this.roleRepository.create(addRoleDto);
     try {
       await this.roleRepository.save(role);
     } catch (error) {
       throw new ConflictException(error.driverError.detail);
     }
+
     return await role;
+
   }
 
   async listRole(listRoleDto: ListRoleDto): Promise<Role[]> {
 
-    let listRoles: Role[]=[];
-    let roles: Role[]=[];
+    let listRoles: Role[] = [];
+    let roles: Role[] = [];
 
     if (listRoleDto.all == 1){
       listRoles = await this.roleRepository.find();
@@ -55,6 +58,7 @@ export class RoleService {
     }
 
     return await listRoles;
+
   }
 
   async showRoleDetail(refRole: string) {
@@ -63,16 +67,19 @@ export class RoleService {
     if (role == null) {
       throw new HttpException("Role not found", HttpStatus.NOT_FOUND)
     }    
+
     return role;
 
   }
 
   async updateRole(refRole: string, updateRoleDto: UpdateRoleDto) {
+
     const role = await this.roleRepository.findOne({where:{refRole}});
     if (role == null) {
       throw new HttpException("Role not found", HttpStatus.NOT_FOUND)
     }    
     Object.assign(role, updateRoleDto);
+
     try {
       await this.roleRepository.save(role);
     } catch (error) {
@@ -80,18 +87,23 @@ export class RoleService {
     }
 
     return role;
+
   }
 
   async deleteRole(refRole: string) {
+
     const role = await this.roleRepository.findOneBy({refRole});
     if (role == null) {
       throw new HttpException("Role not found", HttpStatus.NOT_FOUND);
     }    
+
     try {
       await this.roleRepository.softRemove(role);
     } catch (error) {
       throw new ConflictException(error.driverError.detail);
     }
+
     return role;
+    
   }
 }

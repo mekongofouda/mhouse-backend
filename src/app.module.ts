@@ -19,9 +19,10 @@ import { AccountModule } from './resources/account/account.module';
 import { SponsorModule } from './resources/post/sponsor/sponsor.module';
 import { PasswordModule } from './resources/account/password/password.module';
 import { FollowerModule } from './resources/account/follower/follower.module';
-import { RealEstateModule } from './resources/Service/real-estate/real-estate.module';
-import { HotelBookingModule } from './resources/Service/hotel-booking/hotel-booking.module';
-import { HomeCareModule } from './resources/Service/home-care/home-care.module';
+import { RealEstateModule } from './resources/service/real-estate/real-estate.module';
+import { HotelBookingModule } from './resources/service/hotel-booking/hotel-booking.module';
+import { HomeCareModule } from './resources/service/home-care/home-care.module';
+import { HomeStandingModule } from './resources/service/home-standing/home-standing.module';
 import { dbConstants } from './constants';
 
 @Module({
@@ -54,7 +55,8 @@ import { dbConstants } from './constants';
     FollowerModule, 
     RealEstateModule, 
     HomeCareModule, 
-    HotelBookingModule
+    HotelBookingModule,
+    HomeStandingModule
   ],
   controllers: [AppController],
   providers: [AppService],

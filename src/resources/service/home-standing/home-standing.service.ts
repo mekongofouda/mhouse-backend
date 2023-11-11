@@ -21,44 +21,53 @@ export class HomeStandingService {
   async addHomeStanding(addHomeStandingDto: AddHomeStandingDto) {
 
     //Create the service object with Dto to save it 
-    const service = await this.serviceRepository.create(addHomeStandingDto); 
+    let service = await this.serviceRepository.findOneBy({refService: addHomeStandingDto.refService}); 
     if (service == null) {
-      throw new BadRequestException("Service not found");
+      throw new HttpException("Service not found", HttpStatus.NOT_FOUND);
     }
 
     //Create the homeCare object with Dto to save it 
-    const homeCare = await this.homeStandingRepository.create(addHomeStandingDto); 
-    if (service == null) {
+    let homeStanding = await this.homeStandingRepository.create(addHomeStandingDto); 
+    if (homeStanding == null) {
       throw new BadRequestException("Service not found");
     }
-    homeCare.service = service; 
-    try {
-      await this.homeStandingRepository.save(homeCare);
-    } catch (error) {
-      throw new ConflictException(error.driverError.detail);
-    }
-    return service;
-  }
+    homeStanding.service = service; 
 
-  async showHotelHomeStanding(refHomeStanding: string) {
-    const service = await this.homeStandingRepository.findOneBy({refHomeStanding});
-    if (!service) {
-      throw new HttpException("Service not found", HttpStatus.NOT_FOUND)
-    }    
-    return service;
-  }
-
-  async updateHomeStanding(refHomeStanding: string, updateHomeStandingDto: UpdateHomeStandingDto) {
-    const homeStanding = await this.homeStandingRepository.findOneBy({refHomeStanding});
-    if (homeStanding == null) {
-      throw new HttpException("HomeStanding not found", HttpStatus.NOT_FOUND)
-    }    
-    Object.assign(homeStanding, updateHomeStandingDto);
     try {
       await this.homeStandingRepository.save(homeStanding);
     } catch (error) {
       throw new ConflictException(error.driverError.detail);
     }
+
     return homeStanding;
+
+  }
+
+  async showHotelHomeStanding(refHomeStanding: string) {
+
+    const homeStanding = await this.homeStandingRepository.findOneBy({refHomeStanding});
+    if (homeStanding == null) {
+      throw new HttpException("HomeStanding not found", HttpStatus.NOT_FOUND)
+    }    
+    return homeStanding;
+
+  }
+
+  async updateHomeStanding(refHomeStanding: string, updateHomeStandingDto: UpdateHomeStandingDto) {
+
+    const homeStanding = await this.homeStandingRepository.findOneBy({refHomeStanding});
+    if (homeStanding == null) {
+      throw new HttpException("HomeStanding not found", HttpStatus.NOT_FOUND)
+    }    
+    Object.assign(homeStanding, updateHomeStandingDto);
+
+    try {
+      await this.homeStandingRepository.save(homeStanding);
+    } catch (error) {
+      throw new ConflictException(error.driverError.detail);
+    }
+
+    return homeStanding;
+
   }
 }

@@ -19,46 +19,56 @@ export class HomeCareService {
 
   async addHomeCare(addHomeCareDto: AddHomeCareDto) {
 
-    //Create the service object with Dto to save it 
-    const service = await this.serviceRepository.create(addHomeCareDto); 
+    //Create the service object with Dto to save homecare on it 
+    let service = await this.serviceRepository.findOneBy({refService: addHomeCareDto.refService}); 
     if (service == null) {
-      throw new BadRequestException("HomeCare not found");
+      throw new HttpException("Service not found", HttpStatus.NOT_FOUND);
     }
 
     //Create the homeCare object with Dto to save it 
-    const homeCare = await this.homeCareRepository.create(addHomeCareDto); 
-    if (service == null) {
+    let homeCare = await this.homeCareRepository.create(addHomeCareDto); 
+    if (homeCare == null) {
       throw new BadRequestException("HomeCare not found");
     }
     homeCare.service = service; 
+
     try {
       await this.homeCareRepository.save(homeCare);
     } catch (error) {
       throw new ConflictException(error.driverError.detail);
     }
-    return service;
+
+    return homeCare;
+
   }
 
   async showHomCareDetail(refHomeCare: string) {
-    const service = await this.homeCareRepository.findOneBy({refHomeCare});
-    if (service == null) {
+
+    const homeCare = await this.homeCareRepository.findOneBy({refHomeCare});
+    if (homeCare == null) {
       throw new HttpException("Service not found", HttpStatus.NOT_FOUND)
     }    
-    return service;
+
+    return homeCare;
+
   }
 
   async updateHomCare(refHomeCare: string, updateHomeCareDto: UpdateHomeCareDto) {
+
     const homeCare = await this.homeCareRepository.findOneBy({refHomeCare});
     if (homeCare == null) {
       throw new HttpException("Homecare not found", HttpStatus.NOT_FOUND)
     }    
     Object.assign(homeCare, updateHomeCareDto);
+
     try {
       await this.homeCareRepository.save(homeCare);
     } catch (error) {
       throw new ConflictException(error.driverError.detail);
     }
+
     return homeCare;
+
   }
 
 }

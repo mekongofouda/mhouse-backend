@@ -82,31 +82,54 @@ export class ReferencePipe implements PipeTransform {
       value.refRealEstate = "RRES"+randNumber.toString()+date.getFullYear()+date.getMonth()+date.getDay()+date.getMonth()+date.getMinutes()+date.getSeconds();
     }
 
-    if (metadata.metatype.name == 'AddHomeCereDto') {
+    if (metadata.metatype.name == 'AddHomeCareDto') {
       const date = new Date();
       const randNumber  = Math.floor(Math.random() * 100);
-      value.refRealEstate = "RRES"+randNumber.toString()+date.getFullYear()+date.getMonth()+date.getDay()+date.getMonth()+date.getMinutes()+date.getSeconds();
+      value.refHomeCare = "RHCA"+randNumber.toString()+date.getFullYear()+date.getMonth()+date.getDay()+date.getMonth()+date.getMinutes()+date.getSeconds();
     }
+
     if (metadata.metatype.name == 'AddHomeStandingDto') {
       const date = new Date();
       const randNumber  = Math.floor(Math.random() * 100);
-      value.refRealEstate = "RRES"+randNumber.toString()+date.getFullYear()+date.getMonth()+date.getDay()+date.getMonth()+date.getMinutes()+date.getSeconds();
+      value.refHomeStanding = "RHST"+randNumber.toString()+date.getFullYear()+date.getMonth()+date.getDay()+date.getMonth()+date.getMinutes()+date.getSeconds();
     }
+
     if (metadata.metatype.name == 'AddHotelBookingDto') {
       const date = new Date();
       const randNumber  = Math.floor(Math.random() * 100);
-      value.refRealEstate = "RRES"+randNumber.toString()+date.getFullYear()+date.getMonth()+date.getDay()+date.getMonth()+date.getMinutes()+date.getSeconds();
+      value.refHotelBooking = "RHBK"+randNumber.toString()+date.getFullYear()+date.getMonth()+date.getDay()+date.getMonth()+date.getMinutes()+date.getSeconds();
     }
+
     if (metadata.metatype.name == 'AddRealEstateRealisationDto') {
       const date = new Date();
       const randNumber  = Math.floor(Math.random() * 100);
-      value.refRealEstate = "RRES"+randNumber.toString()+date.getFullYear()+date.getMonth()+date.getDay()+date.getMonth()+date.getMinutes()+date.getSeconds();
+      value.refRealEstateRealisation = "RRER"+randNumber.toString()+date.getFullYear()+date.getMonth()+date.getDay()+date.getMonth()+date.getMinutes()+date.getSeconds();
     }
+
     if (metadata.metatype.name == 'AddHomeCareRealisationDto') {
       const date = new Date();
       const randNumber  = Math.floor(Math.random() * 100);
-      value.refRealEstate = "RRES"+randNumber.toString()+date.getFullYear()+date.getMonth()+date.getDay()+date.getMonth()+date.getMinutes()+date.getSeconds();
+      value.refHomeCareRealisation = "RHCR"+randNumber.toString()+date.getFullYear()+date.getMonth()+date.getDay()+date.getMonth()+date.getMinutes()+date.getSeconds();
     }
+
+    if (metadata.metatype.name == 'AddHomeStandingRealisationDto') {
+      const date = new Date();
+      const randNumber  = Math.floor(Math.random() * 100);
+      value.refHomeStandingRealisation = "RHSR"+randNumber.toString()+date.getFullYear()+date.getMonth()+date.getDay()+date.getMonth()+date.getMinutes()+date.getSeconds();
+    }
+
+    if (metadata.metatype.name == 'AddHotelBookingServiceDto') {
+      const date = new Date();
+      const randNumber  = Math.floor(Math.random() * 100);
+      value.refHotelBookingService = "RHBS"+randNumber.toString()+date.getFullYear()+date.getMonth()+date.getDay()+date.getMonth()+date.getMinutes()+date.getSeconds();
+    }
+    
+    if (metadata.metatype.name == 'AddRoomDto') {
+      const date = new Date();
+      const randNumber  = Math.floor(Math.random() * 100);
+      value.refRoom = "RROO"+randNumber.toString()+date.getFullYear()+date.getMonth()+date.getDay()+date.getMonth()+date.getMinutes()+date.getSeconds();
+    }
+    
     return value; 
   }
 }

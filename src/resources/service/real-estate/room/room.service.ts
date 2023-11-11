@@ -24,20 +24,22 @@ export class RoomService {
   ){}
 
   async addRoom(addRoomDto: AddRoomDto) {
+    
     //Create the service object with Dto to save it 
-    const realEstate = await this.realEstateRepository.create(addRoomDto); 
+    const realEstate = await this.realEstateRepository.findOneBy({refRealEstate: addRoomDto.refRealEstate}); 
     if (realEstate == null) {
-      throw new BadRequestException("Service not found");
+      throw new BadRequestException("RealEstate not found");
     }
 
     //Create the homeCare object with Dto to save it 
     const room = await this.roomRepository.create(addRoomDto); 
     if (room == null) {
-      throw new BadRequestException("Service not found");
+      throw new BadRequestException("Room not found");
     }
     room.realEstate = realEstate; 
+
     try {
-      await this.realEstateRepository.save(room);
+      await this.roomRepository.save(room);
     } catch (error) {
       throw new ConflictException(error.driverError.detail);
     }
@@ -75,7 +77,7 @@ export class RoomService {
     if (listRoomDto.refRealEstate != undefined) {
       const realEstate = await this.realEstateRepository.findOneBy({refRealEstate: listRoomDto.refRealEstate});
       if (realEstate == null) {
-        throw new HttpException("Post not found", HttpStatus.NOT_FOUND);
+        throw new HttpException("RealEstate not found", HttpStatus.NOT_FOUND);
       } 
       rooms = realEstate.rooms;
       listRooms = realEstate.rooms;
@@ -102,7 +104,7 @@ export class RoomService {
     && ((listRoomDto.createdAt != undefined)
     ||(listRoomDto.updatedAt != undefined)
     )) {
-      throw new HttpException("Like not found", HttpStatus.NOT_FOUND);
+      throw new HttpException("Room not found", HttpStatus.NOT_FOUND);
     } else if (rooms.length != 0) {
       listRooms = rooms;
     }
@@ -110,37 +112,46 @@ export class RoomService {
   }
 
   async showRoomDetail(refRoom: string) {
+
     const room = await this.roomRepository.findOneBy({refRoom});
     if (room == null) {
-      throw new HttpException("Like not found", HttpStatus.NOT_FOUND)
+      throw new HttpException("Room not found", HttpStatus.NOT_FOUND)
     }    
     return room;
   }
 
   async updateRoom(refRoom: string, updateRoomDto: UpdateRoomDto) {
+
     const room = await this.roomRepository.findOne({where:{refRoom}});
     if (room == null) {
-      throw new HttpException("Offer not found", HttpStatus.NOT_FOUND)
+      throw new HttpException("Room not found", HttpStatus.NOT_FOUND)
     }    
     Object.assign(room, updateRoomDto);
+
     try {
       await this.roomRepository.save(room);
     } catch (error) {
       throw new ConflictException(error.driverError.detail);
     } 
+
     return room;
+
   }
 
   async deleteRoom(refRoom: string) {
+
     const room = await this.roomRepository.findOneBy({refRoom});
     if (room == null) {
-      throw new HttpException("Offer not found", HttpStatus.NOT_FOUND)
+      throw new HttpException("Room not found", HttpStatus.NOT_FOUND)
     }   
+
     try {
       await this.roomRepository.softRemove(room);
     } catch (error) {
       throw new ConflictException(error.driverError.detail);
     } 
+
     return room;
+
   }
 }

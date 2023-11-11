@@ -6,6 +6,7 @@ import { Account } from 'src/decorators/account.decorator';
 import { ListHotelBookingServiceDto } from './dto/list-hotel-booking-service.dto';
 import { MhouseResponseInterface } from 'src/interfaces/mhouse-response.interface';
 import { JwtAuthGuard } from 'src/resources/account/auth/auth.guard';
+import { ReferencePipe } from 'src/pipes/reference/reference.pipe';
 
 @Controller('hotel-booking-service')
 export class HotelBookingServiceController {
@@ -14,7 +15,7 @@ export class HotelBookingServiceController {
   @Post()
   @UseGuards(JwtAuthGuard)
   async addHotelBookingService(
-    @Body() addHotelBookingServiceDto: AddHotelBookingServiceDto
+    @Body(ReferencePipe) addHotelBookingServiceDto: AddHotelBookingServiceDto
     ): Promise<MhouseResponseInterface> {
     const data = await this.hotelBookingServiceService.addHotelBookingService(addHotelBookingServiceDto);
     return {
