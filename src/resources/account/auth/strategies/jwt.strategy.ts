@@ -9,19 +9,22 @@ import { jwtConstants } from '../../../../constants';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
+
   constructor(
     @InjectRepository(AccountEntity)
     private accountRepository: Repository<AccountEntity>,
   ) {
+
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       ignoreExpiration: false,
       secretOrKey: jwtConstants.secret,
     });
+    
   }
 
   async validate(payload: PayloadInterface) {
-    const account = await this.accountRepository.findOne({where:{email:payload.email}}) ;
+    const account = await this.accountRepository.findOneBy({email: payload.email}) ;
     if (account) {
         const {password, salt, ...result} = account;
         return await result;

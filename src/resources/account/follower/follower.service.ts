@@ -20,7 +20,7 @@ export class FollowerService {
       throw new HttpException("Account not found", HttpStatus.NOT_FOUND);
     }    
 
-    const myAccount = await this.accountRepository.create(account)[0];
+    const myAccount = await this.accountRepository.create({...account})[0];
     myAccount.followed.push(userAccount.refAccount);
 
     try {
@@ -68,7 +68,7 @@ export class FollowerService {
     if (listFollowerDto.refAccount != undefined) {
       userAccount = await this.accountRepository.findOneBy({refAccount: listFollowerDto.refAccount});
     } else {
-      userAccount =  this.accountRepository.create(account);
+      userAccount =  await this.accountRepository.create(account);
     } 
 
     if (userAccount) {

@@ -36,9 +36,6 @@ export class Role extends TimestampEntity {
     @OneToMany(
         type => AccountEntity,
         (account) => account.role,
-        {
-            eager: true
-        }
     )
     accounts: AccountEntity[];
 

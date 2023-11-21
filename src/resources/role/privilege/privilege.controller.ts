@@ -1,7 +1,6 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Query, HttpException, HttpStatus, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Query, HttpStatus, UseGuards } from '@nestjs/common';
 import { PrivilegeService } from './privilege.service';
 import { AddPrivilegeDto } from './dto/add-privilege.dto';
-import { UpdatePrivilegeDto } from './dto/update-privilege.dto';
 import { ListPrivilegeDto } from './dto/list-privilege.dto';
 import { ReferencePipe } from 'src/pipes/reference/reference.pipe';
 import { JwtAuthGuard } from 'src/resources/account/auth/auth.guard';
@@ -19,7 +18,7 @@ export class PrivilegeController {
   @Post() 
   @UseGuards(JwtAuthGuard)
   async addPrivilege(
-    @Body(ReferencePipe) addPrivilegeDto: AddPrivilegeDto
+    @Body(ReferencePipe) addPrivilegeDto: AddPrivilegeDto,
     ): Promise<MhouseResponseInterface> {
     const data = await this.privilegeService.addPrivilege(addPrivilegeDto);
     return {

@@ -102,7 +102,8 @@ export class AccountEntity extends TimestampEntity {
 
     @ManyToOne(
         type => Role,
-        (role) => role.accounts,    
+        (role) => role.accounts, 
+        { eager: true }
     )
     role : Role; 
 

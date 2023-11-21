@@ -1,4 +1,4 @@
-import { ConflictException, HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { ConflictException, HttpException, HttpStatus, Injectable, UnauthorizedException } from '@nestjs/common';
 import { AddDiscussionDto } from './dto/add-discussion.dto';
 import { UpdateDiscussionDto } from './dto/update-discussion.dto';
 import { ListDiscussionDto } from './dto/list-discussion.dto';
@@ -6,9 +6,11 @@ import { Discussion } from './entities/discussion.entity';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { AccountEntity } from 'src/resources/account/entities/account.entity';
+import { Utils } from 'src/generics/utils';
+import { FunctionPrivilegeEnum } from 'src/enums/function.privilege.enum';
 
 @Injectable()
-export class DiscussionService {
+export class DiscussionService extends Utils{
 
   constructor(
     @InjectRepository(AccountEntity) 
@@ -17,19 +19,26 @@ export class DiscussionService {
     @InjectRepository(Discussion) 
     private readonly discussionRepository: Repository<Discussion>,
 
-  ){}
-
+  ){
+    super();
+  }
+ 
   async addDiscussion(addDiscussionDto: AddDiscussionDto, account: any): Promise<Discussion> {
+    
+    const userAccount = await this.accountRepository.findOneBy({refAccount: account.refAccount});
+    if(userAccount != null) {
+      if (this.IsAuthorised(userAccount, FunctionPrivilegeEnum.ADD_DISCUSSION) == false) {
+        throw new UnauthorizedException();
+      }
+    }
 
     const discussion = await this.discussionRepository.create(addDiscussionDto);
-    const userAccount = await this.accountRepository.create(account);
-
     const customerAccount = await this.accountRepository.findOneBy({refAccount: addDiscussionDto.refCustomer});
     if (customerAccount == null) {
       throw new HttpException("Account not found", HttpStatus.NOT_FOUND);
     } 
 
-    discussion.accounts = [userAccount[0], customerAccount];
+    discussion.accounts = [userAccount, customerAccount];
 
     try { 
       await this.discussionRepository.save(discussion);
@@ -38,6 +47,7 @@ export class DiscussionService {
     }
 
     return discussion;
+
   }
 
   async listDiscussion(listDiscussionDto: ListDiscussionDto, account: any): Promise<Discussion[]>  {
@@ -52,7 +62,7 @@ export class DiscussionService {
       } else {
         throw new HttpException("Discussion not found", HttpStatus.NOT_FOUND)
       }  
-    } else if (listDiscussionDto.all == 1){
+    } else if (account.role.slug == "ADMIN"||"SUPER_ADMIN"){
       listDiscussions = await this.discussionRepository.find();
     } else {
       listDiscussions = account.discussions;  
@@ -126,5 +136,6 @@ export class DiscussionService {
     }
 
     return discussion;
+
   }
 }

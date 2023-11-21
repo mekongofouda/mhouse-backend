@@ -8,6 +8,7 @@ import { SlugPipe } from 'src/pipes/slug/slug.pipe';
 import { JwtAuthGuard } from 'src/resources/account/auth/auth.guard';
 import { Account } from 'src/decorators/account.decorator';
 import { MhouseResponseInterface } from 'src/interfaces/mhouse-response.interface';
+import { AccountEntity } from '../account/entities/account.entity';
 
 @Controller('role')
 export class RoleController {
@@ -20,8 +21,9 @@ export class RoleController {
   @UseGuards(JwtAuthGuard)
   async addRole(
     @Body(ReferencePipe, SlugPipe) addRoleDto: AddRoleDto,
+    @Account() account: AccountEntity
     ): Promise<MhouseResponseInterface> {
-    const data = await this.roleService.addRole(addRoleDto);
+    const data = await this.roleService.addRole(addRoleDto, account);
     return {
       data: data,
       message: "Rôle créé avec succès",

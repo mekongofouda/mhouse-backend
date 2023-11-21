@@ -1,7 +1,8 @@
 import { Type } from "class-transformer";
 import { IsDate, IsInt, IsOptional, IsString, MaxLength } from "class-validator";
+import { TimestampDto } from "src/generics/timestampDto";
 
-export class ListLikeDto {
+export class ListLikeDto extends TimestampDto {
 
     @IsInt()
     @IsOptional()
@@ -17,15 +18,5 @@ export class ListLikeDto {
     @IsOptional()
     @MaxLength(20, { message: "La taille maximale de la référence du post est de 20 caractères"})
     refPost: string;
-
-    @IsDate()
-    @IsOptional()
-    @Type(()=> Date)
-    createdAt: Date;
-
-    @IsDate()
-    @IsOptional()
-    @Type(()=> Date)
-    updatedAt: Date;
  
 }

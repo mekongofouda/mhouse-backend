@@ -1,20 +1,37 @@
-import { ConflictException, HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { ConflictException, HttpException, HttpStatus, Injectable, UnauthorizedException } from '@nestjs/common';
 import { AddRoleDto } from './dto/add-role.dto';
 import { UpdateRoleDto } from './dto/update-role.dto';
 import { ListRoleDto } from './dto/list-role.dto';
 import { Role } from './entities/role.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { AccountEntity } from '../account/entities/account.entity';
+import { Utils } from 'src/generics/utils';
+import { FunctionPrivilegeEnum } from 'src/enums/function.privilege.enum';
 
 @Injectable()
-export class RoleService {
+export class RoleService extends Utils{
 
   constructor(
+
+    @InjectRepository(AccountEntity) 
+    private readonly accountRepository: Repository<AccountEntity>,
+
     @InjectRepository(Role) 
     private readonly roleRepository: Repository<Role>
-  ){}
 
-  async addRole(addRoleDto: AddRoleDto) {  
+  ){
+    super()
+  }
+
+  async addRole(addRoleDto: AddRoleDto, account: AccountEntity) {  
+
+    const userAccount = await this.accountRepository.findOneBy({refAccount: account.refAccount});
+    if(userAccount != null) {
+      if (this.IsAuthorised(userAccount, FunctionPrivilegeEnum.ADD_ROLE) == false) {
+        throw new UnauthorizedException();
+      }
+    }
 
     const role = await this.roleRepository.create(addRoleDto);
     try {

@@ -1,4 +1,4 @@
-import { IsEmail, IsOptional, MaxLength } from "class-validator";
+import { IsEmail, IsOptional } from "class-validator";
 
 export class ValidateResetAdressDto {
 

@@ -24,9 +24,17 @@ import { HotelBookingModule } from './resources/service/hotel-booking/hotel-book
 import { HomeCareModule } from './resources/service/home-care/home-care.module';
 import { HomeStandingModule } from './resources/service/home-standing/home-standing.module';
 import { dbConstants } from './constants';
+import { UpgradingModule } from './resources/upgrading/upgrading.module';
+import { ConfigModule } from '@nestjs/config';
+import { env } from 'node:process';
 
 @Module({
   imports: [
+    ConfigModule.forRoot({
+      isGlobal: true,
+      envFilePath: '.env',
+      ignoreEnvFile: true,
+    }),
     TypeOrmModule.forRoot({
       type: 'postgres',
       host: dbConstants.host,
@@ -34,7 +42,9 @@ import { dbConstants } from './constants';
       username: dbConstants.username,
       password: dbConstants.password,
       database: dbConstants.database,
-      entities: [join(process.cwd(), 'dist/**/*.entity.js')],
+      entities: [
+        join(process.cwd(), 'dist/**/*.entity.js')
+      ],
       synchronize: true,
     }),     
     PrivilegeModule, 
@@ -56,7 +66,8 @@ import { dbConstants } from './constants';
     RealEstateModule, 
     HomeCareModule, 
     HotelBookingModule,
-    HomeStandingModule
+    HomeStandingModule,
+    UpgradingModule
   ],
   controllers: [AppController],
   providers: [AppService],

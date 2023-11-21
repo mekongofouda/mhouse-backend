@@ -15,7 +15,13 @@ export class Privilege extends TimestampEntity {
     refPrivilege: string;
 
     @Column({
+        nullable:true
+    })
+    code: string;
+
+    @Column({
         length: 32,
+        unique: true
     })
     title: string;
 

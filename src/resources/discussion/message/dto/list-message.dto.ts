@@ -1,7 +1,8 @@
 import { Type } from "class-transformer";
 import { IsDate, IsInt, IsOptional, IsString, MaxLength } from "class-validator";
+import { TimestampDto } from "src/generics/timestampDto";
 
-export class ListMessageDto {
+export class ListMessageDto extends TimestampDto {
 
     @IsInt()
     @IsOptional()
@@ -17,15 +18,5 @@ export class ListMessageDto {
     @IsOptional()
     @MaxLength(20, { message: "La taille maximale de la référence discussion est de 20 caractères"})
     refDiscussion: string;
-
-    @IsDate()
-    @IsOptional()
-    @Type(()=> Date)
-    createdAt: Date;
-
-    @IsDate()
-    @IsOptional()
-    @Type(()=> Date)
-    updatedAt: Date;
 
 }

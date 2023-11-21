@@ -35,23 +35,22 @@ export class AuthController {
     };
   }
 
+  /** Signin function */
   @Post('register')
   @UseInterceptors(FileInterceptor('avatar'))
   async register(
-    @Body(ReferencePipe) registerDto: RegisterDto,
-    @UploadedFile() file: Express.Multer.File
-    ) 
-    // : Promise<MhouseResponseInterface> 
+    @Body(ReferencePipe) registerDto: RegisterDto
+    ) : Promise<MhouseResponseInterface> 
     {
-      console.log(file);
-    // const data = await this.authService.register(registerDto);
-    // return {
-    //   data: data,
-    //   message: "Your account has been created successufully",
-    //   code: HttpStatus.OK
-    // };
+    const data = await this.authService.register(registerDto);
+    return {
+      data: data,
+      message: "Account created successufully",
+      code: HttpStatus.OK
+    };
   }
   
+  /** Signin with facebook functions */
   @Get('facebook')
   @UseGuards(AuthGuard('facebook'))
   async facebookLogin(): Promise<any> {
@@ -67,14 +66,13 @@ export class AuthController {
       statusCode: HttpStatus.OK
     };
   }
-
+  
+  /** Signin with google functions */
   @Get('google')
   @UseGuards(AuthGuard('google'))
   async googleAuth(
     @Req() req
-    ) {
-
-  }
+    ) { }
 
   @Get('google/redirect')
   @UseGuards(AuthGuard('google'))
@@ -84,6 +82,7 @@ export class AuthController {
     return this.authService.googleLogin(req)
   }
   
+  /** Logout function */
   @Get()
   @UseGuards(JwtAuthGuard)
   async logout(): Promise<MhouseResponseInterface> {

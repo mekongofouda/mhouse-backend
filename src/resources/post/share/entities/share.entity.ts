@@ -24,7 +24,7 @@ export class Share extends TimestampEntity {
     @Column({
         type: 'enum',
         enum: TypeShareEnum,
-        default: TypeShareEnum.HOME_CARE,
+        default: TypeShareEnum.GMAIL_SHARE,
         nullable: true
     })
     type: string

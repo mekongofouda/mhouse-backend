@@ -1,4 +1,6 @@
 export enum TypeHomeCareEnum {
-    JARDINERIE = 'jardinerie',
-    CARRELAGE = 'carrelage'
+    PLOMBIER = 'plombier',
+    MACON = 'macon',
+    SERRURIER = "serrurier",
+    VITRIER = "vitier"
 } 

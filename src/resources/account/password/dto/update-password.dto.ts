@@ -8,7 +8,7 @@ export class UpdatePasswordDto {
     password: string;
 
     @IsNotEmpty()
-    @MinLength(10, { message: "La taille minimale du mot de passe confirmé est de 10 caractères"})
+    @MinLength(10)
     passwordConfirmed: string;
 
 }

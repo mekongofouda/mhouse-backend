@@ -29,7 +29,7 @@ export class HotelBookingService extends TimestampEntity {
     @Column({
         type: 'enum',
         enum: TypeHotelBookingServiceEnum,
-        default: TypeHotelBookingServiceEnum.HOME_STANDING
+        default: TypeHotelBookingServiceEnum.MOTEL
     })
     type: string
 

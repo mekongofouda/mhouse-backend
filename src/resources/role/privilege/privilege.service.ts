@@ -7,6 +7,7 @@ import { AddPrivilegeDto } from './dto/add-privilege.dto';
 import { UpdateDiscussionDto } from 'src/resources/discussion/dto/update-discussion.dto';
 import { Role } from 'src/resources/role/entities/role.entity';
 import { AccountEntity } from '../../account/entities/account.entity';
+import * as bcrypt  from 'bcrypt';
 
 @Injectable()
 export class PrivilegeService {
@@ -32,13 +33,22 @@ export class PrivilegeService {
     }
 
     //Create a privilege to save with the Dto  
-    const privilege = await this.privilegeRepository.create({
-      ...addPrivilegeDto
-    });
+    let privilege = await this.privilegeRepository.create({...addPrivilegeDto});
+    const saltRounds = 12;
+    const salt = await bcrypt.genSalt(saltRounds);
+    privilege.roles = [role];
 
-    privilege.roles = [];
+    privilege.code = await bcrypt.hash(privilege.code, salt);
+    privilege.resource = await bcrypt.hash(privilege.resource, salt);
+    
+    try {
+      await this.privilegeRepository.save(privilege)
+    } catch (error) {
+      throw new ConflictException(error.driverError.detail);
+    }
 
-    return await this.privilegeRepository.save(privilege);
+    return await privilege;
+
   }
 
   async listPrivilege(listPrivilegeDto: ListPrivilegeDto, account: any): Promise<Privilege[]> {

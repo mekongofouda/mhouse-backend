@@ -42,7 +42,9 @@ export class OfferService {
       console.log(error);
       throw new ConflictException(error.driverError.detail);
     }
+
     return offer;
+    
   }
 
   async validateOffer(refOffer: string): Promise<Offer> {

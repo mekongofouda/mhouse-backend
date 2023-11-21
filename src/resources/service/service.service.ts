@@ -27,7 +27,7 @@ export class ServiceService {
     }
 
     //Create the service object with Dto to save it 
-    const service = await this.serviceRepository.create(addServiceDto); 
+    const service = await this.serviceRepository.create(addServiceDto);
 
     //Set properties
     service.account = account;

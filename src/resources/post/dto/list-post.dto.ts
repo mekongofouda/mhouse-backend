@@ -1,7 +1,8 @@
 import { Type } from "class-transformer";
-import { IsDate, IsInt, IsOptional, IsString, MaxLength } from "class-validator";
+import { IsInt, IsOptional, IsString, MaxLength } from "class-validator";
+import { TimestampDto } from "src/generics/timestampDto";
 
-export class ListPostDto {    
+export class ListPostDto extends TimestampDto {    
     
     @IsInt()
     @IsOptional()
@@ -17,16 +18,5 @@ export class ListPostDto {
     @IsOptional()
     @MaxLength(20, { message: "La taille maximale de la référence service est de 20 caractères"})
     refService: string;
-
-    @IsDate()
-    @IsOptional()
-    @Type(()=> Date)
-    createdAt: Date;
-
-    @IsDate()
-    @IsOptional()
-    @Type(()=> Date)
-    updatedAt: Date;
-
 
 }
