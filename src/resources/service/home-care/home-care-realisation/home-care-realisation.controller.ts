@@ -7,6 +7,7 @@ import { Account } from 'src/decorators/account.decorator';
 import { ListHomeCareRealisationDto } from './dto/list-home-care-realisation.dto';
 import { JwtAuthGuard } from 'src/resources/account/auth/auth.guard';
 import { ReferencePipe } from 'src/pipes/reference/reference.pipe';
+import { AccountEntity } from 'src/resources/account/entities/account.entity';
 
 @Controller('home-care-realisation')
 export class HomeCareRealisationController {
@@ -15,9 +16,10 @@ export class HomeCareRealisationController {
   @Post()
   @UseGuards(JwtAuthGuard)
   async addHomeCareRealisation(
-    @Body(ReferencePipe) addHomeCareRealisationDto: AddHomeCareRealisationDto
+    @Body(ReferencePipe) addHomeCareRealisationDto: AddHomeCareRealisationDto,
+    @Account() account
     ): Promise<MhouseResponseInterface> {
-    const data = await this.homeCareRealisationService.addHomeCareRealisation(addHomeCareRealisationDto);
+    const data = await this.homeCareRealisationService.addHomeCareRealisation(addHomeCareRealisationDto, account);
     return {
       data: data,
       message: "HomeCareRealisation ajouté avec succès",
@@ -42,9 +44,10 @@ export class HomeCareRealisationController {
   @Get(':ref')
   @UseGuards(JwtAuthGuard)
   async showHomeCareRealisationDetail(
-    @Param('ref') ref: string
+    @Param('ref') ref: string,
+    @Account() account: AccountEntity
     ): Promise<MhouseResponseInterface> {
-    const data = await this.homeCareRealisationService.showHomeCareRealisationDetail(ref);
+    const data = await this.homeCareRealisationService.showHomeCareRealisationDetail(ref, account);
     return {
       data: data,
       message: "Partage effectué avec succès",
@@ -56,9 +59,10 @@ export class HomeCareRealisationController {
   @UseGuards(JwtAuthGuard)
   async updateHomCareRealisation(
     @Param('ref') ref: string, 
-    @Body() updateHomeCareRealisationDto: UpdateHomeCareRealisationDto
+    @Body() updateHomeCareRealisationDto: UpdateHomeCareRealisationDto,
+    @Account() account: AccountEntity
     ): Promise<MhouseResponseInterface> {
-    const data = await this.homeCareRealisationService.updateHomeCareRealisation(ref, updateHomeCareRealisationDto);
+    const data = await this.homeCareRealisationService.updateHomeCareRealisation(ref, updateHomeCareRealisationDto, account);
     return {
       data: data,
       message: "Partage effectué avec succès",
@@ -69,12 +73,13 @@ export class HomeCareRealisationController {
   @Delete(':ref')
   @UseGuards(JwtAuthGuard)
   async deleteHomeCareRealisationremove(
-    @Param('ref') ref: string
+    @Param('ref') ref: string,
+    @Account() account: AccountEntity
     ): Promise<MhouseResponseInterface> {
-    const data = await this.homeCareRealisationService.deleteHomeCareRealisation(ref);
+    const data = await this.homeCareRealisationService.deleteHomeCareRealisation(ref, account);
     return {
       data: data,
-      message: "Partage effectué avec succès",
+      message: "HomeCareService supprimé avec succès",
       code: HttpStatus.OK
     };
   }

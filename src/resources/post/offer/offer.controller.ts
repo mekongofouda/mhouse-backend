@@ -19,9 +19,10 @@ export class OfferController {
   @Post()
   @UseGuards(JwtAuthGuard)
   async offer(
-    @Body(ReferencePipe) offerDto: OfferDto
+    @Body(ReferencePipe) offerDto: OfferDto,
+    @Account() account: AccountEntity
     ): Promise<MhouseResponseInterface> {
-    const data = await this.offerService.offer(offerDto);
+    const data = await this.offerService.offer(offerDto, account);
     return {
       data: data,
       message: "Offre proposée avec succès",
@@ -32,9 +33,10 @@ export class OfferController {
   @Patch(':ref')
   @UseGuards(JwtAuthGuard)
   async validateOffer(
-    @Param('ref') ref: string
+    @Param('ref') ref: string,
+    @Account() account: AccountEntity
   ): Promise<MhouseResponseInterface> {
-    const data = await this.offerService.validateOffer(ref);
+    const data = await this.offerService.validateOffer(ref, account);
     return {
       data: data,
       message: "Offre validée avec succès",
@@ -59,9 +61,10 @@ export class OfferController {
   @Get(':ref')
   @UseGuards(JwtAuthGuard)
   async showOfferDetail(
-    @Param('ref') ref: string
+    @Param('ref') ref: string, 
+    @Account() account: AccountEntity
     ): Promise<MhouseResponseInterface> {
-    const data = await this.offerService.showOfferDetail(ref);
+    const data = await this.offerService.showOfferDetail(ref, account);
     return {
       data: data,
       message: "Détails de l'offre obtenue avec succès",
@@ -73,9 +76,10 @@ export class OfferController {
   @UseGuards(JwtAuthGuard)
   async updateOffer(
     @Param('ref') ref: string, 
-    @Body() updateOfferDto: UpdateOfferDto
+    @Body() updateOfferDto: UpdateOfferDto, 
+    @Account() account: AccountEntity
   ): Promise<MhouseResponseInterface> {
-    const data = await this.offerService.updateOffer(ref, updateOfferDto);
+    const data = await this.offerService.updateOffer(ref, updateOfferDto, account);
     return {
       data: data,
       message: "Offre mise à jour avec succès",
@@ -86,9 +90,10 @@ export class OfferController {
   @Delete(':ref')
   @UseGuards(JwtAuthGuard)
   async deleteOffer(
-    @Param('ref') ref: string
+    @Param('ref') ref: string, 
+    @Account() account: AccountEntity
     ): Promise<MhouseResponseInterface> {
-    const data = await this.offerService.deleteOffer(ref);
+    const data = await this.offerService.deleteOffer(ref, account);
     return {
       data: data,
       message: "Offre supprimée avec succès",

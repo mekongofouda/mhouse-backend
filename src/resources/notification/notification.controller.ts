@@ -6,6 +6,8 @@ import { ListNotificationDto } from './dto/list-notification.dto';
 import { ReferencePipe } from 'src/pipes/reference/reference.pipe';
 import { JwtAuthGuard } from 'src/resources/account/auth/auth.guard';
 import { MhouseResponseInterface } from 'src/interfaces/mhouse-response.interface';
+import { AccountEntity } from '../account/entities/account.entity';
+import { Account } from 'src/decorators/account.decorator';
 
 @Controller('notification')
 export class NotificationController {
@@ -17,9 +19,39 @@ export class NotificationController {
   @Post()
   @UseGuards(JwtAuthGuard)
   async sendNotification(
-    @Body(ReferencePipe) sendNotificationDto: SendNotificationDto
+    @Body(ReferencePipe) sendNotificationDto: SendNotificationDto,
+    @Account() account: AccountEntity
     ): Promise<MhouseResponseInterface> {
-    const data = await this.notificationService.sendNotification(sendNotificationDto);
+    const data = await this.notificationService.sendNotification(sendNotificationDto, account);
+    return {
+      data: data,
+      message: "Notification envoyée avec succès",
+      code: HttpStatus.OK
+    };
+  }
+
+  @Get()
+  @UseGuards(JwtAuthGuard)
+  async listNotification(
+    @Query() listNotificationDto: ListNotificationDto,
+    @Account() account: AccountEntity
+  ): Promise<MhouseResponseInterface> {
+    const data = await this.notificationService.listNotification(listNotificationDto, account);
+    return {
+      data: data,
+      message: "Discussion créée avec succès",
+      code: HttpStatus.OK
+    };
+    
+  }
+
+  @Get(':ref')
+  @UseGuards(JwtAuthGuard)
+  async showNotificationDetail(
+    @Param('ref') ref: string,
+    @Account() account: AccountEntity
+  ): Promise<MhouseResponseInterface> {
+    const data = await this.notificationService.showNotificationDetail(ref, account);
     return {
       data: data,
       message: "Discussion créée avec succès",
@@ -27,36 +59,32 @@ export class NotificationController {
     };
   }
 
-  // @Get()
-  // @UseGuards(JwtAuthGuard)
-  // async listNotification(
-  //   @Query() listNotificationDto: ListNotificationDto
-  // ): Promise<MhouseResponseInterface> {
-  //   return await this.notificationService.listNotification(listNotificationDto);
-  // }
+  @Patch(':ref')
+  @UseGuards(JwtAuthGuard)
+  async markReaded(
+    @Param('ref') ref: string, 
+    @Body() markReadedDto: MarkReadedDto,
+    @Account() account: AccountEntity
+  ): Promise<MhouseResponseInterface> {
+    const data = await this.notificationService.markReaded(ref, markReadedDto, account);
+    return {
+      data: data,
+      message: "Discussion créée avec succès",
+      code: HttpStatus.OK
+    };
+  }
 
-  // @Get(':ref')
-  // @UseGuards(JwtAuthGuard)
-  // async showNotificationDetail(
-  //   @Param('ref') ref: string
-  // ): Promise<MhouseResponseInterface> {
-  //   return await this.notificationService.showNotificationDetail(ref);
-  // }
-
-  // @Patch(':ref')
-  // @UseGuards(JwtAuthGuard)
-  // async markReaded(
-  //   @Param('ref') ref: string, 
-  //   @Body() markReadedDto: MarkReadedDto
-  // ): Promise<MhouseResponseInterface> {
-  //   return await this.notificationService.markReaded(ref, markReadedDto);
-  // }
-
-  // @Delete(':ref')
-  // @UseGuards(JwtAuthGuard)
-  // async deleteNotification(
-  //   @Param('ref') ref: string
-  // ): Promise<MhouseResponseInterface> {
-  //   return await this.notificationService.deleteNotification(ref);
-  // }
+  @Delete(':ref')
+  @UseGuards(JwtAuthGuard)
+  async deleteNotification(
+    @Param('ref') ref: string,
+    @Account() account: AccountEntity
+  ): Promise<MhouseResponseInterface> {
+    const data = await this.notificationService.deleteNotification(ref, account);
+    return {
+      data: data,
+      message: "Discussion créée avec succès",
+      code: HttpStatus.OK
+    };
+  }
 }

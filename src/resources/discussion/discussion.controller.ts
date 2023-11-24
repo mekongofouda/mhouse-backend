@@ -57,9 +57,10 @@ export class DiscussionController {
   @Get(':ref')
   @UseGuards(JwtAuthGuard)
   async showDiscussionDetail(
-    @Param('ref') ref: string
+    @Param('ref') ref: string,
+    @Account() account
   ): Promise<MhouseResponseInterface> {
-    const data = await this.discussionService.showDiscussionDetail(ref);
+    const data = await this.discussionService.showDiscussionDetail(ref, account);
     return {
       data: data,
       message: "Liste des discussions obtenue avec succès",
@@ -71,9 +72,10 @@ export class DiscussionController {
   @UseGuards(JwtAuthGuard)
   async updateDiscussion(
     @Param('ref') ref: string, 
-    @Body() updateDiscussionDto: UpdateDiscussionDto
+    @Body() updateDiscussionDto: UpdateDiscussionDto,
+    @Account() account
   ): Promise<MhouseResponseInterface> {
-    const data = await this.discussionService.updateDiscussion(ref, updateDiscussionDto);
+    const data = await this.discussionService.updateDiscussion(ref, updateDiscussionDto, account);
     return {
       data: data,
       message: "Discussion mise à jour avec succès",
@@ -85,8 +87,9 @@ export class DiscussionController {
   @UseGuards(JwtAuthGuard)
   async deleteDiscussion(
     @Param('ref') ref: string,
+    @Account() account
   ): Promise<MhouseResponseInterface> {
-    const data = await this.discussionService.deleteDiscussion(ref);
+    const data = await this.discussionService.deleteDiscussion(ref, account);
     return {
       data: data,
       message: "Discussion supprimée avec succès",

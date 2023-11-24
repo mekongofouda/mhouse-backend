@@ -5,6 +5,8 @@ import { UpdateHomeStandingDto } from './dto/update-home-standing.dto';
 import { JwtAuthGuard } from 'src/resources/account/auth/auth.guard';
 import { ReferencePipe } from 'src/pipes/reference/reference.pipe';
 import { MhouseResponseInterface } from 'src/interfaces/mhouse-response.interface';
+import { AccountEntity } from 'src/resources/account/entities/account.entity';
+import { Account } from 'src/decorators/account.decorator';
 
 @Controller('home-standing')
 export class HomeStandingController {
@@ -13,9 +15,10 @@ export class HomeStandingController {
   @Post()
   @UseGuards(JwtAuthGuard)
   async addHomeStanding(
-    @Body(ReferencePipe) addHomeStandingDto: AddHomeStandingDto
-    ): Promise<MhouseResponseInterface> {
-    const data = await this.homeStandingService.addHomeStanding(addHomeStandingDto);
+    @Body(ReferencePipe) addHomeStandingDto: AddHomeStandingDto,
+    @Account() account:AccountEntity
+  ): Promise<MhouseResponseInterface> {
+    const data = await this.homeStandingService.addHomeStanding(addHomeStandingDto, account);
     return {
       data: data,
       message: "Partage effectué avec succès",
@@ -26,9 +29,10 @@ export class HomeStandingController {
   @Get(':ref')
   @UseGuards(JwtAuthGuard)
   async showHotelHomeStanding(
-    @Param('ref') ref: string
-    ): Promise<MhouseResponseInterface> {
-    const data = await this.homeStandingService.showHotelHomeStanding(ref);
+    @Param('ref') ref: string,
+    @Account() account:AccountEntity
+  ): Promise<MhouseResponseInterface> {
+    const data = await this.homeStandingService.showHotelHomeStanding(ref, account);
     return {
       data: data,
       message: "Partage effectué avec succès",
@@ -40,9 +44,10 @@ export class HomeStandingController {
   @UseGuards(JwtAuthGuard)
   async updateHomeStanding(
     @Param('ref') ref: string, 
-    @Body() updateHomeStandingDto: UpdateHomeStandingDto
-    ): Promise<MhouseResponseInterface> {
-    const data = await this.homeStandingService.updateHomeStanding(ref, updateHomeStandingDto);
+    @Body() updateHomeStandingDto: UpdateHomeStandingDto,
+    @Account() account:AccountEntity
+  ): Promise<MhouseResponseInterface> {
+    const data = await this.homeStandingService.updateHomeStanding(ref, updateHomeStandingDto, account);
     return {
       data: data,
       message: "Partage effectué avec succès",

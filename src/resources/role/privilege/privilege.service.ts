@@ -1,18 +1,21 @@
-import { ConflictException, HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { ConflictException, HttpException, HttpStatus, Injectable, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Privilege } from './entities/privilege.entity';
 import { Repository } from 'typeorm';
 import { ListPrivilegeDto } from './dto/list-privilege.dto';
 import { AddPrivilegeDto } from './dto/add-privilege.dto';
-import { UpdateDiscussionDto } from 'src/resources/discussion/dto/update-discussion.dto';
+import { UpdatePrivilegeDto } from 'src/resources/role/privilege/dto/update-privilege.dto';
 import { Role } from 'src/resources/role/entities/role.entity';
 import { AccountEntity } from '../../account/entities/account.entity';
 import * as bcrypt  from 'bcrypt';
+import { FunctionPrivilegeEnum } from 'src/enums/function.privilege.enum';
+import { Utils } from 'src/generics/utils';
 
 @Injectable()
-export class PrivilegeService {
+export class PrivilegeService extends Utils {
 
   constructor(
+
     @InjectRepository(AccountEntity) 
     private readonly accountRepository: Repository<AccountEntity>,
 
@@ -22,9 +25,18 @@ export class PrivilegeService {
     @InjectRepository(Role) 
     private readonly roleRepository: Repository<Role>
 
-  ){}
+  ){
+    super()
+  }
 
-  async addPrivilege(addPrivilegeDto: AddPrivilegeDto) {
+  async addPrivilege(addPrivilegeDto: AddPrivilegeDto, account: AccountEntity) {
+
+    const userAccount = await this.accountRepository.findOneBy({refAccount: account.refAccount});
+    if(userAccount != null) {
+      if (this.IsAuthorised(userAccount, FunctionPrivilegeEnum.ADD_DISCUSSION) == false) {
+        throw new UnauthorizedException();
+      }
+    }
 
     //Find if the role with the given refRole exist
     const role = await this.roleRepository.findOneBy({refRole: addPrivilegeDto.refRole});
@@ -52,6 +64,13 @@ export class PrivilegeService {
   }
 
   async listPrivilege(listPrivilegeDto: ListPrivilegeDto, account: any): Promise<Privilege[]> {
+
+    const userAccount = await this.accountRepository.findOneBy({refAccount: account.refAccount});
+    if(userAccount != null) {
+      if (this.IsAuthorised(userAccount, FunctionPrivilegeEnum.ADD_DISCUSSION) == false) {
+        throw new UnauthorizedException();
+      }
+    }
 
     let listPrivileges: Privilege[];
     let privileges: Privilege[] = [];
@@ -106,35 +125,65 @@ export class PrivilegeService {
     }
 
     return await listPrivileges;
+
   }
 
-  async showPrivilegeDetail(refPrivilege: string): Promise<Privilege | null> {
+  async showPrivilegeDetail(refPrivilege: string, account: AccountEntity): Promise<Privilege | null> {
+
+    const userAccount = await this.accountRepository.findOneBy({refAccount: account.refAccount});
+    if(userAccount != null) {
+      if (this.IsAuthorised(userAccount, FunctionPrivilegeEnum.ADD_DISCUSSION) == false) {
+        throw new UnauthorizedException();
+      }
+    }
+
     const privilege = await this.privilegeRepository.findOneBy({refPrivilege});
     if (privilege == null) {
       throw new HttpException("Privilege not found", HttpStatus.NOT_FOUND)
     }    
     return privilege;
+
   }
 
-  async updatePrivilege(refPrivilege: string, updatePrivilegeDto: UpdateDiscussionDto): Promise<Privilege> {
+  async updatePrivilege(refPrivilege: string, updatePrivilegeDto: UpdatePrivilegeDto, account: AccountEntity): Promise<Privilege> {
+
+    const userAccount = await this.accountRepository.findOneBy({refAccount: account.refAccount});
+    if(userAccount != null) {
+      if (this.IsAuthorised(userAccount, FunctionPrivilegeEnum.ADD_DISCUSSION) == false) {
+        throw new UnauthorizedException();
+      }
+    }
+
     const privilege = await this.privilegeRepository.findOneBy({refPrivilege});
     if (privilege == null) {
       throw new HttpException("Privilege not found", HttpStatus.NOT_FOUND)
     }    
     Object.assign(privilege, updatePrivilegeDto);
+
     try {
       await this.privilegeRepository.save(privilege);
     } catch (error) {
       throw new ConflictException(error.driverError.detail);
     }
+
     return privilege;
+
   }
 
-  async deletePrivilege(refPrivilege: string) {
+  async deletePrivilege(refPrivilege: string, account: AccountEntity) {
+
+    const userAccount = await this.accountRepository.findOneBy({refAccount: account.refAccount});
+    if(userAccount != null) {
+      if (this.IsAuthorised(userAccount, FunctionPrivilegeEnum.ADD_DISCUSSION) == false) {
+        throw new UnauthorizedException();
+      }
+    }
+
     const privilege = await this.privilegeRepository.findOneBy({refPrivilege});
     if (privilege == null) {
       throw new HttpException("Privilege not found", HttpStatus.NOT_FOUND)
     }    
+    
     try {
       await this.privilegeRepository.softRemove(privilege);
     } catch (error) {

@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Query, HttpStatus, HttpException, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query, HttpStatus, UseGuards } from '@nestjs/common';
 import { RoleService } from './role.service';
 import { AddRoleDto } from './dto/add-role.dto';
 import { UpdateRoleDto } from './dto/update-role.dto';
@@ -23,46 +23,54 @@ export class RoleController {
     @Body(ReferencePipe, SlugPipe) addRoleDto: AddRoleDto,
     @Account() account: AccountEntity
     ): Promise<MhouseResponseInterface> {
+
     const data = await this.roleService.addRole(addRoleDto, account);
     return {
       data: data,
       message: "Rôle créé avec succès",
       code: HttpStatus.OK
     }
+
   }
 
   @Get()
   @UseGuards(JwtAuthGuard)
   async listRole(
     @Query() listRoleDto: ListRoleDto,
-    @Account() user
+    @Account() account: AccountEntity
   ): Promise<MhouseResponseInterface> {
-    const data = await this.roleService.listRole(listRoleDto);
+
+    const data = await this.roleService.listRole(listRoleDto, account);
     return {
       data: data,
-      message: "Partage effectué avec succès",
+      message: "Liste de roles affichée avec succès",
       code: HttpStatus.OK
     }
+
   }
 
   @Get(':ref')
   async showRoleDetail(
-    @Param('ref') ref: string
+    @Param('ref') ref: string, 
+    @Account() account: AccountEntity
     ): Promise<MhouseResponseInterface> {
-    const data = await this.roleService.showRoleDetail(ref);
+
+    const data = await this.roleService.showRoleDetail(ref, account);
     return {
       data: data,
       message: "Partage effectué avec succès",
       code: HttpStatus.OK
     };
+    
   }
 
   @Patch(':ref')
   async updateRole(
-    @Param('ref') ref: string, 
-    @Body(SlugPipe) updateRoleDto: UpdateRoleDto
+    @Param('ref') ref: string,
+    @Body(SlugPipe) updateRoleDto: UpdateRoleDto,
+    @Account() account: AccountEntity
   ): Promise<MhouseResponseInterface> {
-    const data = await this.roleService.updateRole(ref, updateRoleDto);
+    const data = await this.roleService.updateRole(ref, updateRoleDto, account);
     return {
       data: data,
       message: "Partage effectué avec succès",
@@ -72,9 +80,10 @@ export class RoleController {
 
   @Delete(':ref')
   async deleteRole(
-    @Param('ref') ref: string
+    @Param('ref') ref: string,
+    @Account() account: AccountEntity
     ): Promise<MhouseResponseInterface> {
-    const data = await this.roleService.deleteRole(ref);
+    const data = await this.roleService.deleteRole(ref, account);
     return {
       data: data,
       message: "Partage effectué avec succès",

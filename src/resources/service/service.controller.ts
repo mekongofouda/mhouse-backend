@@ -46,9 +46,10 @@ export class ServiceController {
   @Get(':ref')
   @UseGuards(JwtAuthGuard)
   async showServiceDetail(
-    @Param('ref') ref: string
+    @Param('ref') ref: string,
+    @Account() account
     ): Promise<MhouseResponseInterface> {
-    const data = await this.serviceService.showServiceDetail(ref);
+    const data = await this.serviceService.showServiceDetail(ref, account);
     return {
       data: data,
       message: "Partage effectué avec succès",
@@ -60,9 +61,10 @@ export class ServiceController {
   @UseGuards(JwtAuthGuard)
   async updateService(
     @Param('ref') ref: string, 
-    @Body() updateServiceDto: UpdateServiceDto
+    @Body() updateServiceDto: UpdateServiceDto,
+    @Account() account
   ): Promise<MhouseResponseInterface> {
-    const data = await this.serviceService.updateService(ref, updateServiceDto);
+    const data = await this.serviceService.updateService(ref, updateServiceDto, account);
     return {
       data: data,
       message: "Service supprimé avec succès",
@@ -72,9 +74,10 @@ export class ServiceController {
 
   @Delete(':ref')
   async deleteService(
-    @Param('ref') ref: string
+    @Param('ref') ref: string,
+    @Account() account
     ): Promise<MhouseResponseInterface> {
-    const data = await this.serviceService.deleteService(ref);
+    const data = await this.serviceService.deleteService(ref, account);
     return {
       data: data,
       message: "Service supprimé avec succès",

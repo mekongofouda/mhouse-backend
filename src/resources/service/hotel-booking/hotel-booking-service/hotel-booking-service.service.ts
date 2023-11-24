@@ -1,4 +1,4 @@
-import { BadRequestException, ConflictException, HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { BadRequestException, ConflictException, HttpException, HttpStatus, Injectable, UnauthorizedException } from '@nestjs/common';
 import { AddHotelBookingServiceDto } from './dto/add-hotel-booking-service.dto';
 import { UpdateHotelBookingServiceDto } from './dto/update-hotel-booking-service.dto';
 import { HotelBookingService } from './entities/hotel-booking-service.entity';
@@ -7,11 +7,14 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { AccountEntity } from 'src/resources/account/entities/account.entity';
 import { HotelBooking } from '../entities/hotel-booking.entity';
+import { Utils } from 'src/generics/utils';
+import { FunctionPrivilegeEnum } from 'src/enums/function.privilege.enum';
 
 @Injectable()
-export class HotelBookingServiceService {
+export class HotelBookingServiceService extends  Utils {
   
     constructor(  
+      
     @InjectRepository(AccountEntity) 
     private readonly accountRepository: Repository<AccountEntity>,
 
@@ -21,16 +24,24 @@ export class HotelBookingServiceService {
     @InjectRepository(HotelBookingService) 
     private readonly hotelBookingServiceRepository: Repository<HotelBookingService>,
 
-  ){}
+  ){
+    super()
+  }
 
-  async addHotelBookingService(addHotelBookingServiceDto: AddHotelBookingServiceDto) {
-    //Create the service object with Dto to save it 
+  async addHotelBookingService(addHotelBookingServiceDto: AddHotelBookingServiceDto, account: AccountEntity) {
+
+    const userAccount = await this.accountRepository.findOneBy({refAccount: account.refAccount});
+    if(userAccount != null) {
+      if (this.IsAuthorised(userAccount, FunctionPrivilegeEnum.ADD_DISCUSSION) == false) {
+        throw new UnauthorizedException();
+      }
+    }
+
     const hotelBooking = await this.hotelBookingRepository.findOneBy({refHotelBooking: addHotelBookingServiceDto.refHotelBooking}); 
     if (hotelBooking == null) {
       throw new BadRequestException("HotelBooking not found");
     }
 
-    //Create the homeCare object with Dto to save it 
     const hotelBookingService = await this.hotelBookingServiceRepository.create(addHotelBookingServiceDto); 
     if (hotelBookingService == null) {
       throw new BadRequestException("HotelBookingService not found");
@@ -44,9 +55,18 @@ export class HotelBookingServiceService {
     }
 
     return hotelBookingService;
+
   }
 
   async listHotelBookingService(listHotelBookingRealisationDto: ListHotelBookingServiceDto, account: any) {
+
+    const userAccount = await this.accountRepository.findOneBy({refAccount: account.refAccount});
+    if(userAccount != null) {
+      if (this.IsAuthorised(userAccount, FunctionPrivilegeEnum.ADD_DISCUSSION) == false) {
+        throw new UnauthorizedException();
+      }
+    }
+
     let listHotelBookingServices: HotelBookingService[] = [];
     let hotelBookingServices: HotelBookingService[] = [];
 
@@ -115,7 +135,14 @@ export class HotelBookingServiceService {
 
   }
 
-  async showHotelBookingServiceDetail(refHotelBookingService: string) {
+  async showHotelBookingServiceDetail(refHotelBookingService: string, account: AccountEntity) {
+
+    const userAccount = await this.accountRepository.findOneBy({refAccount: account.refAccount});
+    if(userAccount != null) {
+      if (this.IsAuthorised(userAccount, FunctionPrivilegeEnum.ADD_DISCUSSION) == false) {
+        throw new UnauthorizedException();
+      }
+    }
 
     const hotelBookingService = await this.hotelBookingServiceRepository.findOneBy({refHotelBookingService});
     if (hotelBookingService == null) {
@@ -126,7 +153,14 @@ export class HotelBookingServiceService {
 
   }
 
-  async updateHotelBookingService(refHotelBookingService: string, updateHotelBookingServiceDto: UpdateHotelBookingServiceDto) {
+  async updateHotelBookingService(refHotelBookingService: string, updateHotelBookingServiceDto: UpdateHotelBookingServiceDto, account: AccountEntity) {
+
+    const userAccount = await this.accountRepository.findOneBy({refAccount: account.refAccount});
+    if(userAccount != null) {
+      if (this.IsAuthorised(userAccount, FunctionPrivilegeEnum.ADD_DISCUSSION) == false) {
+        throw new UnauthorizedException();
+      }
+    }
 
     const hotelBookingService = await this.hotelBookingServiceRepository.findOneBy({refHotelBookingService});
     if (hotelBookingService == null) {
@@ -144,7 +178,14 @@ export class HotelBookingServiceService {
 
   }
 
-  async deleteHotelBookingService(refHotelBookingService: string) {
+  async deleteHotelBookingService(refHotelBookingService: string, account: AccountEntity) {
+
+    const userAccount = await this.accountRepository.findOneBy({refAccount: account.refAccount});
+    if(userAccount != null) {
+      if (this.IsAuthorised(userAccount, FunctionPrivilegeEnum.ADD_DISCUSSION) == false) {
+        throw new UnauthorizedException();
+      }
+    }
 
     const hotelBookingService = await this.hotelBookingServiceRepository.findOneBy({refHotelBookingService});
     if (hotelBookingService == null) {

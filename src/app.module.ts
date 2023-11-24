@@ -26,7 +26,6 @@ import { HomeStandingModule } from './resources/service/home-standing/home-stand
 import { dbConstants } from './constants';
 import { UpgradingModule } from './resources/upgrading/upgrading.module';
 import { ConfigModule } from '@nestjs/config';
-import { env } from 'node:process';
 
 @Module({
   imports: [

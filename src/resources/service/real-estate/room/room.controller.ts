@@ -10,14 +10,18 @@ import { ReferencePipe } from 'src/pipes/reference/reference.pipe';
 
 @Controller('room')
 export class RoomController {
-  constructor(private readonly roomService: RoomService) {}
+
+  constructor(
+    private readonly roomService: RoomService
+  ) {}
 
   @Post()
   @UseGuards(JwtAuthGuard)
   async addRoom(
-    @Body(ReferencePipe) addRoomDto: AddRoomDto
+    @Body(ReferencePipe) addRoomDto: AddRoomDto,
+    @Account() account
     ): Promise<MhouseResponseInterface> {
-    const data = await this.roomService.addRoom(addRoomDto);
+    const data = await this.roomService.addRoom(addRoomDto, account);
     return {
       data: data,
       message: "Room ajoutée avec succès",
@@ -34,7 +38,7 @@ export class RoomController {
     const data = await this.roomService.showRoomList(listRoomDto, account);
     return {
       data: data,
-      message: "Partage effectué avec succès",
+      message: "Liste des room affichée avec succès",
       code: HttpStatus.OK
     };
   }
@@ -42,12 +46,13 @@ export class RoomController {
   @Get(':ref')
   @UseGuards(JwtAuthGuard)
   async showRoomDetail(
-    @Param('ref') ref: string
+    @Param('ref') ref: string,
+    @Account() account
     ): Promise<MhouseResponseInterface> {
-    const data = await this.roomService.showRoomDetail(ref);
+    const data = await this.roomService.showRoomDetail(ref, account);
     return {
       data: data,
-      message: "Partage effectué avec succès",
+      message: "Détails du room affichés avec succès",
       code: HttpStatus.OK
     };
   }
@@ -56,9 +61,10 @@ export class RoomController {
   @UseGuards(JwtAuthGuard)
   async updateRoom(
     @Param('ref') ref: string, 
-    @Body() updateRoomDto: UpdateRoomDto
+    @Body() updateRoomDto: UpdateRoomDto,
+    @Account() account
     ): Promise<MhouseResponseInterface> {
-    const data = await this.roomService.updateRoom(ref, updateRoomDto);
+    const data = await this.roomService.updateRoom(ref, updateRoomDto, account);
     return {
       data: data,
       message: "Partage effectué avec succès",
@@ -69,9 +75,10 @@ export class RoomController {
   @Delete(':ref')
   @UseGuards(JwtAuthGuard)
   async deleteRoom(
-    @Param('ref') ref: string
+    @Param('ref') ref: string,
+    @Account() account
     ): Promise<MhouseResponseInterface> {
-    const data = await this.roomService.deleteRoom(ref);
+    const data = await this.roomService.deleteRoom(ref, account);
     return {
       data: data,
       message: "Partage effectué avec succès",

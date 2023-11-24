@@ -1,4 +1,4 @@
-import { ConflictException, HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { ConflictException, HttpException, HttpStatus, Injectable, UnauthorizedException } from '@nestjs/common';
 import { Like } from './entities/like.entity';
 import { ListLikeDto } from './dto/list-like.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -6,9 +6,11 @@ import { Repository } from 'typeorm';
 import { PostEntity } from 'src/resources/post/entities/post.entity';
 import { AccountEntity } from '../../account/entities/account.entity';
 import { LikeDto } from './dto/like.dto';
+import { Utils } from 'src/generics/utils';
+import { FunctionPrivilegeEnum } from 'src/enums/function.privilege.enum';
 
 @Injectable()
-export class LikeService {
+export class LikeService extends Utils {
 
   constructor(
     @InjectRepository(AccountEntity) 
@@ -20,30 +22,47 @@ export class LikeService {
     @InjectRepository(Like) 
     private readonly likeRepository: Repository<Like>
 
-  ){}
+  ){
+    super()
+  }
 
-  async like(likeDto: LikeDto, account: any): Promise<Like> {
+  async like(likeDto: LikeDto, account: AccountEntity): Promise<Like> {
 
-    let like = await this.likeRepository.create(likeDto);
     const userAccount = await this.accountRepository.findOneBy({refAccount: account.refAccount});
-    if (userAccount == null) {
+    if(userAccount != null) {
+      if (this.IsAuthorised(userAccount, FunctionPrivilegeEnum.ADD_DISCUSSION) == false) {
+        throw new UnauthorizedException();
+      }
+    } else if (userAccount == null) {
       throw new HttpException("Account not found", HttpStatus.NOT_FOUND)
     }
+
+    let like = await this.likeRepository.create(likeDto);
     const post  = await this.postRepository.findOneBy({refPost: likeDto.refPost});
     if (post == null) {
       throw new HttpException("Post not found", HttpStatus.NOT_FOUND)
     }
     like.account = userAccount;
     like.post = post; 
+
     try {
       await this.likeRepository.save(like);
     } catch (error) {
       throw new ConflictException(error.driverError.detail);
     }
+
     return like;
+
   }
 
-  async unlike(refLike: string): Promise<Like> {
+  async unlike(refLike: string, account: AccountEntity): Promise<Like> {
+
+    const userAccount = await this.accountRepository.findOneBy({refAccount: account.refAccount});
+    if(userAccount != null) {
+      if (this.IsAuthorised(userAccount, FunctionPrivilegeEnum.ADD_DISCUSSION) == false) {
+        throw new UnauthorizedException();
+      }
+    }
 
     const like = await this.likeRepository.findOneBy({refLike});
     if (like == null) {
@@ -54,15 +73,25 @@ export class LikeService {
     } else {
       like.isLiked = true;
     }
+
     try {
       await this.likeRepository.save(like);
     } catch (error) {
       throw new ConflictException(error.driverError.detail);
     }
+
     return like;
+
   }
 
   async listLike(listLikeDto: ListLikeDto, account: any): Promise<Like[]> {
+
+    const userAccount = await this.accountRepository.findOneBy({refAccount: account.refAccount});
+    if(userAccount != null) {
+      if (this.IsAuthorised(userAccount, FunctionPrivilegeEnum.ADD_DISCUSSION) == false) {
+        throw new UnauthorizedException();
+      }
+    }
 
     let listLikes: Like[] = [];
     let likes: Like[] = [];
@@ -118,14 +147,26 @@ export class LikeService {
     } else if (likes.length != 0) {
       listLikes = likes;
     }
+
     return listLikes;
+
   }
 
-  async showLikeDetail(refLike: string) {
+  async showLikeDetail(refLike: string, account: AccountEntity) {
+
+    const userAccount = await this.accountRepository.findOneBy({refAccount: account.refAccount});
+    if(userAccount != null) {
+      if (this.IsAuthorised(userAccount, FunctionPrivilegeEnum.ADD_DISCUSSION) == false) {
+        throw new UnauthorizedException();
+      }
+    }
+
     const like = await this.likeRepository.findOneBy({refLike});
     if (like == null) {
       throw new HttpException("Like not found", HttpStatus.NOT_FOUND)
     }    
+
     return like;
+
   }
 }

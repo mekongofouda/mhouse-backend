@@ -1,4 +1,4 @@
-import { BadRequestException, ConflictException, HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { BadRequestException, ConflictException, HttpException, HttpStatus, Injectable, UnauthorizedException } from '@nestjs/common';
 import { ShareDto } from './dto/share.dto';
 import { ListShareDto } from './dto/list-share.dto';
 import { Share } from './entities/share.entity';
@@ -6,11 +6,14 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { PostEntity } from 'src/resources/post/entities/post.entity';
 import { AccountEntity } from '../../account/entities/account.entity';
+import { FunctionPrivilegeEnum } from 'src/enums/function.privilege.enum';
+import { Utils } from 'src/generics/utils';
 
 @Injectable()
-export class ShareService {
+export class ShareService extends Utils {
 
   constructor(
+
     @InjectRepository(AccountEntity) 
     private readonly accountRepository: Repository<AccountEntity>,
 
@@ -19,29 +22,33 @@ export class ShareService {
 
     @InjectRepository(Share) 
     private readonly shareRepository: Repository<Share>
-  ){}
+
+  ){
+    super()
+  }
 
 
   async share(shareDto: ShareDto, account: any): Promise<Share>  {
 
     const userAccount = await this.accountRepository.findOneBy({refAccount: account.refAccount});
+    if(userAccount != null) {
+      if (this.IsAuthorised(userAccount, FunctionPrivilegeEnum.ADD_DISCUSSION) == false) {
+        throw new UnauthorizedException();
+      }
+    }
     if (userAccount == null) {
       throw new HttpException("Account not found", HttpStatus.NOT_FOUND)
     }
 
-    //Get post to add at the share
     const post = await this.postRepository.findOneBy({refPost: shareDto.refPost});
     if (post == null) {
       throw new HttpException("Post not found", HttpStatus.NOT_FOUND)
     }
 
-    //Create the share object with Dto to save it 
     const share = await this.shareRepository.create(shareDto); 
     if (share == null) {
       throw new BadRequestException("SHare not found");
     }
-
-    //Set properties
     share.post = post;
     share.account = userAccount;
 
@@ -50,10 +57,19 @@ export class ShareService {
     } catch (error) {
       throw new ConflictException("L'email et le numéro de téléphone doivent être déjà utilisés");
     }
+
     return share;
   }
 
   async listShare(listShareDto: ListShareDto, account: any): Promise<Share[]> {
+
+    const userAccount = await this.accountRepository.findOneBy({refAccount: account.refAccount});
+    if(userAccount != null) {
+      if (this.IsAuthorised(userAccount, FunctionPrivilegeEnum.ADD_DISCUSSION) == false) {
+        throw new UnauthorizedException();
+      }
+    }
+
     let listShares: Share[] = [];
     let shares: Share[] = [];
 
@@ -104,10 +120,20 @@ export class ShareService {
     } else if (shares.length != 0) {
       listShares = shares;
     }
+
     return listShares;
+
   }
 
-  async showShareDetail(refShare: string) {
+  async showShareDetail(refShare: string, account: AccountEntity) {
+    
+    const userAccount = await this.accountRepository.findOneBy({refAccount: account.refAccount});
+    if(userAccount != null) {
+      if (this.IsAuthorised(userAccount, FunctionPrivilegeEnum.ADD_DISCUSSION) == false) {
+        throw new UnauthorizedException();
+      }
+    }
+
     const share = await this.shareRepository.findOneBy({refShare});
     if (share == null) {
       throw new HttpException("Share not found", HttpStatus.NOT_FOUND)

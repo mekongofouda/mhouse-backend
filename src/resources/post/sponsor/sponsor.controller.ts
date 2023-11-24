@@ -45,9 +45,10 @@ export class SponsorController {
   @Get(':ref')
   @UseGuards(JwtAuthGuard)
   async showSponsorDetail(
-    @Param('ref') ref: string
+    @Param('ref') ref: string,
+    @Account() account: AccountEntity
     ): Promise<MhouseResponseInterface> {
-    const data = await this.sponsorService.showSponsorDetail(ref);
+    const data = await this.sponsorService.showSponsorDetail(ref, account);
     return {
       data: data,
       message: "Détails du sponsor obtenus avec succès avec succès",

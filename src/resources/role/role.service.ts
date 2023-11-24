@@ -44,7 +44,14 @@ export class RoleService extends Utils{
 
   }
 
-  async listRole(listRoleDto: ListRoleDto): Promise<Role[]> {
+  async listRole(listRoleDto: ListRoleDto, account: AccountEntity): Promise<Role[]> {
+
+    const userAccount = await this.accountRepository.findOneBy({refAccount: account.refAccount});
+    if(userAccount != null) {
+      if (this.IsAuthorised(userAccount, FunctionPrivilegeEnum.ADD_DISCUSSION) == false) {
+        throw new UnauthorizedException();
+      }
+    }
 
     let listRoles: Role[] = [];
     let roles: Role[] = [];
@@ -78,7 +85,14 @@ export class RoleService extends Utils{
 
   }
 
-  async showRoleDetail(refRole: string) {
+  async showRoleDetail(refRole: string, account: AccountEntity) {
+
+    const userAccount = await this.accountRepository.findOneBy({refAccount: account.refAccount});
+    if(userAccount != null) {
+      if (this.IsAuthorised(userAccount, FunctionPrivilegeEnum.ADD_DISCUSSION) == false) {
+        throw new UnauthorizedException();
+      }
+    }
 
     const role = await this.roleRepository.findOneBy({refRole});
     if (role == null) {
@@ -89,7 +103,14 @@ export class RoleService extends Utils{
 
   }
 
-  async updateRole(refRole: string, updateRoleDto: UpdateRoleDto) {
+  async updateRole(refRole: string, updateRoleDto: UpdateRoleDto, account: AccountEntity) {
+
+    const userAccount = await this.accountRepository.findOneBy({refAccount: account.refAccount});
+    if(userAccount != null) {
+      if (this.IsAuthorised(userAccount, FunctionPrivilegeEnum.ADD_DISCUSSION) == false) {
+        throw new UnauthorizedException();
+      }
+    }
 
     const role = await this.roleRepository.findOne({where:{refRole}});
     if (role == null) {
@@ -107,7 +128,14 @@ export class RoleService extends Utils{
 
   }
 
-  async deleteRole(refRole: string) {
+  async deleteRole(refRole: string, account) {
+
+    const userAccount = await this.accountRepository.findOneBy({refAccount: account.refAccount});
+    if(userAccount != null) {
+      if (this.IsAuthorised(userAccount, FunctionPrivilegeEnum.ADD_DISCUSSION) == false) {
+        throw new UnauthorizedException();
+      }
+    }
 
     const role = await this.roleRepository.findOneBy({refRole});
     if (role == null) {

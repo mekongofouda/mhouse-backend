@@ -19,9 +19,10 @@ export class MessageController {
   @Post()
   @UseGuards(JwtAuthGuard)
   async sendMessage(
-    @Body(ReferencePipe) sendMessageDto: SendMessageDto
+    @Body(ReferencePipe) sendMessageDto: SendMessageDto,
+    @Account() account: AccountEntity
     ): Promise<MhouseResponseInterface> {
-    const data = await this.messageService.sendMessage(sendMessageDto);
+    const data = await this.messageService.sendMessage(sendMessageDto, account);
     return {
       data: data,
       message: "Message envoyé avec succès",
@@ -46,9 +47,10 @@ export class MessageController {
   @Get(':ref')
   @UseGuards(JwtAuthGuard)
   async showMessageDetail(
-    @Param('ref') ref: string
+    @Param('ref') ref: string,
+    @Account() account: AccountEntity
     ): Promise<MhouseResponseInterface> {
-    const data = await this.messageService.showMessageDetail(ref);
+    const data = await this.messageService.showMessageDetail(ref, account);
     return {
       data: data,
       message: "Liste des messages obtenue avec succès",
@@ -59,9 +61,10 @@ export class MessageController {
   @Delete(':ref')
   @UseGuards(JwtAuthGuard)
   async deleteMessage(
-    @Param('ref') ref: string
+    @Param('ref') ref: string,
+    @Account() account: AccountEntity
     ): Promise<MhouseResponseInterface> {
-    const data = await this.messageService.deleteMessage(ref);
+    const data = await this.messageService.deleteMessage(ref, account);
     return {
       data: data,
       message: "Message supprimé avec succès",

@@ -5,6 +5,8 @@ import { UpdateHomeCareDto } from './dto/update-home-care.dto';
 import { MhouseResponseInterface } from 'src/interfaces/mhouse-response.interface';
 import { JwtAuthGuard } from 'src/resources/account/auth/auth.guard';
 import { ReferencePipe } from 'src/pipes/reference/reference.pipe';
+import { AccountEntity } from 'src/resources/account/entities/account.entity';
+import { Account } from 'src/decorators/account.decorator';
 
 @Controller('home-care')
 export class HomeCareController {
@@ -13,9 +15,10 @@ export class HomeCareController {
   @Post()
   @UseGuards(JwtAuthGuard)
   async addHomeCare(
-    @Body(ReferencePipe) createHomeCareDto: AddHomeCareDto
+    @Body(ReferencePipe) createHomeCareDto: AddHomeCareDto, 
+    @Account() account: AccountEntity
     ): Promise<MhouseResponseInterface> {
-    const data = await this.homeCareService.addHomeCare(createHomeCareDto);
+    const data = await this.homeCareService.addHomeCare(createHomeCareDto, account);
     return {
       data: data,
       message: "Homecare ajouté avec succès",
@@ -26,9 +29,10 @@ export class HomeCareController {
   @Get(':ref')
   @UseGuards(JwtAuthGuard)
   async showHomCareDetail(
-    @Param('ref') ref: string
+    @Param('ref') ref: string, 
+    @Account() account: AccountEntity
     ): Promise<MhouseResponseInterface> {
-    const data = await this.homeCareService.showHomCareDetail(ref);
+    const data = await this.homeCareService.showHomCareDetail(ref, account);
     return {
       data: data,
       message: "Partage effectué avec succès",
@@ -40,9 +44,10 @@ export class HomeCareController {
   @UseGuards(JwtAuthGuard)
   async updateHomCare(
     @Param('ref') ref: string, 
-    @Body() updateHomeCareDto: UpdateHomeCareDto
+    @Body() updateHomeCareDto: UpdateHomeCareDto, 
+    @Account() account: AccountEntity
     ): Promise<MhouseResponseInterface> {
-    const data = await this.homeCareService.updateHomCare(ref, updateHomeCareDto);
+    const data = await this.homeCareService.updateHomCare(ref, updateHomeCareDto, account);
     return {
       data: data,
       message: "Homecare mise à jour avec succès",

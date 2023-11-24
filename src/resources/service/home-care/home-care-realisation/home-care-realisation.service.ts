@@ -1,4 +1,4 @@
-import { BadRequestException, ConflictException, HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { BadRequestException, ConflictException, HttpException, HttpStatus, Injectable, UnauthorizedException } from '@nestjs/common';
 import { AddHomeCareRealisationDto } from './dto/add-home-care-realisation.dto';
 import { UpdateHomeCareRealisationDto } from './dto/update-home-care-realisation.dto';
 import { HomeCareRealisation } from './entities/home-care-realisation.entity';
@@ -7,11 +7,14 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { HomeCare } from '../entities/home-care.entity';
 import { Repository } from 'typeorm';
 import { AccountEntity } from 'src/resources/account/entities/account.entity';
+import { FunctionPrivilegeEnum } from 'src/enums/function.privilege.enum';
+import { Utils } from 'src/generics/utils';
 
 @Injectable()
-export class HomeCareRealisationService {
+export class HomeCareRealisationService extends Utils {
 
   constructor(  
+    
     @InjectRepository(AccountEntity) 
     private readonly accountRepository: Repository<AccountEntity>,
 
@@ -21,17 +24,24 @@ export class HomeCareRealisationService {
     @InjectRepository(HomeCareRealisation) 
     private readonly homeCareRealisationRepository: Repository<HomeCareRealisation>,
 
-  ){}
+  ){
+    super()
+  }
 
-  async addHomeCareRealisation( addHomeCareRealisationDto: AddHomeCareRealisationDto) {
+  async addHomeCareRealisation( addHomeCareRealisationDto: AddHomeCareRealisationDto, account: AccountEntity) {
 
-    //Create the service object with Dto to save it 
+    const userAccount = await this.accountRepository.findOneBy({refAccount: account.refAccount});
+    if(userAccount != null) {
+      if (this.IsAuthorised(userAccount, FunctionPrivilegeEnum.ADD_DISCUSSION) == false) {
+        throw new UnauthorizedException();
+      }
+    }
+
     const homeCare = await this.homeCareRepository.findOneBy({refHomeCare: addHomeCareRealisationDto.refHomeCare}); 
     if (homeCare == null) {
       throw new BadRequestException("HomeCare not found");
     }
 
-    //Create the homeCare object with Dto to save homeCareRealisation on it 
     const homeCareRealisation = await this.homeCareRealisationRepository.create(addHomeCareRealisationDto); 
     if (homeCareRealisation == null) {
       throw new BadRequestException("HomeCareRealisation not found");
@@ -43,10 +53,19 @@ export class HomeCareRealisationService {
     } catch (error) {
       throw new ConflictException(error.driverError.detail);
     }
+
     return homeCareRealisation;
+
   }
 
   async listHomeCareRealisation(listHomeCareRealisationDto: ListHomeCareRealisationDto, account: any) {
+
+    const userAccount = await this.accountRepository.findOneBy({refAccount: account.refAccount});
+    if(userAccount != null) {
+      if (this.IsAuthorised(userAccount, FunctionPrivilegeEnum.ADD_DISCUSSION) == false) {
+        throw new UnauthorizedException();
+      }
+    }
 
     let listHomeCareRealisations: HomeCareRealisation[] = [];
     let homeCareRealisations: HomeCareRealisation[] = [];
@@ -117,41 +136,68 @@ export class HomeCareRealisationService {
 
   }
 
-  async showHomeCareRealisationDetail(refHomeCareRealisation: string) {
+  async showHomeCareRealisationDetail(refHomeCareRealisation: string, account: AccountEntity) {
     
+    const userAccount = await this.accountRepository.findOneBy({refAccount: account.refAccount});
+    if(userAccount != null) {
+      if (this.IsAuthorised(userAccount, FunctionPrivilegeEnum.ADD_DISCUSSION) == false) {
+        throw new UnauthorizedException();
+      }
+    }
+
     const homeCareRealisation = await this.homeCareRealisationRepository.findOneBy({refHomeCareRealisation});
     if (homeCareRealisation == null) {
       throw new HttpException("HomeCareRealisation not found", HttpStatus.NOT_FOUND)
     }    
 
     return homeCareRealisation;
+
   }
 
-  async updateHomeCareRealisation(refHomeCareRealisation: string, updateHomeCareRealisationDto: UpdateHomeCareRealisationDto) {
+  async updateHomeCareRealisation(refHomeCareRealisation: string, updateHomeCareRealisationDto: UpdateHomeCareRealisationDto, account: AccountEntity) {
+
+    const userAccount = await this.accountRepository.findOneBy({refAccount: account.refAccount});
+    if(userAccount != null) {
+      if (this.IsAuthorised(userAccount, FunctionPrivilegeEnum.ADD_DISCUSSION) == false) {
+        throw new UnauthorizedException();
+      }
+    }
 
     const homeCareRealisation = await this.homeCareRealisationRepository.findOneBy({refHomeCareRealisation});
     if (homeCareRealisation == null) {
       throw new HttpException("HomeCareRealisation not found", HttpStatus.NOT_FOUND)
     }    
     Object.assign(homeCareRealisation, updateHomeCareRealisationDto);
+
     try {
       await this.homeCareRealisationRepository.save(homeCareRealisation);
     } catch (error) {
       throw new ConflictException(error.driverError.detail);
     } 
     return homeCareRealisation;
+
   }
 
-  async deleteHomeCareRealisation(refHomeCareRealisation: string) {
+  async deleteHomeCareRealisation(refHomeCareRealisation: string, account: AccountEntity) {
+
+    const userAccount = await this.accountRepository.findOneBy({refAccount: account.refAccount});
+    if(userAccount != null) {
+      if (this.IsAuthorised(userAccount, FunctionPrivilegeEnum.ADD_DISCUSSION) == false) {
+        throw new UnauthorizedException();
+      }
+    }
+
     const homeCareRealisation = await this.homeCareRealisationRepository.findOneBy({refHomeCareRealisation});
     if (homeCareRealisation == null) {
       throw new HttpException("HomeCareRealisation not found", HttpStatus.NOT_FOUND)
     }   
+
     try {
       await this.homeCareRealisationRepository.softRemove(homeCareRealisation);
     } catch (error) {
       throw new ConflictException(error.driverError.detail);
     } 
     return homeCareRealisation;
+
   }
 }

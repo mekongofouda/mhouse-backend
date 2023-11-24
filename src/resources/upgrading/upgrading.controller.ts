@@ -1,34 +1,62 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, HttpStatus, UseGuards, Query } from '@nestjs/common';
 import { UpgradingService } from './upgrading.service';
-import { CreateUpgradingDto } from './dto/create-upgrading.dto';
-import { UpdateUpgradingDto } from './dto/update-upgrading.dto';
+import { UpgradeDto } from './dto/upgrade.dto';
+import { JwtAuthGuard } from '../account/auth/auth.guard';
+import { Account } from 'src/decorators/account.decorator';
+import { ReferencePipe } from 'src/pipes/reference/reference.pipe';
+import { ListUpgradingDto } from './dto/list-upgrade.copy';
+import { MhouseResponseInterface } from 'src/interfaces/mhouse-response.interface';
 
 @Controller('upgrading')
 export class UpgradingController {
-  constructor(private readonly upgradingService: UpgradingService) {}
+
+  constructor(
+    private readonly upgradingService: UpgradingService
+  ) {}
 
   @Post()
-  create(@Body() createUpgradingDto: CreateUpgradingDto) {
-    return this.upgradingService.create(createUpgradingDto);
+  @UseGuards(JwtAuthGuard)
+  async upgrade(
+    @Body(ReferencePipe) upgradeDto: UpgradeDto,
+    @Account() account
+    ): Promise<MhouseResponseInterface> {
+    const data = await this.upgradingService.upgrade(upgradeDto, account);
+    return {
+      data: data,
+      message: "Service créé avec succès",
+      code: HttpStatus.OK
+    };
+    
   }
 
   @Get()
-  findAll() {
-    return this.upgradingService.findAll();
+  @UseGuards(JwtAuthGuard)
+  async listUpgrading(
+    @Query() listUpgradingDto: ListUpgradingDto,
+    @Account() account
+  ): Promise<MhouseResponseInterface> {
+    const data = await this.upgradingService.listUpgrading(listUpgradingDto, account);
+    return {
+      data: data,
+      message: "Service créé avec succès",
+      code: HttpStatus.OK
+    };
+    
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.upgradingService.findOne(+id);
+  @Get(':ref')
+  @UseGuards(JwtAuthGuard)
+  async showUpgradingDetail(
+    @Param('ref') ref: string,
+    @Account() account
+    ): Promise<MhouseResponseInterface> {
+    const data = await this.upgradingService.showUpgradingDetail(ref, account);
+    return {
+      data: data,
+      message: "Service créé avec succès",
+      code: HttpStatus.OK
+    };
+    
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateUpgradingDto: UpdateUpgradingDto) {
-    return this.upgradingService.update(+id, updateUpgradingDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.upgradingService.remove(+id);
-  }
 }

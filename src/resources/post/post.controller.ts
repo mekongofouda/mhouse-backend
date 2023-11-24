@@ -5,9 +5,9 @@ import { UpdatePostDto } from './dto/update-post.dto';
 import { ReferencePipe } from 'src/pipes/reference/reference.pipe';
 import { ListPostDto } from './dto/list-post.dto';
 import { JwtAuthGuard } from 'src/resources/account/auth/auth.guard';
-import { Request } from 'express';
 import { Account } from 'src/decorators/account.decorator';
 import { MhouseResponseInterface } from 'src/interfaces/mhouse-response.interface';
+import { AccountEntity } from '../account/entities/account.entity';
 
 @Controller('post')
 export class PostController {
@@ -47,9 +47,10 @@ export class PostController {
   @Get(':ref')
   @UseGuards(JwtAuthGuard)
   async showPostDetail(
-    @Param('ref') ref: string
+    @Param('ref') ref: string,
+    @Account() account: AccountEntity
     ): Promise<MhouseResponseInterface> {
-    const data = await this.postService.showPostDetail(ref);
+    const data = await this.postService.showPostDetail(ref, account);
     return {
       data: data,
       message: "Détails de la publication obtenues avec succès",
@@ -61,9 +62,10 @@ export class PostController {
   @UseGuards(JwtAuthGuard)
   async updatePost(
     @Param('ref') ref: string, 
-    @Body() updatePostDto: UpdatePostDto
+    @Body() updatePostDto: UpdatePostDto,
+    @Account() account: AccountEntity
     ): Promise<MhouseResponseInterface> {
-    const data = await this.postService.updatePost(ref, updatePostDto);
+    const data = await this.postService.updatePost(ref, updatePostDto, account);
     return {
       data: data,
       message: "Mise à jour de la publication effectuée avec succès",
@@ -74,9 +76,10 @@ export class PostController {
   @Delete(':ref')
   @UseGuards(JwtAuthGuard)
   async deletePost(
-    @Param('ref') ref: string
+    @Param('ref') ref: string,
+    @Account() account: AccountEntity
     ): Promise<MhouseResponseInterface> {
-    const data = await this.postService.deletePost(ref);
+    const data = await this.postService.deletePost(ref, account);
     return {
       data: data,
       message: "Publication supprimée avec succès",

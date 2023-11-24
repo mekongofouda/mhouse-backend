@@ -13,6 +13,7 @@ import { FunctionPrivilegeEnum } from 'src/enums/function.privilege.enum';
 export class DiscussionService extends Utils{
 
   constructor(
+
     @InjectRepository(AccountEntity) 
     private readonly accountRepository: Repository<AccountEntity>,
 
@@ -52,6 +53,13 @@ export class DiscussionService extends Utils{
 
   async listDiscussion(listDiscussionDto: ListDiscussionDto, account: any): Promise<Discussion[]>  {
     
+    const userAccount = await this.accountRepository.findOneBy({refAccount: account.refAccount});
+    if(userAccount != null) {
+      if (this.IsAuthorised(userAccount, FunctionPrivilegeEnum.ADD_DISCUSSION) == false) {
+        throw new UnauthorizedException();
+      }
+    }
+
     let listDiscussions: Discussion[]=[];
     let discussions: Discussion[]=[];
 
@@ -93,7 +101,14 @@ export class DiscussionService extends Utils{
     
   }
 
-  async showDiscussionDetail(refDiscussion: string) {
+  async showDiscussionDetail(refDiscussion: string, account: AccountEntity) {
+
+    const userAccount = await this.accountRepository.findOneBy({refAccount: account.refAccount});
+    if(userAccount != null) {
+      if (this.IsAuthorised(userAccount, FunctionPrivilegeEnum.ADD_DISCUSSION) == false) {
+        throw new UnauthorizedException();
+      }
+    }
 
     const discussion = await this.discussionRepository.findOneBy({refDiscussion});
     if (!discussion) {
@@ -101,9 +116,17 @@ export class DiscussionService extends Utils{
     }   
 
     return discussion;
+
   }
 
-  async updateDiscussion(refDiscussion: string, updateDiscussionDto: UpdateDiscussionDto) {
+  async updateDiscussion(refDiscussion: string, updateDiscussionDto: UpdateDiscussionDto, account: AccountEntity) {
+
+    const userAccount = await this.accountRepository.findOneBy({refAccount: account.refAccount});
+    if(userAccount != null) {
+      if (this.IsAuthorised(userAccount, FunctionPrivilegeEnum.ADD_DISCUSSION) == false) {
+        throw new UnauthorizedException();
+      }
+    }
 
     const discussion = await this.discussionRepository.findOneBy({refDiscussion});
     if (discussion == null) {
@@ -122,8 +145,15 @@ export class DiscussionService extends Utils{
 
   }
 
-  async deleteDiscussion(refDiscussion: string) {
+  async deleteDiscussion(refDiscussion: string, account: AccountEntity) {
     
+    const userAccount = await this.accountRepository.findOneBy({refAccount: account.refAccount});
+    if(userAccount != null) {
+      if (this.IsAuthorised(userAccount, FunctionPrivilegeEnum.ADD_DISCUSSION) == false) {
+        throw new UnauthorizedException();
+      }
+    }
+
     const discussion = await this.discussionRepository.findOneBy({refDiscussion});
     if (discussion == null) {
       throw new HttpException("Discussion not found", HttpStatus.NOT_FOUND);

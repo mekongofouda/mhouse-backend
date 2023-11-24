@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Param, Query, HttpStatus, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Query, HttpStatus, UseGuards, Patch, Delete } from '@nestjs/common';
 import { PrivilegeService } from './privilege.service';
 import { AddPrivilegeDto } from './dto/add-privilege.dto';
 import { ListPrivilegeDto } from './dto/list-privilege.dto';
@@ -7,6 +7,7 @@ import { JwtAuthGuard } from 'src/resources/account/auth/auth.guard';
 import { MhouseResponseInterface } from 'src/interfaces/mhouse-response.interface';
 import { Account } from 'src/decorators/account.decorator';
 import { AccountEntity } from '../../account/entities/account.entity';
+import { UpdatePrivilegeDto } from './dto/update-privilege.dto';
 
 @Controller('privilege')
 export class PrivilegeController {
@@ -19,8 +20,9 @@ export class PrivilegeController {
   @UseGuards(JwtAuthGuard)
   async addPrivilege(
     @Body(ReferencePipe) addPrivilegeDto: AddPrivilegeDto,
+    @Account() account: AccountEntity
     ): Promise<MhouseResponseInterface> {
-    const data = await this.privilegeService.addPrivilege(addPrivilegeDto);
+    const data = await this.privilegeService.addPrivilege(addPrivilegeDto, account);
     return {
       data: data,
       message: "Privilège créé avec succès",
@@ -44,9 +46,10 @@ export class PrivilegeController {
 
   @Get(':ref')
   async showPrivilegeDetail(
-    @Param('ref') ref: string
+    @Param('ref') ref: string, 
+    @Account() account: AccountEntity
     ): Promise<MhouseResponseInterface> {
-    const data = await this.privilegeService.showPrivilegeDetail(ref);
+    const data = await this.privilegeService.showPrivilegeDetail(ref, account);
     return {
       data: data,
       message: "Liste des offres obtenue avec succès",
@@ -54,18 +57,30 @@ export class PrivilegeController {
     };
   }
 
-  // @Patch(':ref')
-  // async updatePrivilege(
-  //   @Param('ref') ref: string, 
-  //   @Body() updatePrivilegeDto: UpdatePrivilegeDto
-  // ): Promise<MhouseResponseInterface> {
-  //   return await this.privilegeService.updatePrivilege(ref, updatePrivilegeDto);
-  // }
+  @Patch(':ref')
+  async updatePrivilege(
+    @Param('ref') ref: string, 
+    @Body() updatePrivilegeDto: UpdatePrivilegeDto, 
+    @Account() account: AccountEntity
+  ): Promise<MhouseResponseInterface> {
+    const data = await this.privilegeService.updatePrivilege(ref, updatePrivilegeDto, account);
+    return {
+      data: data,
+      message: "Liste des offres obtenue avec succès",
+      code: HttpStatus.OK
+    };
+  }
 
-  // @Delete(':ref')
-  // async deletePrivilege(
-  //   @Param('ref') ref: string
-  //   ): Promise<MhouseResponseInterface> {
-  //   return await this.privilegeService.deletePrivilege(ref);
-  //}
+  @Delete(':ref')
+  async deletePrivilege(
+    @Param('ref') ref: string, 
+    @Account() account: AccountEntity
+    ): Promise<MhouseResponseInterface> {
+    const data = await this.privilegeService.deletePrivilege(ref, account);
+    return {
+      data: data,
+      message: "Liste des offres obtenue avec succès",
+      code: HttpStatus.OK
+    };
+  }
 }

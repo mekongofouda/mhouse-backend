@@ -43,9 +43,10 @@ export class LikeController {
   @Patch(':ref')
   @UseGuards(JwtAuthGuard)
   async unlike(
-    @Param('ref') refLike: string
+    @Param('ref') refLike: string,
+    @Account() account: AccountEntity
     ): Promise<MhouseResponseInterface> {
-    const data = await this.likeService.unlike(refLike);
+    const data = await this.likeService.unlike(refLike, account);
     return {
       data: data,
       message: "Liste des likes obtenue avec succès",
@@ -70,9 +71,10 @@ export class LikeController {
   @Get(':ref')
   @UseGuards(JwtAuthGuard)
   async showLikeDetail(
-    @Param('ref') ref: string
+    @Param('ref') ref: string,
+    @Account() account: AccountEntity
     ): Promise<MhouseResponseInterface> {
-    const data = await this.likeService.showLikeDetail(ref);
+    const data = await this.likeService.showLikeDetail(ref, account);
     return {
       data: data,
       message: "Liste des likes obtenue avec succès",

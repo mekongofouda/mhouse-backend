@@ -5,6 +5,7 @@ import { UpdateHotelBookingDto } from './dto/update-hotel-booking.dto';
 import { ReferencePipe } from 'src/pipes/reference/reference.pipe';
 import { JwtAuthGuard } from 'src/resources/account/auth/auth.guard';
 import { MhouseResponseInterface } from 'src/interfaces/mhouse-response.interface';
+import { Account } from 'src/decorators/account.decorator';
 
 @Controller('hotel-booking')
 export class HotelBookingController {
@@ -13,9 +14,10 @@ export class HotelBookingController {
   @Post()
     @UseGuards(JwtAuthGuard)
     async addHotelBooking(
-    @Body(ReferencePipe) addHotelBookingDto: AddHotelBookingDto
+    @Body(ReferencePipe) addHotelBookingDto: AddHotelBookingDto,
+    @Account() account
     ): Promise<MhouseResponseInterface> {
-     const data = await this.hotelBookingService.addHotelBooking(addHotelBookingDto);
+     const data = await this.hotelBookingService.addHotelBooking(addHotelBookingDto, account);
      return {
       data: data,
       message: "Hotel booking ajouté avec succès",
@@ -26,9 +28,10 @@ export class HotelBookingController {
   @Get(':ref')
     @UseGuards(JwtAuthGuard)
     async showHotelBookingDetail(
-    @Param('ref') ref: string
+    @Param('ref') ref: string,
+    @Account() account
     ): Promise<MhouseResponseInterface> {
-     const data = await this.hotelBookingService.showHotelBookingDetail(ref);
+     const data = await this.hotelBookingService.showHotelBookingDetail(ref, account);
      return {
       data: data,
       message: "Partage effectué avec succès",
@@ -40,9 +43,10 @@ export class HotelBookingController {
     @UseGuards(JwtAuthGuard)
     async updateHotelBooking(
     @Param('ref') ref: string, 
-    @Body() updateHotelBookingDto: UpdateHotelBookingDto
+    @Body() updateHotelBookingDto: UpdateHotelBookingDto,
+    @Account() account
     ): Promise<MhouseResponseInterface> {
-    const data = await this.hotelBookingService.updateHotelBooking(ref, updateHotelBookingDto);
+    const data = await this.hotelBookingService.updateHotelBooking(ref, updateHotelBookingDto, account);
     return {
       data: data,
       message: "Hotel booking mis à jour avec succès",

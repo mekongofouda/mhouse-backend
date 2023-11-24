@@ -7,6 +7,7 @@ import { ListHotelBookingServiceDto } from './dto/list-hotel-booking-service.dto
 import { MhouseResponseInterface } from 'src/interfaces/mhouse-response.interface';
 import { JwtAuthGuard } from 'src/resources/account/auth/auth.guard';
 import { ReferencePipe } from 'src/pipes/reference/reference.pipe';
+import { AccountEntity } from 'src/resources/account/entities/account.entity';
 
 @Controller('hotel-booking-service')
 export class HotelBookingServiceController {
@@ -15,9 +16,23 @@ export class HotelBookingServiceController {
   @Post()
   @UseGuards(JwtAuthGuard)
   async addHotelBookingService(
-    @Body(ReferencePipe) addHotelBookingServiceDto: AddHotelBookingServiceDto
+    @Body(ReferencePipe) addHotelBookingServiceDto: AddHotelBookingServiceDto,
+
+
+
+
+
+
+
+
+
+
+
+
+
+    @Account() account
     ): Promise<MhouseResponseInterface> {
-    const data = await this.hotelBookingServiceService.addHotelBookingService(addHotelBookingServiceDto);
+    const data = await this.hotelBookingServiceService.addHotelBookingService(addHotelBookingServiceDto, account);
     return {
       data: data,
       message: "Partage effectué avec succès",
@@ -42,9 +57,10 @@ export class HotelBookingServiceController {
   @Get(':ref')
   @UseGuards(JwtAuthGuard)
   async showHotelBookingServiceDetail(
-    @Param('ref')ref: string
+    @Param('ref')ref: string,
+    @Account() account: AccountEntity
     ): Promise<MhouseResponseInterface> {
-    const data = await this.hotelBookingServiceService.showHotelBookingServiceDetail(ref);
+    const data = await this.hotelBookingServiceService.showHotelBookingServiceDetail(ref, account);
     return {
       data: data,
       message: "Partage effectué avec succès",
@@ -56,9 +72,10 @@ export class HotelBookingServiceController {
   @UseGuards(JwtAuthGuard)
   async updateHotelBookingService(
     @Param('ref')ref: string, 
-    @Body() updateHotelBookingServiceDto: UpdateHotelBookingServiceDto
+    @Body() updateHotelBookingServiceDto: UpdateHotelBookingServiceDto,
+    @Account() account: AccountEntity
     ): Promise<MhouseResponseInterface> {
-    const data = await this.hotelBookingServiceService.updateHotelBookingService(ref, updateHotelBookingServiceDto);
+    const data = await this.hotelBookingServiceService.updateHotelBookingService(ref, updateHotelBookingServiceDto, account);
     return {
       data: data,
       message: "Partage effectué avec succès",
@@ -69,9 +86,10 @@ export class HotelBookingServiceController {
   @Delete(':ref')
   @UseGuards(JwtAuthGuard)
   async deleteHotelBookingService(
-    @Param('ref')ref: string
+    @Param('ref')ref: string,
+    @Account() account: AccountEntity
     ): Promise<MhouseResponseInterface> {
-    const data = await this.hotelBookingServiceService.deleteHotelBookingService(ref);
+    const data = await this.hotelBookingServiceService.deleteHotelBookingService(ref, account);
     return {
       data: data,
       message: "Partage effectué avec succès",

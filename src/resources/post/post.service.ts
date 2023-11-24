@@ -1,4 +1,4 @@
-import { ConflictException, HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { ConflictException, HttpException, HttpStatus, Injectable, UnauthorizedException } from '@nestjs/common';
 import { PostDto } from './dto/post.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
 import { PostEntity } from './entities/post.entity';
@@ -7,11 +7,14 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { AccountEntity } from 'src/resources/account/entities/account.entity';
 import { Service } from '../service/entities/service.entity';
+import { Utils } from 'src/generics/utils';
+import { FunctionPrivilegeEnum } from 'src/enums/function.privilege.enum';
 
 @Injectable()
-export class PostService {
+export class PostService extends Utils {
 
   constructor(
+
     @InjectRepository(PostEntity) 
     private readonly postRepository: Repository<PostEntity>,
 
@@ -21,18 +24,24 @@ export class PostService {
     @InjectRepository(AccountEntity) 
     private readonly accountRepository: Repository<AccountEntity>
 
-  ){}
+  ){
+    super()
+  }
 
-  async post(postDto: PostDto, account: any): Promise<PostEntity> {
+  async post(postDto: PostDto, account: AccountEntity): Promise<PostEntity> {
+
+    const userAccount = await this.accountRepository.findOneBy({refAccount: account.refAccount});
+    if(userAccount != null) {
+      if (this.IsAuthorised(userAccount, FunctionPrivilegeEnum.ADD_DISCUSSION) == false) {
+        throw new UnauthorizedException();
+      }
+    }
 
     const post = await this.postRepository.create(postDto);
-    const userAccount = await this.accountRepository.create(account)[0];
-
     const service = await this.serviceRepository.findOneBy({refService: postDto.refService});
     if (service == null) {
       throw new HttpException("Service not found", HttpStatus.NOT_FOUND);
     }
-
     post.account = userAccount;
     post.service = service;
 
@@ -43,9 +52,17 @@ export class PostService {
     }
 
     return post;
+
   }
 
   async listPost(listPostDto: ListPostDto, account: any): Promise<PostEntity[]>{
+
+    const userAccount = await this.accountRepository.findOneBy({refAccount: account.refAccount});
+    if(userAccount != null) {
+      if (this.IsAuthorised(userAccount, FunctionPrivilegeEnum.ADD_DISCUSSION) == false) {
+        throw new UnauthorizedException();
+      }
+    }
 
     let listPosts: PostEntity[] = [];
     let posts: PostEntity[] = [];
@@ -97,38 +114,70 @@ export class PostService {
     return await listPosts;
   }
 
-  async showPostDetail(refPost: string) {
+  async showPostDetail(refPost: string, account: AccountEntity) {
+
+    const userAccount = await this.accountRepository.findOneBy({refAccount: account.refAccount});
+    if(userAccount != null) {
+      if (this.IsAuthorised(userAccount, FunctionPrivilegeEnum.ADD_DISCUSSION) == false) {
+        throw new UnauthorizedException();
+      }
+    }
+
     const post = await this.postRepository.findOneBy({refPost});
     if (post == null) {
       throw new HttpException("Post not found", HttpStatus.NOT_FOUND)
-    }    
+    }   
+
     return post;
+
   }
 
-  async updatePost(refPost: string, updatePostDto: UpdatePostDto) {
+  async updatePost(refPost: string, updatePostDto: UpdatePostDto, account: AccountEntity) {
+
+    const userAccount = await this.accountRepository.findOneBy({refAccount: account.refAccount});
+    if(userAccount != null) {
+      if (this.IsAuthorised(userAccount, FunctionPrivilegeEnum.ADD_DISCUSSION) == false) {
+        throw new UnauthorizedException();
+      }
+    }
+
     const post = await this.postRepository.findOneBy({refPost});
     if (post == null) {
       throw new HttpException("Post not found", HttpStatus.NOT_FOUND)
     }    
     Object.assign(post, updatePostDto);
+
     try {
       await this.postRepository.save(post);
     } catch (error) {
       throw new ConflictException(error.driverError.detail);
     }
+
     return post; 
+
   }
 
-  async deletePost(refPost: string) {
+  async deletePost(refPost: string, account: AccountEntity) {
+
+    const userAccount = await this.accountRepository.findOneBy({refAccount: account.refAccount});
+    if(userAccount != null) {
+      if (this.IsAuthorised(userAccount, FunctionPrivilegeEnum.ADD_DISCUSSION) == false) {
+        throw new UnauthorizedException();
+      }
+    }
+
     const post = await this.postRepository.findOneBy({refPost});
     if (post == null) {
       throw new HttpException("Post not found", HttpStatus.NOT_FOUND);
     }    
+
     try {
       await this.postRepository.softRemove(post);
     } catch (error) {
       throw new ConflictException(error.driverError.detail);
     }
+
     return post;
+
   }
 }

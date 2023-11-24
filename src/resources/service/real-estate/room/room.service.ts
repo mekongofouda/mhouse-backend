@@ -1,4 +1,4 @@
-import { BadRequestException, ConflictException, HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { BadRequestException, ConflictException, HttpException, HttpStatus, Injectable, UnauthorizedException } from '@nestjs/common';
 import { AddRoomDto } from './dto/add-room.dto';
 import { UpdateRoomDto } from './dto/update-room.dto';
 import { Room } from './entities/room.entity';
@@ -7,9 +7,11 @@ import { AccountEntity } from 'src/resources/account/entities/account.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { RealEstate } from '../entities/real-estate.entity';
+import { FunctionPrivilegeEnum } from 'src/enums/function.privilege.enum';
+import { Utils } from 'src/generics/utils';
 
 @Injectable()
-export class RoomService {
+export class RoomService extends Utils {
   
     constructor(  
     @InjectRepository(AccountEntity) 
@@ -21,17 +23,24 @@ export class RoomService {
     @InjectRepository(Room) 
     private readonly roomRepository: Repository<Room>,
 
-  ){}
+  ){
+    super()
+  }
 
-  async addRoom(addRoomDto: AddRoomDto) {
+  async addRoom(addRoomDto: AddRoomDto, account: AccountEntity) {
     
-    //Create the service object with Dto to save it 
+    const userAccount = await this.accountRepository.findOneBy({refAccount: account.refAccount});
+    if(userAccount != null) {
+      if (this.IsAuthorised(userAccount, FunctionPrivilegeEnum.ADD_DISCUSSION) == false) {
+        throw new UnauthorizedException();
+      }
+    }
+
     const realEstate = await this.realEstateRepository.findOneBy({refRealEstate: addRoomDto.refRealEstate}); 
     if (realEstate == null) {
       throw new BadRequestException("RealEstate not found");
     }
 
-    //Create the homeCare object with Dto to save it 
     const room = await this.roomRepository.create(addRoomDto); 
     if (room == null) {
       throw new BadRequestException("Room not found");
@@ -43,10 +52,20 @@ export class RoomService {
     } catch (error) {
       throw new ConflictException(error.driverError.detail);
     }
+
     return room;
+
   }
 
-  async showRoomList(listRoomDto: ListRoomDto, account: any) {
+  async showRoomList(listRoomDto: ListRoomDto, account: AccountEntity) {
+
+    const userAccount = await this.accountRepository.findOneBy({refAccount: account.refAccount});
+    if(userAccount != null) {
+      if (this.IsAuthorised(userAccount, FunctionPrivilegeEnum.ADD_DISCUSSION) == false) {
+        throw new UnauthorizedException();
+      }
+    }
+
     let listRooms: Room[] = [];
     let rooms: Room[] = [];
 
@@ -111,16 +130,32 @@ export class RoomService {
     return listRooms;
   }
 
-  async showRoomDetail(refRoom: string) {
+  async showRoomDetail(refRoom: string, account: AccountEntity) {
+
+    const userAccount = await this.accountRepository.findOneBy({refAccount: account.refAccount});
+    if(userAccount != null) {
+      if (this.IsAuthorised(userAccount, FunctionPrivilegeEnum.ADD_DISCUSSION) == false) {
+        throw new UnauthorizedException();
+      }
+    }
 
     const room = await this.roomRepository.findOneBy({refRoom});
     if (room == null) {
       throw new HttpException("Room not found", HttpStatus.NOT_FOUND)
     }    
+
     return room;
+
   }
 
-  async updateRoom(refRoom: string, updateRoomDto: UpdateRoomDto) {
+  async updateRoom(refRoom: string, updateRoomDto: UpdateRoomDto, account: AccountEntity) {
+
+    const userAccount = await this.accountRepository.findOneBy({refAccount: account.refAccount});
+    if(userAccount != null) {
+      if (this.IsAuthorised(userAccount, FunctionPrivilegeEnum.ADD_DISCUSSION) == false) {
+        throw new UnauthorizedException();
+      }
+    }
 
     const room = await this.roomRepository.findOne({where:{refRoom}});
     if (room == null) {
@@ -138,7 +173,14 @@ export class RoomService {
 
   }
 
-  async deleteRoom(refRoom: string) {
+  async deleteRoom(refRoom: string, account: AccountEntity) {
+
+    const userAccount = await this.accountRepository.findOneBy({refAccount: account.refAccount});
+    if(userAccount != null) {
+      if (this.IsAuthorised(userAccount, FunctionPrivilegeEnum.ADD_DISCUSSION) == false) {
+        throw new UnauthorizedException();
+      }
+    }
 
     const room = await this.roomRepository.findOneBy({refRoom});
     if (room == null) {

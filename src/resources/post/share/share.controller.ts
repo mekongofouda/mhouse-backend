@@ -46,9 +46,10 @@ export class ShareController {
   @Get(':ref')
   @UseGuards(JwtAuthGuard)
   async showShareDetail(
-    @Param('ref') ref: string
+    @Param('ref') ref: string,
+    @Account() account: AccountEntity
     ): Promise<MhouseResponseInterface> {
-    const data = await this.shareService.showShareDetail(ref);
+    const data = await this.shareService.showShareDetail(ref, account);
     return {
       data: data,
       message: "Détails du partage obtenus avec succès avec succès",

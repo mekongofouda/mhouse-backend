@@ -5,9 +5,11 @@ import { UpdateRealEstateDto } from './dto/update-real-estate.dto';
 import { ReferencePipe } from 'src/pipes/reference/reference.pipe';
 import { JwtAuthGuard } from 'src/resources/account/auth/auth.guard';
 import { MhouseResponseInterface } from 'src/interfaces/mhouse-response.interface';
+import { Account } from 'src/decorators/account.decorator';
 
 @Controller('real-estate')
 export class RealEstateController {
+  
   constructor(
     private readonly realEstateService: RealEstateService
     ) {}
@@ -15,9 +17,10 @@ export class RealEstateController {
   @Post()
   @UseGuards(JwtAuthGuard)
   async addRealEstate(
-    @Body(ReferencePipe) addRealEstateDto:AddRealEstateDto
+    @Body(ReferencePipe) addRealEstateDto:AddRealEstateDto,
+    @Account() account
     ): Promise<MhouseResponseInterface> {
-    const data = await this.realEstateService.addRealEstate(addRealEstateDto);
+    const data = await this.realEstateService.addRealEstate(addRealEstateDto, account);
     return {
       data: data,
       message: "Realestate ajouté avec succès",
@@ -28,9 +31,10 @@ export class RealEstateController {
   @Get(':ref')
   @UseGuards(JwtAuthGuard)
   async showRealEstateDetail(
-    @Param('ref') ref: string
+    @Param('ref') ref: string,
+    @Account() account
     ): Promise<MhouseResponseInterface> {
-    const data = await this.realEstateService.showRealEstateDetail(ref);
+    const data = await this.realEstateService.showRealEstateDetail(ref, account);
     return {
       data: data,
       message: "Partage effectué avec succès",
@@ -42,9 +46,10 @@ export class RealEstateController {
   @UseGuards(JwtAuthGuard)
   async updateRealEstate(
     @Param('ref') ref: string, 
-    @Body() updateRealEstateDto: UpdateRealEstateDto
+    @Body() updateRealEstateDto: UpdateRealEstateDto,
+    @Account() account
     ): Promise<MhouseResponseInterface> {
-    const data = await this.realEstateService.updateRealEstate(ref, updateRealEstateDto);
+    const data = await this.realEstateService.updateRealEstate(ref, updateRealEstateDto, account);
     return {
       data: data,
       message: "Partage effectué avec succès",

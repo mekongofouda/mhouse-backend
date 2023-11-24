@@ -5,10 +5,11 @@ import { HomeCareRealisationModule } from './home-care-realisation/home-care-rea
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { HomeCare } from './entities/home-care.entity';
 import { Service } from '../entities/service.entity';
+import { AccountEntity } from 'src/resources/account/entities/account.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([HomeCare, Service]),
+    TypeOrmModule.forFeature([HomeCare, Service, AccountEntity]),
     HomeCareRealisationModule
   ],
   controllers: [HomeCareController],

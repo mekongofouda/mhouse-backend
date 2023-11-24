@@ -16,7 +16,9 @@ import { JwtAuthGuard } from './auth.guard';
 import { ReferencePipe } from 'src/pipes/reference/reference.pipe';
 import { MhouseResponseInterface } from 'src/interfaces/mhouse-response.interface';
 import { AuthGuard } from '@nestjs/passport';
+import { Express } from 'express';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { CredentialsPipe } from 'src/pipes/credentials/credentials.pipe';
 
 @Controller('auth')
 export class AuthController {
@@ -25,29 +27,34 @@ export class AuthController {
 
   @Post()
   async login (
-    @Body() credentials:LoginCredentialsDto 
+    @Body(CredentialsPipe) credentials:LoginCredentialsDto 
     ): Promise<MhouseResponseInterface> {
+
     const data = await this.authService.login(credentials);
     return {
       data: data,
       message: "Login effectué avec succès",
       code: HttpStatus.OK
     };
+    
   }
 
   /** Signin function */
   @Post('register')
   @UseInterceptors(FileInterceptor('avatar'))
   async register(
+    @UploadedFile() file: Express.Multer.File,
     @Body(ReferencePipe) registerDto: RegisterDto
-    ) : Promise<MhouseResponseInterface> 
-    {
-    const data = await this.authService.register(registerDto);
-    return {
-      data: data,
-      message: "Account created successufully",
-      code: HttpStatus.OK
-    };
+    )  
+    { 
+    
+    console.log(file);
+    // const data = await this.authService.register(registerDto);
+    // return {
+    //   data: data,
+    //   message: "Account created successufully",
+    //   code: HttpStatus.OK
+    // };
   }
   
   /** Signin with facebook functions */

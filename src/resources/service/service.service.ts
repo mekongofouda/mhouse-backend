@@ -1,4 +1,4 @@
-import { BadRequestException, ConflictException, HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { BadRequestException, ConflictException, HttpException, HttpStatus, Injectable, UnauthorizedException } from '@nestjs/common';
 import { AddServiceDto } from './dto/add-service.dto';
 import { UpdateServiceDto } from './dto/update-service.dto';
 import { Service } from './entities/service.entity';
@@ -6,19 +6,32 @@ import { ListServiceDto } from './dto/list-service.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { AccountEntity } from 'src/resources/account/entities/account.entity';
+import { FunctionPrivilegeEnum } from 'src/enums/function.privilege.enum';
+import { Utils } from 'src/generics/utils';
 
 @Injectable()
-export class ServiceService {
+export class ServiceService extends Utils {
 
   constructor(
+
     @InjectRepository(AccountEntity) 
     private readonly accountRepository: Repository<AccountEntity>,
 
     @InjectRepository(Service) 
     private readonly serviceRepository: Repository<Service>
-  ){}
+
+  ){
+    super()
+  }
 
   async addService( addServiceDto: AddServiceDto, account: AccountEntity) {
+
+    const userAccount = await this.accountRepository.findOneBy({refAccount: account.refAccount});
+    if(userAccount != null) {
+      if (this.IsAuthorised(userAccount, FunctionPrivilegeEnum.ADD_DISCUSSION) == false) {
+        throw new UnauthorizedException();
+      }
+    }
 
     //Get post to add at the service
     const acccount = await this.accountRepository.create(account);
@@ -26,10 +39,7 @@ export class ServiceService {
       throw new HttpException("Account not found", HttpStatus.NOT_FOUND)
     }
 
-    //Create the service object with Dto to save it 
     const service = await this.serviceRepository.create(addServiceDto);
-
-    //Set properties
     service.account = account;
 
     try {
@@ -39,10 +49,18 @@ export class ServiceService {
     }
 
     return service;
+
   }
 
   async listService(listServiceDto: ListServiceDto, account: AccountEntity): Promise<Service[]> {
     
+    const userAccount = await this.accountRepository.findOneBy({refAccount: account.refAccount});
+    if(userAccount != null) {
+      if (this.IsAuthorised(userAccount, FunctionPrivilegeEnum.ADD_DISCUSSION) == false) {
+        throw new UnauthorizedException();
+      }
+    }
+
     let listServices: Service[]=[];
     let services: Service[]=[];
 
@@ -81,9 +99,18 @@ export class ServiceService {
     }
 
     return listServices;
+
   }
 
-  async showServiceDetail(refService: string) {
+  async showServiceDetail(refService: string, account: AccountEntity) {
+
+    const userAccount = await this.accountRepository.findOneBy({refAccount: account.refAccount});
+    if(userAccount != null) {
+      if (this.IsAuthorised(userAccount, FunctionPrivilegeEnum.ADD_DISCUSSION) == false) {
+        throw new UnauthorizedException();
+      }
+    }
+
     const service = await this.serviceRepository.findOneBy({refService});
     if (service == null) {
       throw new HttpException("Service not found", HttpStatus.NOT_FOUND)
@@ -91,30 +118,51 @@ export class ServiceService {
     return service;
   }
 
-  async updateService(refService: string, updateServiceDto: UpdateServiceDto) {
+  async updateService(refService: string, updateServiceDto: UpdateServiceDto, account: AccountEntity) {
+
+    const userAccount = await this.accountRepository.findOneBy({refAccount: account.refAccount});
+    if(userAccount != null) {
+      if (this.IsAuthorised(userAccount, FunctionPrivilegeEnum.ADD_DISCUSSION) == false) {
+        throw new UnauthorizedException();
+      }
+    }
+
     const service = await this.serviceRepository.findOneBy({refService});
     if (service == null) {
       throw new HttpException("Service not found", HttpStatus.NOT_FOUND)
     }    
     Object.assign(service, updateServiceDto);
+
     try {
       await this.serviceRepository.save(service);
     } catch (error) {
       throw new ConflictException(error.driverError.detail);
     }
+
     return service;
+
   }
 
-  async deleteService(refService: string) {
+  async deleteService(refService: string, account: AccountEntity) {
+
+    const userAccount = await this.accountRepository.findOneBy({refAccount: account.refAccount});
+    if(userAccount != null) {
+      if (this.IsAuthorised(userAccount, FunctionPrivilegeEnum.ADD_DISCUSSION) == false) {
+        throw new UnauthorizedException();
+      }
+    }
+
     const service = await this.serviceRepository.findOneBy({refService});
     if (service == null) {
       throw new HttpException("Service not found", HttpStatus.NOT_FOUND);
     }    
+
     try {
       await this.serviceRepository.softRemove(service);
     } catch (error) {
       throw new ConflictException(error.driverError.detail);
     }
+    
     return service;
   }
 }

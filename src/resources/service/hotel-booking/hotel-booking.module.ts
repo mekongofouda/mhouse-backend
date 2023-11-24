@@ -5,10 +5,11 @@ import { HotelBookingServiceModule } from './hotel-booking-service/hotel-booking
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { HotelBooking } from './entities/hotel-booking.entity';
 import { Service } from '../entities/service.entity';
+import { AccountEntity } from 'src/resources/account/entities/account.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([HotelBooking, Service]),
+    TypeOrmModule.forFeature([HotelBooking, Service, AccountEntity]),
     HotelBookingServiceModule
   ],
   controllers: [HotelBookingController],
