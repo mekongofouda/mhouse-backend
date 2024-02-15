@@ -1,5 +1,5 @@
 export enum TypeRealEstateRoomEnum {
-    BEDROOM = 'bedroom',
-    REST_ROOM = 'house',
-    KITCHEN = 'kitchen'
-} 
+  BEDROOM = 'bedroom',
+  REST_ROOM = 'house',
+  KITCHEN = 'kitchen',
+}

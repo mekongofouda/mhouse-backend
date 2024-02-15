@@ -1,13 +1,13 @@
-import { 
-  Controller, 
-  Get, 
-  Post, 
-  Body, 
-  Patch, 
-  Param, 
-  Query, 
-  UseGuards, 
-  HttpStatus 
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Query,
+  UseGuards,
+  HttpStatus,
 } from '@nestjs/common';
 import { LikeService } from './like.service';
 import { ListLikeDto } from './dto/list-like.dto';
@@ -20,23 +20,19 @@ import { LikeDto } from './dto/like.dto';
 
 @Controller('like')
 export class LikeController {
-
-  constructor(
-    private readonly likeService: LikeService,
-  ) {}
-
+  constructor(private readonly likeService: LikeService) {}
 
   @Post()
   @UseGuards(JwtAuthGuard)
   async like(
     @Body(ReferencePipe) likeDto: LikeDto,
-    @Account() account:AccountEntity
-    ): Promise<MhouseResponseInterface> {
+    @Account() account: AccountEntity,
+  ): Promise<MhouseResponseInterface> {
     const data = await this.likeService.like(likeDto, account);
     return {
       data: data,
-      message: "Liste des likes obtenue avec succès",
-      code: HttpStatus.OK
+      message: 'Liste des likes obtenue avec succès',
+      code: HttpStatus.OK,
     };
   }
 
@@ -44,13 +40,13 @@ export class LikeController {
   @UseGuards(JwtAuthGuard)
   async unlike(
     @Param('ref') refLike: string,
-    @Account() account: AccountEntity
-    ): Promise<MhouseResponseInterface> {
+    @Account() account: AccountEntity,
+  ): Promise<MhouseResponseInterface> {
     const data = await this.likeService.unlike(refLike, account);
     return {
       data: data,
-      message: "Liste des likes obtenue avec succès",
-      code: HttpStatus.OK
+      message: 'Liste des likes obtenue avec succès',
+      code: HttpStatus.OK,
     };
   }
 
@@ -58,28 +54,27 @@ export class LikeController {
   @UseGuards(JwtAuthGuard)
   async listLike(
     @Query() listLikeDto: ListLikeDto,
-    @Account() account: AccountEntity
+    @Account() account: AccountEntity,
   ): Promise<MhouseResponseInterface> {
     const data = await this.likeService.listLike(listLikeDto, account);
     return {
       data: data,
-      message: "Liste des likes obtenue avec succès",
-      code: HttpStatus.OK
-    }
+      message: 'Liste des likes obtenue avec succès',
+      code: HttpStatus.OK,
+    };
   }
 
   @Get(':ref')
   @UseGuards(JwtAuthGuard)
   async showLikeDetail(
     @Param('ref') ref: string,
-    @Account() account: AccountEntity
-    ): Promise<MhouseResponseInterface> {
+    @Account() account: AccountEntity,
+  ): Promise<MhouseResponseInterface> {
     const data = await this.likeService.showLikeDetail(ref, account);
     return {
       data: data,
-      message: "Liste des likes obtenue avec succès",
-      code: HttpStatus.OK
+      message: 'Liste des likes obtenue avec succès',
+      code: HttpStatus.OK,
     };
   }
-
 }

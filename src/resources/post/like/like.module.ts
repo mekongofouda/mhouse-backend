@@ -7,9 +7,7 @@ import { PostEntity } from 'src/resources/post/entities/post.entity';
 import { AccountEntity } from '../../account/entities/account.entity';
 
 @Module({
-  imports: [
-    TypeOrmModule.forFeature([Like, PostEntity, AccountEntity])
-  ],
+  imports: [TypeOrmModule.forFeature([Like, PostEntity, AccountEntity])],
   controllers: [LikeController],
   providers: [LikeService],
 })

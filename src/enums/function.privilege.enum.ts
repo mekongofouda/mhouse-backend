@@ -1,10 +1,135 @@
 export enum FunctionPrivilegeEnum {
 
-    /** Discussion resource*/
-    ADD_ROLE = "ADD_ROLE",
-    
-    /** Discussion resource*/
-    ADD_DISCUSSION = "ADD_DISC",
-    DELETE_DISCUSSION = "DEL_DISC"
-    
+  /** Role resource*/
+  //Role
+  ADD_ROLE = 'ADD_ROLE',
+  LIST_ROLE = 'ADD_ROLE',
+  SHOW_ROLE = 'ADD_ROLE',
+  UPDATE_ROLE = 'ADD_ROLE',
+  DELETE_ROLE = 'ADD_ROLE',
+
+  //Privilege resource
+  ADD_PRIVILEGE = 'ADD_PRIV',
+  LIST_PRIVILEGE = 'LIST_PRIV',
+  SHOW_PRIVILEGE = 'SHOW_PRIV',
+  UPDATE_PRIVILEGE = 'UPDT_PRIV',
+  DELETE_PRIVILEGE = 'DELT_PRIV',
+
+  /** Account resource*/
+  //Follower
+  FOLLOW = 'ADD_ROLE',
+  NOT_FOLLOW = 'ADD_ROLE',
+  LIST_FOLLOWED = 'ADD_ROLE',
+  LIST_FOLLOWER = 'ADD_ROLE',
+  SHOW_FOLLOWER = 'ADD_ROLE',
+
+  //Profile
+  INVITE = 'ADD_ROLE',
+  LIST_USER_ACCOUNT = 'ADD_ROLE',
+  UPLOAD_AVATAR = 'ADD_ROLE',
+
+  //Password
+  UPDATE_PASSWORD = 'ADD_DISC',
+
+  /** Service resource*/
+  //Service
+  ADD_SERVICE = 'ADD_DISC',
+  LIST_SERVICE = 'DEL_DISC',
+  SHOW_SERVICE = 'ADD_DISC',
+  UPDATE_SERVICE = 'ADD_DISC',
+  DELETE_SERVICE = 'DEL_DISC',
+
+  //Real estate
+  ADD_REAL_ESTATE = 'ADD_DISC',
+  LIST_REAL_ESTATE = 'DEL_DISC',
+  SHOW_REAL_ESTATE = 'ADD_DISC',
+  UPDATE_REAL_ESTATE = 'ADD_DISC',
+  DELETE_REAL_ESTATE = 'DEL_DISC',
+
+  //Home service
+  ADD_HOME_SERVICE = 'ADD_DISC',
+  SHOW_HOME_SERVICE = 'ADD_DISC',
+  UPDATE_HOME_SERVICE = 'ADD_DISC',
+
+  //Home service realisation
+  ADD_HOME_SERVICE_REALISATION = 'ADD_DISC',
+  LIST_HOME_SERVICE_REALISATION = 'ADD_DISC',
+  SHOW_HOME_SERVICE_REALISATION = 'ADD_DISC',
+  UPDATE_HOME_SERVICE_REALISATION = 'ADD_DISC',
+  DELETE_HOME_SERVICE_REALISATION = 'ADD_DISC',
+
+  /** Product resource*/
+  //product
+  ADD_PRODUCT = 'ADD_DISC',
+  LIST_PRODUCT = 'DEL_DISC',
+  SHOW_PRODUCT = 'ADD_DISC',
+  UPDATE_PRODUCT = 'ADD_DISC',
+  DELETE_PRODUCT = 'DEL_DISC',
+
+  /** Post resource*/
+  //Post
+  POST = 'POST',
+  LIST_POST = 'LIST_POST',
+  SHOW_POST = 'POST',
+  UPDATE_POST = 'LIST_POST',
+  DELETE_POST = 'POST',
+  UPLOAD_POST_IMAGE = 'LIST_POST',
+
+  //Like
+  LIKE = 'LIKE',
+  UNLIKE = 'UNLIKE',
+  LIST_LIKE = 'LIST_ROLE',
+  SHOW_LIKE = 'ADD_ROLE',
+
+  //Offer
+  OFFER = 'ADD_ROLE',
+  VALIDATE_OFFER = 'ADD_ROLE',
+  LIST_OFFER = 'ADD_ROLE',
+  SHOW_OFFER = 'ADD_ROLE',
+  UPDATE_OFFER = 'ADD_ROLE',
+  DELETE_OFFER = 'ADD_ROLE',
+
+  //Share
+  SHARE = 'ADD_ROLE',
+  LIST_SHARE = 'ADD_ROLE',
+  SHOW_SHARE = 'ADD_ROLE',
+
+  //Sponsor
+  SPONSOR = 'ADD_ROLE',
+  LIST_SPONSOR = 'ADD_ROLE',
+  SHOW_SPONSOR = 'ADD_ROLE',
+
+  /** Discussion resource*/
+  //Discussion
+  ADD_DISCUSSION = 'ADD_DISC',
+  LIST_DISCUSSION = 'DEL_DISC',
+  SHOW_DISCUSSION = 'ADD_DISC',
+  UPDATE_DISCUSSION = 'ADD_DISC',
+  DELETE_DISCUSSION = 'DEL_DISC',
+
+  //Message
+  SEND_MESSAGE = 'ADD_DISC',
+  LIST_MESSAGE = 'ADD_DISC',
+  SHOW_MESSAGE = 'DEL_DISC',
+  DELETE_MESSAGE = 'DEL_DISC',
+
+  /** Research resource*/
+  //Research
+  SEARCH = 'ADD_DISC',
+  SHOW_RESEARCH_RESULT = 'DEL_DISC',
+  SHOW_RESEARCH_DETAIL = 'DEL_DISC',
+
+  /** Subscription resource*/
+  //Subscription
+  UPGRADE = 'UPGD',
+  SHOW_UPGRADING = 'DEL_DISC',
+  LIST_UPGRADING = 'LIST_UPGD',
+
+  /** Notification resource*/
+  //Notification
+  SEND_NOTIFICATION = 'ADD_DISC',
+  SHOW_NOTIFICATION = 'DEL_DISC',
+  LIST_NOTIFICATION = 'LIST_UPGD',
+  MARK_READED = 'DEL_DISC',
+  DELETE_NOTIFICATION = 'LIST_UPGD',
 }

@@ -2,16 +2,12 @@ import { ArgumentMetadata, Injectable, PipeTransform } from '@nestjs/common';
 
 @Injectable()
 export class CredentialsPipe implements PipeTransform {
+  transform(value: any, metadata: ArgumentMetadata) {
 
-  transform(value: any, metadata: ArgumentMetadata) { 
-
-    if (metadata.metatype.name == 'LoginDtoDto') {
-
-      value.password = value.password.toString();
-    
+    if (metadata.metatype.name == 'LoginCredentialsDto') {
+      //Apply security at this level
     }
-    
-    return value; 
+
+    return value;
   }
 }
- 

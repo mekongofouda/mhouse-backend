@@ -7,13 +7,7 @@ import { Service } from '../service/entities/service.entity';
 import { AccountEntity } from '../account/entities/account.entity';
 
 @Module({
-  imports: [
-    TypeOrmModule.forFeature([
-      PostEntity, 
-      Service,
-      AccountEntity
-    ])
-  ],
+  imports: [TypeOrmModule.forFeature([PostEntity, Service, AccountEntity])],
   controllers: [PostController],
   providers: [PostService],
 })

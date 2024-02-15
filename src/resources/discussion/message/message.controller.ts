@@ -1,4 +1,14 @@
-import { Controller, Get, Post, Body,Param, Delete, Query, UseGuards, HttpStatus } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Param,
+  Delete,
+  Query,
+  UseGuards,
+  HttpStatus,
+} from '@nestjs/common';
 import { MessageService } from './message.service';
 import { SendMessageDto } from './dto/send-message.dto';
 import { ListMessageDto } from './dto/list-message.dto';
@@ -11,22 +21,19 @@ import { AccountEntity } from '../../account/entities/account.entity';
 
 @Controller('message')
 export class MessageController {
-
-  constructor(
-    private readonly messageService: MessageService,
-  ) {}
+  constructor(private readonly messageService: MessageService) {}
 
   @Post()
   @UseGuards(JwtAuthGuard)
   async sendMessage(
     @Body(ReferencePipe) sendMessageDto: SendMessageDto,
-    @Account() account: AccountEntity
-    ): Promise<MhouseResponseInterface> {
+    @Account() account: AccountEntity,
+  ): Promise<MhouseResponseInterface> {
     const data = await this.messageService.sendMessage(sendMessageDto, account);
     return {
       data: data,
-      message: "Message envoyé avec succès",
-      code: HttpStatus.OK
+      message: 'Message envoyé avec succès',
+      code: HttpStatus.OK,
     };
   }
 
@@ -34,13 +41,13 @@ export class MessageController {
   @UseGuards(JwtAuthGuard)
   async listMessage(
     @Query() listMessageDto: ListMessageDto,
-    @Account() account: AccountEntity
+    @Account() account: AccountEntity,
   ): Promise<MhouseResponseInterface> {
     const data = await this.messageService.listMessage(listMessageDto, account);
     return {
       data: data,
-      message: "Liste des messages obtenue avec succès",
-      code: HttpStatus.OK
+      message: 'Liste des messages obtenue avec succès',
+      code: HttpStatus.OK,
     };
   }
 
@@ -48,13 +55,13 @@ export class MessageController {
   @UseGuards(JwtAuthGuard)
   async showMessageDetail(
     @Param('ref') ref: string,
-    @Account() account: AccountEntity
-    ): Promise<MhouseResponseInterface> {
+    @Account() account: AccountEntity,
+  ): Promise<MhouseResponseInterface> {
     const data = await this.messageService.showMessageDetail(ref, account);
     return {
       data: data,
-      message: "Liste des messages obtenue avec succès",
-      code: HttpStatus.OK
+      message: 'Liste des messages obtenue avec succès',
+      code: HttpStatus.OK,
     };
   }
 
@@ -62,13 +69,13 @@ export class MessageController {
   @UseGuards(JwtAuthGuard)
   async deleteMessage(
     @Param('ref') ref: string,
-    @Account() account: AccountEntity
-    ): Promise<MhouseResponseInterface> {
+    @Account() account: AccountEntity,
+  ): Promise<MhouseResponseInterface> {
     const data = await this.messageService.deleteMessage(ref, account);
     return {
       data: data,
-      message: "Message supprimé avec succès",
-      code: HttpStatus.OK
+      message: 'Message supprimé avec succès',
+      code: HttpStatus.OK,
     };
   }
 }

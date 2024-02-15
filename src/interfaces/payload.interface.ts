@@ -1,5 +1,5 @@
-export interface PayloadInterface{
-    email: string;
-    role: string;
-    name: string;
+export interface PayloadInterface {
+  email: string;
+  role: string;
+  name: string;
 }

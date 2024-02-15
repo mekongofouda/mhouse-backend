@@ -1,17 +1,18 @@
-import { Injectable } from "@nestjs/common";
-import { PassportStrategy } from "@nestjs/passport";
-import { Profile, Strategy } from "passport-facebook";
-import { facebookConstants } from "src/constants";
+import { Injectable } from '@nestjs/common';
+import { PassportStrategy } from '@nestjs/passport';
+import { Profile, Strategy } from 'passport-facebook';
+import * as dotenv from 'dotenv';
 
+dotenv.config();
 @Injectable()
-export class FacebookStrategy extends PassportStrategy(Strategy, "facebook") {
+export class FacebookStrategy extends PassportStrategy(Strategy, 'facebook') {
   constructor() {
     super({
-      clientID: facebookConstants.app_id,
-      clientSecret: facebookConstants.app_secret,
-      callbackURL: "http://localhost:3000/facebook/redirect",
-      scope: "email",
-      profileFields: ["emails", "name"],
+      clientID: process.env.APP_ID,
+      clientSecret: process.env.FACEBOOK_APP_SECRET,
+      callbackURL: 'http://localhost:3000/facebook/redirect',
+      scope: 'email',
+      profileFields: ['emails', 'name'],
     });
   }
 
@@ -19,7 +20,7 @@ export class FacebookStrategy extends PassportStrategy(Strategy, "facebook") {
     accessToken: string,
     refreshToken: string,
     profile: Profile,
-    done: (err: any, user: any, info?: any) => void
+    done: (err: any, user: any, info?: any) => void,
   ): Promise<any> {
     const { name, emails } = profile;
     const user = {

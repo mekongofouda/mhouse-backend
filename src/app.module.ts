@@ -2,7 +2,7 @@ import { MiddlewareConsumer, Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { PrivilegeModule } from './resources/role/privilege/privilege.module';
-import { RoleModule } from './resources/role/role.module';
+import { RoleModule } from './resources/role/role/role.module';
 import { DiscussionModule } from './resources/discussion/discussion.module';
 import { MessageModule } from './resources/discussion/message/message.module';
 import { PostModule } from './resources/post/post.module';
@@ -15,61 +15,55 @@ import { ResearchModule } from './resources/research/research.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { join } from 'path';
 import { AuthModule } from './resources/account/auth/auth.module';
-import { AccountModule } from './resources/account/account.module';
+import { AccountModule } from './resources/account/account/account.module';
 import { SponsorModule } from './resources/post/sponsor/sponsor.module';
 import { PasswordModule } from './resources/account/password/password.module';
 import { FollowerModule } from './resources/account/follower/follower.module';
 import { RealEstateModule } from './resources/service/real-estate/real-estate.module';
-import { HotelBookingModule } from './resources/service/hotel-booking/hotel-booking.module';
-import { HomeCareModule } from './resources/service/home-care/home-care.module';
-import { HomeStandingModule } from './resources/service/home-standing/home-standing.module';
-import { dbConstants } from './constants';
-import { UpgradingModule } from './resources/upgrading/upgrading.module';
+import { ProductModule } from './resources/product/product.module';
+import { HomeServiceModule } from './resources/service/home-service/home-service.module';
+import { SubscriptionModule } from './resources/subscription/subscription.module';
 import { ConfigModule } from '@nestjs/config';
+import * as dotenv from 'dotenv';
 
+dotenv.config();
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      envFilePath: '.env',
-      ignoreEnvFile: true,
     }),
     TypeOrmModule.forRoot({
       type: 'postgres',
-      host: dbConstants.host,
-      port: dbConstants.port,
-      username: dbConstants.username,
-      password: dbConstants.password,
-      database: dbConstants.database,
-      entities: [
-        join(process.cwd(), 'dist/**/*.entity.js')
-      ],
+      host: process.env.HOST,
+      port: +process.env.PORT,
+      username: process.env.USER_DATABASE,
+      password: process.env.PASSWORD,
+      database: process.env.DATABASE,
+      entities: [join(process.cwd(), 'dist/**/*.entity.js')],
       synchronize: true,
-    }),     
-    PrivilegeModule, 
-    RoleModule, 
-    DiscussionModule, 
-    MessageModule, 
-    PostModule, 
-    LikeModule, 
-    ShareModule, 
-    OfferModule, 
-    ServiceModule, 
-    NotificationModule, 
-    ResearchModule, 
-    AuthModule, 
-    AccountModule, 
-    SponsorModule, 
-    PasswordModule, 
-    FollowerModule, 
-    RealEstateModule, 
-    HomeCareModule, 
-    HotelBookingModule,
-    HomeStandingModule,
-    UpgradingModule
+    }),
+    PrivilegeModule,
+    RoleModule,
+    DiscussionModule,
+    MessageModule,
+    PostModule,
+    LikeModule,
+    ShareModule,
+    OfferModule,
+    ServiceModule,
+    NotificationModule,
+    ResearchModule,
+    AuthModule,
+    AccountModule,
+    SponsorModule,
+    PasswordModule,
+    FollowerModule,
+    RealEstateModule,
+    HomeServiceModule,
+    ProductModule,
+    SubscriptionModule,
   ],
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {
-}
+export class AppModule {}

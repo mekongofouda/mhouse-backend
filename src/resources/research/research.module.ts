@@ -5,9 +5,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { AccountEntity } from '../account/entities/account.entity';
 
 @Module({
-  imports: [
-    TypeOrmModule.forFeature([AccountEntity]),
-  ],
+  imports: [TypeOrmModule.forFeature([AccountEntity])],
   controllers: [ResearchController],
   providers: [ResearchService],
 })

@@ -1,4 +1,4 @@
 export enum NotificationTypeEnum {
-    POST = 'post',
-    OFFER = 'offer'
+  POST = 'post',
+  OFFER = 'offer',
 }

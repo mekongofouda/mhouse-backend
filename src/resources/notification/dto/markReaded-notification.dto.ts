@@ -1,9 +1,7 @@
-import { IsBoolean, IsOptional } from "class-validator";
+import { IsBoolean, IsOptional } from 'class-validator';
 
-export class MarkReadedDto{
-
-    @IsBoolean()
-    @IsOptional()
-    isReaded: boolean;
-
+export class MarkReadedDto {
+  @IsBoolean()
+  @IsOptional()
+  isReaded: boolean;
 }

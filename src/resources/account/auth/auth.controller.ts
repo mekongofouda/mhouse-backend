@@ -1,62 +1,35 @@
-import { 
-  Controller, 
-  Post, 
-  Get, 
-  Body, 
-  UseGuards, 
-  HttpStatus, 
-  Req, 
-  UseInterceptors, 
-  UploadedFile 
+import {
+  Controller,
+  Post,
+  Get,
+  Body,
+  UseGuards,
+  HttpStatus,
+  Req,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { RegisterDto } from './dto/register.dto';
 import { LoginCredentialsDto } from './dto/login.credentials.dto';
 import { JwtAuthGuard } from './auth.guard';
-import { ReferencePipe } from 'src/pipes/reference/reference.pipe';
 import { MhouseResponseInterface } from 'src/interfaces/mhouse-response.interface';
 import { AuthGuard } from '@nestjs/passport';
-import { Express } from 'express';
-import { FileInterceptor } from '@nestjs/platform-express';
 import { CredentialsPipe } from 'src/pipes/credentials/credentials.pipe';
 
 @Controller('auth')
 export class AuthController {
-  constructor(
-  private readonly authService: AuthService) {}
+  constructor(private readonly authService: AuthService) {}
 
   @Post()
-  async login (
-    @Body(CredentialsPipe) credentials:LoginCredentialsDto 
-    ): Promise<MhouseResponseInterface> {
-
+  async login(
+    @Body(CredentialsPipe) credentials: LoginCredentialsDto,
+  ): Promise<MhouseResponseInterface> {
     const data = await this.authService.login(credentials);
     return {
       data: data,
-      message: "Login effectué avec succès",
-      code: HttpStatus.OK
+      message: 'Login effectué avec succès',
+      code: HttpStatus.OK,
     };
-    
   }
 
-  /** Signin function */
-  @Post('register')
-  @UseInterceptors(FileInterceptor('avatar'))
-  async register(
-    @UploadedFile() file: Express.Multer.File,
-    @Body(ReferencePipe) registerDto: RegisterDto
-    )  
-    { 
-    
-    console.log(file);
-    // const data = await this.authService.register(registerDto);
-    // return {
-    //   data: data,
-    //   message: "Account created successufully",
-    //   code: HttpStatus.OK
-    // };
-  }
-  
   /** Signin with facebook functions */
   @Get('facebook')
   @UseGuards(AuthGuard('facebook'))
@@ -65,30 +38,25 @@ export class AuthController {
   }
 
   @Get('facebook/redirect')
-  @UseGuards(AuthGuard("facebook"))
-  async facebookLoginRedirect(
-    @Req() req: Request): Promise<any> {
+  @UseGuards(AuthGuard('facebook'))
+  async facebookLoginRedirect(@Req() req: Request): Promise<any> {
     return {
       data: req,
-      statusCode: HttpStatus.OK
+      statusCode: HttpStatus.OK,
     };
   }
-  
+
   /** Signin with google functions */
   @Get('google')
   @UseGuards(AuthGuard('google'))
-  async googleAuth(
-    @Req() req
-    ) { }
+  async googleAuth(@Req() req) {}
 
   @Get('google/redirect')
   @UseGuards(AuthGuard('google'))
-  googleAuthRedirect(
-    @Req() req
-    ) {
-    return this.authService.googleLogin(req)
+  googleAuthRedirect(@Req() req) {
+    return this.authService.googleLogin(req);
   }
-  
+
   /** Logout function */
   @Get()
   @UseGuards(JwtAuthGuard)
@@ -96,9 +64,8 @@ export class AuthController {
     const data = await this.authService.logout();
     return {
       data: data,
-      message: "Logout effectué avec succès",
-      code: HttpStatus.OK
+      message: 'Logout effectué avec succès',
+      code: HttpStatus.OK,
     };
   }
-  
 }

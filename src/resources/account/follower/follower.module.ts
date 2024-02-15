@@ -5,9 +5,7 @@ import { AccountEntity } from 'src/resources/account/entities/account.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 @Module({
-  imports: [
-    TypeOrmModule.forFeature([AccountEntity])
-  ],
+  imports: [TypeOrmModule.forFeature([AccountEntity])],
   controllers: [FollowerController],
   providers: [FollowerService],
 })

@@ -1,14 +1,14 @@
-import { 
-  Controller, 
-  Get, 
-  Post, 
-  Body, 
-  Patch, 
-  Param, 
-  Delete, 
-  Query, 
-  UseGuards, 
-  HttpStatus 
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  Query,
+  UseGuards,
+  HttpStatus,
 } from '@nestjs/common';
 import { DiscussionService } from './discussion.service';
 import { AddDiscussionDto } from './dto/add-discussion.dto';
@@ -21,65 +21,75 @@ import { MhouseResponseInterface } from 'src/interfaces/mhouse-response.interfac
 
 @Controller('discussion')
 export class DiscussionController {
-
-  constructor(
-    private readonly discussionService: DiscussionService,
-  ) {}
+  constructor(private readonly discussionService: DiscussionService) {}
 
   @Post()
   @UseGuards(JwtAuthGuard)
   async addDiscussion(
     @Body(ReferencePipe) addDiscussionDto: AddDiscussionDto,
-    @Account() account
-    ): Promise<MhouseResponseInterface> {
-    const data = await this.discussionService.addDiscussion(addDiscussionDto, account);
+    @Account() account,
+  ): Promise<MhouseResponseInterface> {
+    const data = await this.discussionService.addDiscussion(
+      addDiscussionDto,
+      account,
+    );
     return {
       data: data,
-      message: "Discussion créée avec succès",
-      code: HttpStatus.OK
-    }
+      message: 'Discussion créée avec succès',
+      code: HttpStatus.OK,
+    };
   }
 
   @Get()
   @UseGuards(JwtAuthGuard)
   async listDiscussion(
     @Query() listDiscussionDto: ListDiscussionDto,
-    @Account() account
+    @Account() account,
   ): Promise<MhouseResponseInterface> {
-    const data = await this.discussionService.listDiscussion(listDiscussionDto, account);
+    const data = await this.discussionService.listDiscussion(
+      listDiscussionDto,
+      account,
+    );
     return {
       data: data,
-      message: "Liste des discussions obtenue avec succès",
-      code: HttpStatus.OK
-    }
+      message: 'Liste des discussions obtenue avec succès',
+      code: HttpStatus.OK,
+    };
   }
 
   @Get(':ref')
   @UseGuards(JwtAuthGuard)
   async showDiscussionDetail(
     @Param('ref') ref: string,
-    @Account() account
+    @Account() account,
   ): Promise<MhouseResponseInterface> {
-    const data = await this.discussionService.showDiscussionDetail(ref, account);
+    const data = await this.discussionService.showDiscussionDetail(
+      ref,
+      account,
+    );
     return {
       data: data,
-      message: "Liste des discussions obtenue avec succès",
-      code: HttpStatus.OK
+      message: 'Liste des discussions obtenue avec succès',
+      code: HttpStatus.OK,
     };
   }
 
   @Patch(':ref')
   @UseGuards(JwtAuthGuard)
   async updateDiscussion(
-    @Param('ref') ref: string, 
+    @Param('ref') ref: string,
     @Body() updateDiscussionDto: UpdateDiscussionDto,
-    @Account() account
+    @Account() account,
   ): Promise<MhouseResponseInterface> {
-    const data = await this.discussionService.updateDiscussion(ref, updateDiscussionDto, account);
+    const data = await this.discussionService.updateDiscussion(
+      ref,
+      updateDiscussionDto,
+      account,
+    );
     return {
       data: data,
-      message: "Discussion mise à jour avec succès",
-      code: HttpStatus.OK
+      message: 'Discussion mise à jour avec succès',
+      code: HttpStatus.OK,
     };
   }
 
@@ -87,13 +97,13 @@ export class DiscussionController {
   @UseGuards(JwtAuthGuard)
   async deleteDiscussion(
     @Param('ref') ref: string,
-    @Account() account
+    @Account() account,
   ): Promise<MhouseResponseInterface> {
     const data = await this.discussionService.deleteDiscussion(ref, account);
     return {
       data: data,
-      message: "Discussion supprimée avec succès",
-      code: HttpStatus.OK
+      message: 'Discussion supprimée avec succès',
+      code: HttpStatus.OK,
     };
   }
 }

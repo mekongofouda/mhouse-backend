@@ -7,9 +7,7 @@ import { Discussion } from 'src/resources/discussion/entities/discussion.entity'
 import { AccountEntity } from '../../account/entities/account.entity';
 
 @Module({
-  imports: [
-    TypeOrmModule.forFeature([Message, AccountEntity, Discussion])
-  ],
+  imports: [TypeOrmModule.forFeature([Message, AccountEntity, Discussion])],
   controllers: [MessageController],
   providers: [MessageService],
 })

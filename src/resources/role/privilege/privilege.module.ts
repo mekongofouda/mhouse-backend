@@ -7,9 +7,7 @@ import { Role } from 'src/resources/role/entities/role.entity';
 import { AccountEntity } from '../../account/entities/account.entity';
 
 @Module({
-  imports: [
-    TypeOrmModule.forFeature([Privilege, Role, AccountEntity])
-  ],
+  imports: [TypeOrmModule.forFeature([Privilege, Role, AccountEntity])],
   controllers: [PrivilegeController],
   providers: [PrivilegeService],
 })

@@ -1,9 +1,7 @@
-import { IsEmail, IsOptional } from "class-validator";
+import { IsEmail, IsOptional } from 'class-validator';
 
 export class ValidateResetAdressDto {
-
-    @IsEmail()
-    @IsOptional()
-    email: string;
-
+  @IsEmail()
+  @IsOptional()
+  email: string;
 }

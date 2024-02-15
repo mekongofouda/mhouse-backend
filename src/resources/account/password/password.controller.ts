@@ -1,11 +1,12 @@
-import { 
-  Controller, 
-  Post, 
-  Body, 
-  Patch, 
-  Param, 
-  UseGuards, 
-  HttpStatus } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Body,
+  Patch,
+  Param,
+  UseGuards,
+  HttpStatus,
+} from '@nestjs/common';
 import { PasswordService } from './password.service';
 import { ResetPasswordDto } from './dto/reset-password.dto';
 import { UpdatePasswordDto } from './dto/update-password.dto';
@@ -20,52 +21,57 @@ export class PasswordController {
 
   @Post()
   async resetPassword(
-    @Body() resetPasswordDto: ResetPasswordDto
-    ): Promise<MhouseResponseInterface> {
+    @Body() resetPasswordDto: ResetPasswordDto,
+  ): Promise<MhouseResponseInterface> {
     const data = await this.passwordService.resetPassword(resetPasswordDto);
     return {
       data: data,
-      message: "Mot de passe mis à jour avec succès",
-      code: HttpStatus.OK
-    }
+      message: 'Mot de passe mis à jour avec succès',
+      code: HttpStatus.OK,
+    };
   }
 
   @Post('adress')
   async validateResetAdress(
-    @Body() validateResetAdressDto: ValidateResetAdressDto
-    ): Promise<MhouseResponseInterface> {
-    const data = await this.passwordService.validateResetAdress(validateResetAdressDto);
+    @Body() validateResetAdressDto: ValidateResetAdressDto,
+  ): Promise<MhouseResponseInterface> {
+    const data = await this.passwordService.validateResetAdress(
+      validateResetAdressDto,
+    );
     return {
       data: data,
-      message: "Email validé",
-      code: HttpStatus.OK
-    }
+      message: 'Email validé',
+      code: HttpStatus.OK,
+    };
   }
 
   @Post('code')
   async validateResetCode(
-    @Body() validateResetCodeDto: ValidateResetCodeDto
-    ): Promise<MhouseResponseInterface> {
-    const data = await this.passwordService.validateResetCode(validateResetCodeDto);
+    @Body() validateResetCodeDto: ValidateResetCodeDto,
+  ): Promise<MhouseResponseInterface> {
+    const data =
+      await this.passwordService.validateResetCode(validateResetCodeDto);
     return {
       data: data,
-      message: "Code validé",
-      code: HttpStatus.OK
-    }
+      message: 'Code validé',
+      code: HttpStatus.OK,
+    };
   }
 
   @Patch(':ref')
   @UseGuards(JwtAuthGuard)
   async updatePassword(
-    @Param('ref') ref: string, 
-    @Body() updatePasswordDto: UpdatePasswordDto
-    ): Promise<MhouseResponseInterface> {
-    const data = await this.passwordService.updatePassword(ref, updatePasswordDto);
+    @Param('ref') ref: string,
+    @Body() updatePasswordDto: UpdatePasswordDto,
+  ): Promise<MhouseResponseInterface> {
+    const data = await this.passwordService.updatePassword(
+      ref,
+      updatePasswordDto,
+    );
     return {
       data: data,
-      message: "Code validé",
-      code: HttpStatus.OK
+      message: 'Code validé',
+      code: HttpStatus.OK,
     };
   }
-
 }

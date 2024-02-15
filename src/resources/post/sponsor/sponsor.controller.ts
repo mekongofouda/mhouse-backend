@@ -1,4 +1,15 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Query, UseGuards, HttpStatus } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  Query,
+  UseGuards,
+  HttpStatus,
+} from '@nestjs/common';
 import { SponsorService } from './sponsor.service';
 import { SponsorDto } from './dto/sponsor.dto';
 import { ListSponsorDto } from './dto/list-sponsor.dto';
@@ -10,50 +21,47 @@ import { AccountEntity } from '../../account/entities/account.entity';
 
 @Controller('sponsor')
 export class SponsorController {
-  constructor(
-    private readonly sponsorService: SponsorService
-    ) {}
+  constructor(private readonly sponsorService: SponsorService) {}
 
   @Post()
   @UseGuards(JwtAuthGuard)
   async sponsor(
     @Body(ReferencePipe) sponsorDto: SponsorDto,
-    @Account() account:AccountEntity
-    ): Promise<MhouseResponseInterface> {
+    @Account() account: AccountEntity,
+  ): Promise<MhouseResponseInterface> {
     const data = await this.sponsorService.sponsor(sponsorDto, account);
     return {
       data: data,
-      message: "Sponsor effectué avec succès",
-      code: HttpStatus.OK
-    }
+      message: 'Sponsor effectué avec succès',
+      code: HttpStatus.OK,
+    };
   }
 
   @Get()
   @UseGuards(JwtAuthGuard)
   async listSponsor(
     @Query() listSponsorDto: ListSponsorDto,
-    @Account() account: AccountEntity
-    ): Promise<MhouseResponseInterface> {
+    @Account() account: AccountEntity,
+  ): Promise<MhouseResponseInterface> {
     const data = await this.sponsorService.listSponsor(listSponsorDto, account);
     return {
       data: data,
-      message: "Liste des sponsors obtenue avec succès",
-      code: HttpStatus.OK
-    }
+      message: 'Liste des sponsors obtenue avec succès',
+      code: HttpStatus.OK,
+    };
   }
 
   @Get(':ref')
   @UseGuards(JwtAuthGuard)
   async showSponsorDetail(
     @Param('ref') ref: string,
-    @Account() account: AccountEntity
-    ): Promise<MhouseResponseInterface> {
+    @Account() account: AccountEntity,
+  ): Promise<MhouseResponseInterface> {
     const data = await this.sponsorService.showSponsorDetail(ref, account);
     return {
       data: data,
-      message: "Détails du sponsor obtenus avec succès avec succès",
-      code: HttpStatus.OK
+      message: 'Détails du sponsor obtenus avec succès avec succès',
+      code: HttpStatus.OK,
     };
   }
-
 }

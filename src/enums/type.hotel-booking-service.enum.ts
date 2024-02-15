@@ -1,3 +1,3 @@
-export enum TypeHotelBookingServiceEnum {
-    MOTEL = 'motel'
-} 
+export enum TypeProductServiceEnum {
+  MOTEL = 'motel',
+}

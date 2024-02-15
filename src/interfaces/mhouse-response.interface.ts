@@ -1,5 +1,5 @@
-export interface MhouseResponseInterface{
-    data: any;
-    message: string;
-    code: number;
+export interface MhouseResponseInterface {
+  data: any;
+  message: string;
+  code: number;
 }
