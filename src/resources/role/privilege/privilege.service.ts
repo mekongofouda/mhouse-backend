@@ -11,7 +11,7 @@ import { Repository } from 'typeorm';
 import { ListPrivilegeDto } from './dto/list-privilege.dto';
 import { AddPrivilegeDto } from './dto/add-privilege.dto';
 import { UpdatePrivilegeDto } from 'src/resources/role/privilege/dto/update-privilege.dto';
-import { Role } from 'src/resources/role/entities/role.entity';
+import { Role } from 'src/resources/role/role/entities/role.entity';
 import { AccountEntity } from '../../account/entities/account.entity';
 import { FunctionPrivilegeEnum } from 'src/enums/function.privilege.enum';
 import { Utils } from 'src/generics/utils';
@@ -80,7 +80,6 @@ export class PrivilegeService extends Utils {
     account: AccountEntity,
   ): Promise<Privilege> {
 
-    console.log(account);
     //Get user account object
     const userAccount = await this.accountRepository.findOneBy({
       refAccount: account.refAccount,
@@ -135,7 +134,7 @@ export class PrivilegeService extends Utils {
     } catch (error) {
       throw new ConflictException(error.driverError.detail);
     }
-    await this.notificationService.sendNotification(account);
+    // await this.notificationService.sendNotification(account);
 
     return privilege;
   }
@@ -244,7 +243,7 @@ export class PrivilegeService extends Utils {
     } catch (error) {
       throw new ConflictException(error.driverError.detail);
     }
-    await this.notificationService.sendNotification(account);
+    // await this.notificationService.sendNotification(account);
 
     return privilege;
   }

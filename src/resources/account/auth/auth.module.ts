@@ -8,7 +8,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { AccountEntity } from 'src/resources/account/entities/account.entity';
 import { JwtStrategy } from './strategies/jwt.strategy';
 import { ConfigService } from '@nestjs/config';
-import { Role } from 'src/resources/role/entities/role.entity';
+import { Role } from 'src/resources/role/role/entities/role.entity';
 import { FacebookStrategy } from './strategies/facebook.strategy';
 import * as dotenv from 'dotenv';
 

@@ -59,11 +59,11 @@ export class PrivilegeController {
   }
 
   @Get(':ref')
+  @UseGuards(JwtAuthGuard)
   async showPrivilegeDetail(
     @Param('ref') ref: string,
     @Account() account: AccountEntity,
   ): Promise<MhouseResponseInterface> {
-    console.log(account)
     const data = await this.privilegeService.showPrivilegeDetail(ref, account);
     return {
       data: data,
@@ -73,6 +73,7 @@ export class PrivilegeController {
   }
 
   @Patch(':ref')
+  @UseGuards(JwtAuthGuard)
   async updatePrivilege(
     @Param('ref') ref: string,
     @Body() updatePrivilegeDto: UpdatePrivilegeDto,
@@ -91,6 +92,7 @@ export class PrivilegeController {
   }
 
   @Delete(':ref')
+  @UseGuards(JwtAuthGuard)
   async deletePrivilege(
     @Param('ref') ref: string,
     @Account() account: AccountEntity,

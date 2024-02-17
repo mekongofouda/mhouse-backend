@@ -11,7 +11,7 @@ import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { AccountEntity } from '../entities/account.entity';
 import { ListUserAccountDto } from '../dto/list-user-account.dto';
-import { Role } from '../../role/entities/role.entity';
+import { Role } from '../../role/role/entities/role.entity';
 import { FunctionPrivilegeEnum } from 'src/enums/function.privilege.enum';
 import { Utils } from 'src/generics/utils';
 import { NotificationService } from 'src/resources/notification/notification.service';

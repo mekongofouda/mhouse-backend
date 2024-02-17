@@ -6,10 +6,10 @@ import {
   Injectable,
   UnauthorizedException,
 } from '@nestjs/common';
-import { AddRoleDto } from '../dto/add-role.dto';
-import { UpdateRoleDto } from '../dto/update-role.dto';
-import { ListRoleDto } from '../dto/list-role.dto';
-import { Role } from '../entities/role.entity';
+import { AddRoleDto } from './dto/add-role.dto';
+import { UpdateRoleDto } from './dto/update-role.dto';
+import { ListRoleDto } from './dto/list-role.dto';
+import { Role } from './entities/role.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { AccountEntity } from '../../account/entities/account.entity';
@@ -44,10 +44,11 @@ export class RoleService extends Utils {
     });
 
     //Autorisation
-    if (userAccount != null) {
-      if ( userAccount.role.slug != UserRoleEnum.SUPER_ADMIN ) {
-        throw new UnauthorizedException();
-      }
+    if (!(
+      this.IsAuthorised(userAccount, FunctionPrivilegeEnum.ADD_ROLE) ||
+      userAccount.role.slug == UserRoleEnum.SUPER_ADMIN
+      )) {
+      throw new UnauthorizedException("You d'ont have the required role or privilege!!! ");
     }
 
     //Create a role object to save it
@@ -83,12 +84,12 @@ export class RoleService extends Utils {
     const userAccount = await this.accountRepository.findOneBy({
       refAccount: account.refAccount,
     });
-    if (userAccount != null) {
-      if (
-        this.IsAuthorised(userAccount, FunctionPrivilegeEnum.SHOW_ROLE) == false
-      ) {
-        throw new UnauthorizedException();
-      }
+
+    if (!(
+      this.IsAuthorised(userAccount, FunctionPrivilegeEnum.SHOW_ROLE) ||
+      userAccount.role.slug == UserRoleEnum.SUPER_ADMIN
+      )) {
+      throw new UnauthorizedException("You d'ont have the required role or privilege!!! ");
     }
 
     const role = await this.roleRepository.findOneBy({ refRole });
@@ -106,20 +107,18 @@ export class RoleService extends Utils {
     const userAccount = await this.accountRepository.findOneBy({
       refAccount: account.refAccount,
     });
-    if (userAccount != null) {
-      if (
-        this.IsAuthorised(userAccount, FunctionPrivilegeEnum.LIST_ROLE) == false
-      ) {
-        throw new UnauthorizedException();
-      }
+
+    if (!(
+      this.IsAuthorised(userAccount, FunctionPrivilegeEnum.LIST_ROLE) ||
+      userAccount.role.slug == UserRoleEnum.SUPER_ADMIN
+      )) {
+      throw new UnauthorizedException("You d'ont have the required role or privilege!!! ");
     }
 
     let listRoles: Role[] = [];
     const roles: Role[] = [];
 
-    if (listRoleDto.all == 1) {
-      listRoles = await this.roleRepository.find();
-    }
+    listRoles = await this.roleRepository.find();
 
     listRoles.filter((role) => {
       if (listRoleDto.createdAt != undefined) {
@@ -136,7 +135,7 @@ export class RoleService extends Utils {
           roles.push(role);
         }
       }
-    });
+    })
 
     if (
       roles.length == 0 &&
@@ -159,13 +158,12 @@ export class RoleService extends Utils {
     const userAccount = await this.accountRepository.findOneBy({
       refAccount: account.refAccount,
     });
-    if (userAccount != null) {
-      if (
-        this.IsAuthorised(userAccount, FunctionPrivilegeEnum.UPDATE_ROLE) ==
-        false
-      ) {
-        throw new UnauthorizedException();
-      }
+
+    if (!(
+      this.IsAuthorised(userAccount, FunctionPrivilegeEnum.UPDATE_ROLE) ||
+      userAccount.role.slug == UserRoleEnum.SUPER_ADMIN
+      )) {
+      throw new UnauthorizedException("You d'ont have the required role or privilege!!! ");
     }
 
     const role = await this.roleRepository.findOne({ where: { refRole } });
@@ -179,7 +177,7 @@ export class RoleService extends Utils {
     } catch (error) {
       throw new ConflictException(error.driverError.detail);
     }
-    await this.notificationService.sendNotification(account);
+    // await this.notificationService.sendNotification(account);
 
     return role;
   }
@@ -188,13 +186,12 @@ export class RoleService extends Utils {
     const userAccount = await this.accountRepository.findOneBy({
       refAccount: account.refAccount,
     });
-    if (userAccount != null) {
-      if (
-        this.IsAuthorised(userAccount, FunctionPrivilegeEnum.DELETE_ROLE) ==
-        false
-      ) {
-        throw new UnauthorizedException();
-      }
+
+    if (!(
+      this.IsAuthorised(userAccount, FunctionPrivilegeEnum.DELETE_ROLE) ||
+      userAccount.role.slug == UserRoleEnum.SUPER_ADMIN
+      )) {
+      throw new UnauthorizedException("You d'ont have the required role or privilege!!! ");
     }
 
     const role = await this.roleRepository.findOneBy({ refRole });

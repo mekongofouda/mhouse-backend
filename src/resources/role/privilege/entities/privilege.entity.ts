@@ -1,5 +1,5 @@
 import { TimestampEntity } from 'src/generics/timestamp.entity';
-import { Role } from 'src/resources/role/entities/role.entity';
+import { Role } from 'src/resources/role/role/entities/role.entity';
 import {
   Entity,
   Column,

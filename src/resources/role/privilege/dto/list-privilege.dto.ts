@@ -11,6 +11,7 @@ import {
 import { TimestampDto } from 'src/generics/timestampDto';
 
 export class ListPrivilegeDto extends TimestampDto {
+
   @IsInt()
   @IsOptional()
   @Type(() => Number)
@@ -37,4 +38,5 @@ export class ListPrivilegeDto extends TimestampDto {
     message: 'La taille maximale de la resource est de 32 caractères',
   })
   resource: string;
+  
 }

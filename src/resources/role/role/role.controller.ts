@@ -11,10 +11,10 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { RoleService } from './role.service';
-import { AddRoleDto } from '../dto/add-role.dto';
-import { UpdateRoleDto } from '../dto/update-role.dto';
+import { AddRoleDto } from './dto/add-role.dto';
+import { UpdateRoleDto } from './dto/update-role.dto';
 import { ReferencePipe } from 'src/pipes/reference/reference.pipe';
-import { ListRoleDto } from '../dto/list-role.dto';
+import { ListRoleDto } from './dto/list-role.dto';
 import { SlugPipe } from 'src/pipes/slug/slug.pipe';
 import { JwtAuthGuard } from 'src/resources/account/auth/auth.guard';
 import { Account } from 'src/decorators/account.decorator';
@@ -54,6 +54,7 @@ export class RoleController {
   }
 
   @Get(':ref')
+  @UseGuards(JwtAuthGuard)
   async showRoleDetail(
     @Param('ref') ref: string,
     @Account() account: AccountEntity,
@@ -67,6 +68,7 @@ export class RoleController {
   }
 
   @Patch(':ref')
+  @UseGuards(JwtAuthGuard)
   async updateRole(
     @Param('ref') ref: string,
     @Body(SlugPipe) updateRoleDto: UpdateRoleDto,
@@ -81,6 +83,7 @@ export class RoleController {
   }
 
   @Delete(':ref')
+  @UseGuards(JwtAuthGuard)
   async deleteRole(
     @Param('ref') ref: string,
     @Account() account: AccountEntity,

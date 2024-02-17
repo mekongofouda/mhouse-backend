@@ -3,7 +3,7 @@ import { PrivilegeService } from './privilege.service';
 import { PrivilegeController } from './privilege.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Privilege } from './entities/privilege.entity';
-import { Role } from 'src/resources/role/entities/role.entity';
+import { Role } from 'src/resources/role/role/entities/role.entity';
 import { AccountEntity } from '../../account/entities/account.entity';
 
 @Module({
