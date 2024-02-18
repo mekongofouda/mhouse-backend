@@ -1,9 +1,7 @@
 import { Type } from 'class-transformer';
 import {
   IsAlpha,
-  IsDate,
   IsInt,
-  IsNotEmpty,
   IsOptional,
   IsString,
   MaxLength,
@@ -38,5 +36,5 @@ export class ListPrivilegeDto extends TimestampDto {
     message: 'La taille maximale de la resource est de 32 caractères',
   })
   resource: string;
-  
+
 }
