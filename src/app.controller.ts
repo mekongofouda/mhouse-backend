@@ -1,13 +1,13 @@
 import { Controller, Get } from '@nestjs/common';
 import { AppService } from './app.service';
 
-@Controller('test-app')
+@Controller()
 export class AppController {
   constructor(private readonly appService: AppService) {
 
   }
   @Get()
-  async hello( ) {
-    return 'Liste des comptes utilisateurs obtenue avec succès'
+  async hello() {
+    return 'Application déployée avec succès'
   }
 }
